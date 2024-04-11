@@ -1,23 +1,62 @@
-.Home{
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
-    background-color: #696969;
+.dashboard {
     display: flex;
-    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    flex: 0 0 200px; /* adjust width as needed */
+    background: #343434; /* dark shade for sidebar */
+    color: #ecf0f1; /* light text color for contrast */
+    padding: 20px;
+  }
+  
+  .head-sidebar{
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-}
+  }
 
-.Home-logo{
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  
+  .sidebar ul li a:hover {
+    background: #a39e9ef8; /* slightly lighter shade for hover */
+  }
+  
+  .main-content {
+    flex: 1; /* takes up the remaining width */
+    padding: 20px;
+    background: #D3D3D3; /* light background for content */
+    overflow-y: auto; /* allows scrolling */
+  }
+  
+  .header {
     display: flex;
-    
-}
-
-.Home-content{
-    display: flex;
-}
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .statistics, .most-applied-positions, .upcoming-interviews, .applicants {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* subtle shadow */
+    margin-bottom: 20px;
+  }
+  
+  /* Additional styling for charts, lists, buttons, etc. */
+  
+  /* ... */
+  
