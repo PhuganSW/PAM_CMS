@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import './Profile.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import TableBootstrap from "react-bootstrap/Table";
 
 function ProfileManage() {
 
@@ -35,10 +37,37 @@ function ProfileManage() {
             <div class="main-contain">
 
               <div class="search-field">
-                <p>ค้นหาพนักงาน</p>
-                <input class="input-field"></input>
+                <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
+                <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
                 <button class="search-button"></button>
               </div>
+              
+              <div style={{width:'95%',alignSelf:'center'}}>
+              <TableBootstrap striped bordered hover>
+        <thead>
+          <tr>
+            <th scope="col">ลำดับ</th>
+            <th scope="col">ชื่อ-สกุล</th>
+            <th scope="col">ตำแหน่ง</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {/*people.map((person) => (
+            <tr key={person.id}>*/}
+            <tr>
+              <th scope="row">1</th>
+              <td>
+                AAA BBB
+              </td>
+              <td>img</td>
+              <td>
+              </td>
+            </tr>
+          {/*}))}*/}
+        </tbody>
+      </TableBootstrap>
+      </div>
 
             </div>
           </div>

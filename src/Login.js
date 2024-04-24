@@ -37,7 +37,7 @@ const Login = () => {
         <div className='Main'>
           <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={200} height={200} alt="Logo" />
           <form onSubmit={onLogin}>
-            <input type="email" className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
+            <input type="email" style={{marginTop:10}} className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
             <input type="password" className="input-field" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
             <div className="forgotPass" onClick={forgotPassword}>forgot password?</div>
             <button type="submit" className="login-button">LOGIN</button>

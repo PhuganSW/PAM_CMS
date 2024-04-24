@@ -41,7 +41,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 30%;
-    height: 50%;
+    height: 500px;
 }
 .input-field {
   width: 100%;
@@ -50,6 +50,7 @@
   border: 1px solid #CCC;
   border-radius: 20px;
   margin-left: -10px;
+  height: 40px;
 }
 
 .login-button {
