@@ -27,3 +27,25 @@
     height: 50px;
     border-radius: 25px;
 }
+.Add-button{
+    width: 120px;
+    height: 50px;
+    border-radius: 10px;
+    align-self: self-end;
+    margin-right: 25px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: aliceblue;
+    background-color: rgb(36, 136, 244);
+}
+.Edit-button{
+    background-color: rgb(255, 220, 19);
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+}   
+.Delete-button{
+    background-color: crimson;
+    border-radius: 5px;
+    margin-left: 5px;
+}

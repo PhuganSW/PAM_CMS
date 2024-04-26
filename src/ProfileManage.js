@@ -6,6 +6,23 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 
 function ProfileManage() {
+  {/*const [people, setItems] = useState([]);
+
+  useEffect(() => {
+    fetch("https://www.mecallapi.com/api/users")
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setItems(result);
+          console.log(result);
+        },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, []);*/}
 
   return (
     
@@ -42,32 +59,35 @@ function ProfileManage() {
                 <button class="search-button"></button>
               </div>
               
+              <button className='Add-button'>เพิ่มพนักงาน</button>
               <div style={{width:'95%',alignSelf:'center'}}>
               <TableBootstrap striped bordered hover>
-        <thead>
-          <tr>
-            <th scope="col">ลำดับ</th>
-            <th scope="col">ชื่อ-สกุล</th>
-            <th scope="col">ตำแหน่ง</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {/*people.map((person) => (
-            <tr key={person.id}>*/}
-            <tr>
-              <th scope="row">1</th>
-              <td>
-                AAA BBB
-              </td>
-              <td>img</td>
-              <td>
-              </td>
-            </tr>
-          {/*}))}*/}
-        </tbody>
-      </TableBootstrap>
-      </div>
+                <thead>
+                  <tr>
+                    <th scope="col">ลำดับ</th>
+                    <th scope="col">ชื่อ-สกุล</th>
+                    <th scope="col">ตำแหน่ง</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/*people.map((person) => (
+                    <tr key={person.id}>*/}
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>
+                        AAA BBB
+                      </td>
+                      <td>img</td>
+                      <td style={{width:'20%',justifyContent:'center'}}>
+                        <button className='Edit-button'>แก้ไขประวัติ</button>
+                        <button className='Delete-button'>ลบประวัติ</button>
+                      </td>
+                    </tr>
+                  {/*}))}*/}
+                </tbody>
+              </TableBootstrap>
+              </div>
 
             </div>
           </div>
