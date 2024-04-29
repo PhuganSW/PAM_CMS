@@ -4,8 +4,13 @@ import './Home.css';
 import './Profile.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
+import { useNavigate } from 'react-router-dom';
 
 function ProfileManage() {
+  const navigate = useNavigate();
+  const onAdd =()=>{
+    navigate('/add_profile');
+  }
   {/*const [people, setItems] = useState([]);
 
   useEffect(() => {
@@ -59,7 +64,7 @@ function ProfileManage() {
                 <button class="search-button"></button>
               </div>
               
-              <button className='Add-button'>เพิ่มพนักงาน</button>
+              <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
               <div style={{width:'95%',alignSelf:'center'}}>
               <TableBootstrap striped bordered hover>
                 <thead>

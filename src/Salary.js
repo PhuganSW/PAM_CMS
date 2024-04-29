@@ -30,7 +30,11 @@ function Salary() {
             <h1>ทำเรื่องเงินเดือน</h1>
             {/* Add user profile and logout here */}
           </header>
-          
+          <div class="main">
+            <div class="main-contain">
+
+            </div>
+          </div>
         </main>
       </div>
       

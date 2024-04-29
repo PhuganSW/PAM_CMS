@@ -10,6 +10,7 @@ import OTRequest from './OTRequest';
 import Welthfare from './Welthfare';
 import Salary from './Salary';
 import Annouce from './Annouce';
+import ProfileAdd from './ProfileAdd';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path='/welthfare_manage' Component={Welthfare} />
         <Route path='/salary_manage' Component={Salary}/>
         <Route path='/annouce' Component={Annouce} />
+        <Route path='/add_profile' Component={ProfileAdd} />
         
       </Routes>
     </Router>

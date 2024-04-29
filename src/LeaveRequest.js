@@ -1,10 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import './Home.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
+import { useNavigate } from 'react-router-dom';
 
 function LeaveRequest() {
+  const navigate = useNavigate();
+  const onTest=()=>{
+    navigate('/home');
+  }
 
   return (
     
@@ -42,55 +47,33 @@ function LeaveRequest() {
               
               <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
                 
-                <div style={{width:'45%'}}>
-                <p>เวลาเข้างาน</p>
+                <div style={{width:'95%'}}>
+                
                 <TableBootstrap striped bordered hover style={{marginTop:20}}>
                   <thead>
                     <tr>
+                      <th scope="col">ลำดับ</th>
                       <th scope="col">วันที่</th>
                       <th scope="col">ชื่อ-สกุล</th>
-                      <th scope="col">เวลา</th>
+                      <th scope="col">สถานะ</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/*people.map((person) => (
                       <tr key={person.id}>*/}
-                      <tr>
-                        <th scope="row">17/04/2567</th>
+                      <tr onClick={onTest}>
+                        <th scope="row">1</th>
+                        <td>17/04/2567</td>
                         <td>
                           AAA BBB
                         </td>
-                        <td>07.35</td>
+                        <td>allowed</td>
                       </tr>
                     {/*}))}*/}
                   </tbody>
                 </TableBootstrap>
                 </div>
                 
-                <div style={{width:'45%'}}>
-                <p>เวลาออกงาน</p>
-                <TableBootstrap striped bordered hover style={{marginTop:20}}>
-                  <thead>
-                    <tr>
-                      <th scope="col">วันที่</th>
-                      <th scope="col">ชื่อ-สกุล</th>
-                      <th scope="col">เวลา</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/*people.map((person) => (
-                      <tr key={person.id}>*/}
-                      <tr>
-                        <th scope="row">17/04/2567</th>
-                        <td>
-                          AAA BBB
-                        </td>
-                        <td>17.05</td>
-                      </tr>
-                    {/*}))}*/}
-                  </tbody>
-                </TableBootstrap>
-                </div>
               </div>
 
             </div>

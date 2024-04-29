@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
+import { useNavigate } from 'react-router-dom';
 
-function Welthfare() {
+function ProfileAdd() {
 
   return (
     
@@ -27,12 +28,14 @@ function Welthfare() {
         
         <main className="main-content">
           <header>
-            <h1>จัดการสิทธิ์และวันหยุด</h1>
+            <h1>เพิ่มประวัติพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
           <div class="main">
             <div class="main-contain">
-
+                <div style={{backgroundColor:'red',margin:10,justifySelf:'center'}}>
+                    <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={100} height={100} alt="Logo" />
+                </div>
             </div>
           </div>
         </main>
@@ -42,6 +45,6 @@ function Welthfare() {
   );
 }
 
-export default Welthfare;
+export default ProfileAdd;
 
   
