@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './Firebase/Config';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,15 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [currentUser,setCurrentUser] = useState(null)
+
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        setCurrentUser(user)
+      }
+    })
+  }, []);
 
   const onLogin = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
@@ -15,6 +24,7 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       // Signed in
       const user = userCredential.user;
+      setCurrentUser(user)
       navigate("/home");
       console.log(user);
     } catch (error) {

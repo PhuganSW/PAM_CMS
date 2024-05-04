@@ -1,0 +1,29 @@
+.block_img{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 10px;
+    margin-top: 50px;
+    align-items: center;
+}
+
+.addProfile_input{
+    border: 1px solid #CCC;
+    border-radius: 20px;
+    height: 30px;
+    font-size: 20px;
+    padding-inline-start: 10px;
+    margin-right: 15px;
+}
+
+.addAccount-button{
+    width: 120px;
+    height: 50px;
+    border-radius: 60px;
+    align-self: self-end;
+    margin-right: 30px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: aliceblue;
+    background-color: #343434;
+}
