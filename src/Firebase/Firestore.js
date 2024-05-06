@@ -1,6 +1,6 @@
 //Firestore.js
 import app from "./Config";
-import { getFirestore, collection, addDoc, setDoc, doc, getDocs, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, addDoc, setDoc, doc, getDocs, onSnapshot, deleteDoc } from "firebase/firestore";
 
 class FireStore{
   constructor(){
@@ -14,6 +14,10 @@ class FireStore{
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+  }
+
+  deleteAccount= async (id)=>{
+    await deleteDoc(doc(this.db, "account_cms", id));
   }
 
   getAllAccount = (success, unsuccess) => {
@@ -69,6 +73,27 @@ class FireStore{
       unsuccess(error)
     });
   }
+
+  getAllUser = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "users"), (querySnapshot) => {
+      const allaccount = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allaccount.push({
+          id: doc.id,
+          name: data.name+" "+data.lastname,
+          position: data.position,
+        });
+      });
+      success(allaccount);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
 }
 
 const firestore = new FireStore();

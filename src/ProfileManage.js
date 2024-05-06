@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -6,29 +6,62 @@ import './Profile.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { useNavigate } from 'react-router-dom';
+import firestore from './Firebase/Firestore';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 function ProfileManage() {
   const navigate = useNavigate();
+  const [allUser,setAllUser] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(5);
+  const [showDel, setShowDel] = useState(false);
+  const [selectID, setSelectID] = useState();
+  
+  const getAllUsersSuccess=(doc)=>{
+    let users = []
+    if (allUser.length === 0) {
+        
+      doc.forEach((item) => {
+        users.push({id: item.id, name: item.name, position: item.position});
+      });
+      setAllUser(users);
+    }
+  }
+
+  const getAllUsersUnsuccess=(error)=>{
+    console.log("getAllUsers: "+error)
+  }
+
+  const handleDelClose = () => setShowDel(false);
+    const handleDelShow = (id) => {
+      setSelectID(id)
+      setShowDel(true);
+    }
+
+  const Delete =()=>{
+    //firestore.deleteAccount(selectID)
+    //console.log('Del'+selectID)
+    handleDelClose()
+  }
+
   const onAdd =()=>{
     navigate('/add_profile');
   }
-  {/*const [people, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("https://www.mecallapi.com/api/users")
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setItems(result);
-          console.log(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      );
-  }, []);*/}
+    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
+  }, []);
+
+  const onNext = () => {
+    setStartIndex(startIndex + 5); // Increment the start index by 5
+    setEndIndex(endIndex + 5); // Increment the end index by 5
+  };
+
+  const onPrevious = () => {
+    setStartIndex(Math.max(startIndex - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
 
   return (
     
@@ -61,27 +94,48 @@ function ProfileManage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/*people.map((person) => (
-                    <tr key={person.id}>*/}
-                    <tr>
-                      <th scope="row">1</th>
+                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
+                  {allUser.map((item, index) => (
+                    <tr key={item.id}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
+                      <th scope="row">{index + 1}</th>
                       <td>
-                        AAA BBB
+                        {item.name}
                       </td>
-                      <td>img</td>
+                      <td>{item.position}</td>
                       <td style={{width:'20%',textAlign:'center'}}>
                         <button className='Edit-button'>แก้ไขประวัติ</button>
-                        <button className='Delete-button'>ลบประวัติ</button>
+                        <button className='Delete-button' onClick={()=>handleDelShow(item.id)}>ลบประวัติ</button>
                       </td>
                     </tr>
-                  {/*}))}*/}
+                  ))}
                 </tbody>
               </TableBootstrap>
+              {/*<div>
+                <button onClick={onPrevious}>Previous</button>
+                <button onClick={onNext}>Next</button>
+                </div>*/}
               </div>
 
             </div>
           </div>
         </main>
+        <Modal show={showDel} onHide={handleDelClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>ลบข้อมูลพนักงาน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>ยืนยันจะลบข้อมูลพนักงานหรือไม่</h5>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={Delete}>
+            OK
+          </Button>
+          <Button variant="secondary" onClick={handleDelClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       </div>
       
     

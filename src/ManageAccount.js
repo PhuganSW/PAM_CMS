@@ -18,12 +18,14 @@ import firestore from './Firebase/Firestore';
 function ManageAccount() {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
+    const [showDel, setShowDel] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [position, setPosition] = useState('');
     const [level, setLevel] = useState('');
     const [allaccount, setAllAccount] = useState([]);
+    const [selectID, setSelectID] = useState();
     
     const getallAccountSuccess=(doc)=>{
       let accounts = [];
@@ -47,6 +49,11 @@ function ManageAccount() {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleDelClose = () => setShowDel(false);
+    const handleDelShow = (id) => {
+      setSelectID(id)
+      setShowDel(true);
+    }
 
     const createSuccess=(user)=>{
       let item={
@@ -55,7 +62,7 @@ function ManageAccount() {
         position:position,
         level:level
       }
-      console.log(item)
+      //console.log(item)
       firestore.addAccount(user.uid,item)
       handleClose()
     }
@@ -72,7 +79,9 @@ function ManageAccount() {
 
     
     const Delete =()=>{
-      console.log('Delelte')
+      firestore.deleteAccount(selectID)
+      //console.log('Del'+selectID)
+      handleDelClose()
     }
 
     return (
@@ -87,11 +96,11 @@ function ManageAccount() {
           </header>
           <div class="main">
             <div class="main-contain">
-            <div class="search-field">
+            {/*<div class="search-field">
                 <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
                 <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
                 <button class="search-button"></button>
-              </div>
+    </div>*/}
               <button className='addAccount-button' onClick={handleShow}>เพิ่มผู้ใช้</button>
               
               <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
@@ -117,7 +126,7 @@ function ManageAccount() {
                           {item.position}
                         </td>
                         <td>{item.level}</td>
-                        <td style={{textAlign: 'center'}}><IoTrashBin size={28} onClick={Delete} /></td>
+                        <td style={{textAlign: 'center'}}><IoTrashBin size={28} onClick={()=>handleDelShow(item.id)} /></td>
                       </tr>
                     ))}
                   </tbody> 
@@ -189,6 +198,22 @@ function ManageAccount() {
           </Button>
           <Button variant="primary" onClick={onSave}>
             Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showDel} onHide={handleDelClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>ลบบัญชีผู้ใช้</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>ยืนยันจะลบบัญชีผู้ใช้หรือไม่</h5>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={Delete}>
+            OK
+          </Button>
+          <Button variant="secondary" onClick={handleDelClose}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
