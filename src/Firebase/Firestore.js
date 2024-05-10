@@ -74,6 +74,10 @@ class FireStore{
     });
   }
 
+  deleteUser=async(id)=>{
+    await deleteDoc(doc(this.db, "users", id));
+  }
+
   getAllUser = (success, unsuccess) => {
     const unsubscribe = onSnapshot(collection(this.db, "users"), (querySnapshot) => {
       const allaccount = [];

@@ -40,7 +40,7 @@ function ProfileManage() {
     }
 
   const Delete =()=>{
-    //firestore.deleteAccount(selectID)
+    firestore.deleteUser(selectID)
     //console.log('Del'+selectID)
     handleDelClose()
   }
