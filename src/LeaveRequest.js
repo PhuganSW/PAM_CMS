@@ -1,16 +1,38 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { useNavigate } from 'react-router-dom';
+import firestore from './Firebase/Firestore';
 
 function LeaveRequest() {
   const navigate = useNavigate();
+  const [allLeave, setAllLeave] = useState([]);
+
+  const getAllLeaveSuccess=(doc)=>{
+    let leaves = []
+    if (allLeave.length === 0) {
+        
+      doc.forEach((item) => {
+        leaves.push({id: item.id,date:item.date, name: item.name, state:item.state});
+      });
+      setAllLeave(leaves);
+    }
+  }
+
+  const getAllLeaveUnsuccess=(error)=>{
+    console.log("getAllLeave: "+error)
+  }
+
   const onTest=()=>{
     navigate('/home');
   }
+
+  useEffect(() => {
+    firestore.getAllLeave(getAllLeaveSuccess,getAllLeaveUnsuccess)
+  }, []);
 
   return (
     
@@ -44,18 +66,23 @@ function LeaveRequest() {
                     </tr>
                   </thead>
                   <tbody>
-                    {/*people.map((person) => (
-                      <tr key={person.id}>*/}
-                      <tr onClick={onTest}>
-                        <th scope="row">1</th>
-                        <td>17/04/2567</td>
-                        <td>
-                          AAA BBB
-                        </td>
+                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
+                  {allLeave.map((item, index) => (
+                    <tr key={item.id}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        {item.date}
+                      </td>
+                      <td>{item.name}</td>
+                      {item.state ? (
                         <td>allowed</td>
-                      </tr>
-                    {/*}))}*/}
-                  </tbody>
+                      ) : (
+                        <td>not allowed</td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
                 </TableBootstrap>
                 </div>
                 

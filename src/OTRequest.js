@@ -1,11 +1,37 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
+import { useNavigate } from 'react-router-dom';
+import firestore from './Firebase/Firestore';
+
 
 function OTRequest() {
+  const navigate = useNavigate();
+  const [allOT, setAllOT] = useState([]);
+
+  const getAllOTSuccess=(doc)=>{
+    let ots = []
+    if (allOT.length === 0) {
+        
+      doc.forEach((item) => {
+        ots.push({id: item.id,date:item.date, name: item.name,time:item.time, state:item.state});
+      });
+      setAllOT(ots);
+    }
+  }
+
+  const getAllOTUnsuccess=(error)=>{
+    console.log("getOTLeave: "+error)
+  }
+
+  useEffect(() => {
+    firestore.getAllOT(getAllOTSuccess,getAllOTUnsuccess)
+  }, []);
+
+
 
   return (
     
@@ -40,19 +66,24 @@ function OTRequest() {
                     </tr>
                   </thead>
                   <tbody>
-                    {/*people.map((person) => (
-                      <tr key={person.id}>*/}
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>17/04/2567</td>
-                        <td>
-                          AAA BBB
-                        </td>
-                        <td>18.00-20.00</td>
+                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
+                  {allOT.map((item, index) => (
+                    <tr key={item.id}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        {item.date}
+                      </td>
+                      <td>{item.name}</td>
+                      <td>{item.time}</td>
+                      {item.state ? (
                         <td>allowed</td>
-                      </tr>
-                    {/*}))}*/}
-                  </tbody>
+                      ) : (
+                        <td>not allowed</td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
                 </TableBootstrap>
                 </div>
                 

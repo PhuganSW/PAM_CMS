@@ -98,6 +98,51 @@ class FireStore{
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
   };
+
+  getAllLeave = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "leaveRequest"), (querySnapshot) => {
+      const allLeave = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allLeave.push({
+          id:doc.id,
+          date: data.dateStart,
+          name: data.name+" "+data.lastname,
+          state: data.state1,
+        });
+      });
+      success(allLeave);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  getAllOT = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "otRequest"), (querySnapshot) => {
+      const allOT = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allOT.push({
+          id:doc.id,
+          date: data.date,
+          name: data.name+" "+data.lastname,
+          time:data.timeStart ,
+          state: data.status,
+        });
+      });
+      success(allOT);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
 }
 
 const firestore = new FireStore();
