@@ -107,7 +107,7 @@ class FireStore{
         allLeave.push({
           id:doc.id,
           date: data.dateStart,
-          name: data.name+" "+data.lastname,
+          name: data.name,
           state: data.state1,
         });
       });
@@ -129,8 +129,8 @@ class FireStore{
         allOT.push({
           id:doc.id,
           date: data.date,
-          name: data.name+" "+data.lastname,
-          time:data.timeStart ,
+          name: data.name,
+          time:data.timeStart+"-"+data.timeEnd ,
           state: data.status,
         });
       });
