@@ -14,6 +14,8 @@ const Login = () => {
     auth.onAuthStateChanged(user => {
       if (user) {
         setCurrentUser(user)
+        navigate("/home")
+        console.log(user)
       }
     })
   }, []);

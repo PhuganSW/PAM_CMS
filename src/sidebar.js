@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css'; // Your custom CSS file
+import { auth } from './Firebase/Config';
+import { useNavigate } from 'react-router-dom'
 
 function Sidebar(){
+  const navigate = useNavigate();
+  const [currentUser,setCurrentUser] = useState('');
+
+  const logout=(e)=>{
+    e.preventDefault()
+    auth.signOut().then(response => {
+      setCurrentUser(null)
+      navigate("/")
+    })
+  }
+
     return(
         <nav className="sidebar">
           <div className='head-sidebar'>
@@ -21,6 +34,9 @@ function Sidebar(){
             <li><Link to="/manage_account">จัดการผู้ใช้</Link></li>
             {/* Add other navigation links here */}
           </ul>
+          <div className='logout-button'> 
+            <button onClick={logout}>Sign Out</button>
+          </div>
         </nav>
     );
 }

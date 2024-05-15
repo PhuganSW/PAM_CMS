@@ -57,6 +57,25 @@
     width: 500px;
   }
   
+  .logout-button {
+    margin-top: auto;
+    margin-bottom: 20px;
+  }
+  
+  .logout-button button {
+    width: 80%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4b4b;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button button:hover {
+    background-color: #ff2c2c;
+  }
   /* Additional styling for charts, lists, buttons, etc. */
   
   /* ... */
