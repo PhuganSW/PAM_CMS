@@ -43,16 +43,27 @@ class FireStore{
     return unsubscribe;
   };
 
+  addUser= async (item,success,unsuccess)=>{
+    try{
+      const docRef = await addDoc(collection(this.db, "users"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
   getUser=(id,success,unsuccess)=>{
-    var docRef = this.db.collection('users').doc(id);
-    docRef
-    .get()
-    .then((doc)=>{
-      success(doc.data())
-    })
-    .catch((error)=>{
-      unsuccess(error)
-    })
+    try {
+      const docRef = doc(collection(this.db, "users"), id);
+      const docSnap = getDocs(docRef);
+      if (docSnap.exists()) {
+        success(docSnap.data());
+      } else {
+        unsuccess("No such document!");
+      }
+    } catch (error) {
+      unsuccess(error);
+    }
 
   }
 

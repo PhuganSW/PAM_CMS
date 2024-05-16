@@ -49,6 +49,10 @@ function ProfileManage() {
     navigate('/add_profile');
   }
 
+  const onEdit =(id)=>{
+    navigate('/edit_profile',{state:{uid:id}})
+  }
+
   useEffect(() => {
     firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
   }, []);
@@ -73,13 +77,13 @@ function ProfileManage() {
             <h1>จัดการประวัติพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
-          <div class="main">
-            <div class="main-contain">
+          <div className="main">
+            <div className="main-contain">
 
-              <div class="search-field">
+              <div className="search-field">
                 <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
                 <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button class="search-button"></button>
+                <button className="search-button"></button>
               </div>
               
               <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
@@ -104,7 +108,7 @@ function ProfileManage() {
                       </td>
                       <td>{item.position}</td>
                       <td style={{width:'20%',textAlign:'center'}}>
-                        <button className='Edit-button'>แก้ไขประวัติ</button>
+                        <button className='Edit-button' onClick={()=>onEdit(item.id)}>แก้ไขประวัติ</button>
                         <button className='Delete-button' onClick={()=>handleDelShow(item.id)}>ลบประวัติ</button>
                       </td>
                     </tr>

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import './addProfile.css'
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
@@ -61,8 +61,10 @@ const Levels = [
   },
 ];
 
-function ProfileAdd() {
+function ProfileEdit() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [uid,setUid] = useState('')
   const [name,setName] = useState('');
   const [nameEng,setNameEng] = useState('');
   const [position,setPosition] = useState('');
@@ -72,13 +74,25 @@ function ProfileAdd() {
   const [phone,setPhone] = useState('');
   const [sex,setSex] = useState('');
   const [level,setLevel] = useState('');
+  
 
-  const addUserSuccess=()=>{
-    navigate('/profile')
+  const getUserSuccess=(data)=>{
+    console.log(data)
+    data.forEach((item) => {
+        setName(item.name+" "+item.lastname)
+        setNameEng(item.FName+" "+item.LName)
+        setSex(item.sex)
+        setPosition(item.position)
+        setFirstDay(item.workstart)
+        setAddress(item.address)
+        setEmail(item.email)
+        setPhone(item.phone)
+        setLevel(item.level)
+    });
   }
 
-  const addUserUnsuccess=(e)=>{
-    console.log(e)
+  const getUserUnsuccess=(e)=>{
+    console.log('f edit'+e)
   }
 
   const onSave=()=>{
@@ -99,8 +113,18 @@ function ProfileAdd() {
       quote:'',
       image:'',
     }
-    firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+    
   }
+
+  useEffect(() => {
+    if (location.state && location.state.uid) {
+      setUid(location.state.uid);
+      //console.log('from eff'+uid)
+      firestore.getUser('oAnOhuDO5IVc3wshAE6C',getUserSuccess,getUserUnsuccess)
+    } else {
+      console.warn('No ID found in location state');
+    }
+  }, [location.state]);
 
   return (
     
@@ -109,7 +133,7 @@ function ProfileAdd() {
         
         <main className="main-content">
           <header>
-            <h1>เพิ่มประวัติพนักงาน</h1>
+            <h1>แก้ไขประวัติพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
           <div className="main">
@@ -125,7 +149,7 @@ function ProfileAdd() {
                     style={{width:400,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={name}
+                    value={uid}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <TextField
@@ -229,7 +253,7 @@ function ProfileAdd() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button onClick={onSave}>บันทึกขอมูล</button>
+                <button onClick={()=>onSave}>บันทึกขอมูล</button>
               </div>
 
             </div>
@@ -241,6 +265,6 @@ function ProfileAdd() {
   );
 }
 
-export default ProfileAdd;
+export default ProfileEdit;
 
   
