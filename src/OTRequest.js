@@ -6,11 +6,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { useNavigate } from 'react-router-dom';
 import firestore from './Firebase/Firestore';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 
 function OTRequest() {
   const navigate = useNavigate();
   const [allOT, setAllOT] = useState([]);
+  const [show,setShow] = useState(false);
+  const [selectID,setSelectID] = useState('')
+  const [name,setName] = useState('');
+  const [position,setPosition] = useState('');
+  const [date,setDate] = useState('');
+  const [timeStart,setTimeStart] = useState('');
+  const [timeEnd,setTimeEnd] = useState('');
+  const [amount,setAmount] = useState('');
+  const [detail,setDetail] = useState('');
+  const [status,setStatus] = useState('');
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
 
   const getAllOTSuccess=(doc)=>{
     let ots = []
@@ -25,6 +43,32 @@ function OTRequest() {
 
   const getAllOTUnsuccess=(error)=>{
     console.log("getOTLeave: "+error)
+  }
+
+  const getOTSuc=(data)=>{
+    setName(data.name)
+    setPosition(data.position)
+    setDate(data.date)
+    setTimeStart(data.timeStart)
+    setTimeEnd(data.timeEnd)
+    setAmount(data.amount)
+    setDetail(data.detail)
+    if(status){
+      setStatus("Allowed")
+    }else{
+      setStatus("Not allow")
+    }
+
+    handleShow()
+  }
+
+  const getOTUnsuc =(error)=>{
+
+  }
+
+  const getOT=(id)=>{
+    setSelectID(id)
+    firestore.getOT(id,getOTSuc,getOTUnsuc)
   }
 
   useEffect(() => {
@@ -68,7 +112,7 @@ function OTRequest() {
                   <tbody>
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
                   {allOT.map((item, index) => (
-                    <tr key={item.id}>
+                    <tr key={item.id} onClick={()=>getOT(item.id)}> 
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row">{index + 1}</th>
                       <td>
@@ -92,6 +136,90 @@ function OTRequest() {
             </div>
           </div>
         </main>
+        <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>รายละเอียดการขอทำ OT</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>ชื่อ - นามสกุล</Form.Label>
+              <Form.Control
+                type="email"
+                value={name}
+                autoFocus
+                
+              />
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label>ตำแหน่ง</Form.Label>
+              <Form.Control
+                value={position}
+                autoFocus
+                
+              />
+              {/*<Form.Control as="textarea" rows={3} />*/}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>วันที่</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={date}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>เริ่มตั้งแต่เวลา</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={timeStart}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>จนถึงเวลา</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={timeEnd}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>รวมจำนวนชั่วโมงการทำ OT</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={amount}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>รายละเอียด</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={detail}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>สถานะ</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={status}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          
+        </Modal.Footer>
+      </Modal>
       </div>
       
     

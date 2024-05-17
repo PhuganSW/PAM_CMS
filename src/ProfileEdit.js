@@ -77,22 +77,29 @@ function ProfileEdit() {
   
 
   const getUserSuccess=(data)=>{
-    console.log(data)
-    data.forEach((item) => {
-        setName(item.name+" "+item.lastname)
-        setNameEng(item.FName+" "+item.LName)
-        setSex(item.sex)
-        setPosition(item.position)
-        setFirstDay(item.workstart)
-        setAddress(item.address)
-        setEmail(item.email)
-        setPhone(item.phone)
-        setLevel(item.level)
-    });
+
+    setName(data.name+" "+data.lastname)
+    setNameEng(data.FName+" "+data.LName)
+    setSex(data.sex)
+    setPosition(data.position)
+    setFirstDay(data.workstart)
+    setAddress(data.address)
+    setEmail(data.email)
+    setPhone(data.tel)
+    setLevel(data.level)
+
   }
 
   const getUserUnsuccess=(e)=>{
     console.log('f edit'+e)
+  }
+
+  const updateSuccess=()=>{
+    navigate('/profile')
+  }
+
+  const updateUnsuccess=(error)=>{
+    console.log(error)
   }
 
   const onSave=()=>{
@@ -109,18 +116,17 @@ function ProfileEdit() {
       phone:phone,
       email:email,
       sex:sex,
-      level:level,
-      quote:'',
-      image:'',
+      level:level
     }
-    
+    console.log('save')
+    firestore.updateUser(uid,item,updateSuccess,updateUnsuccess)
   }
 
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser('oAnOhuDO5IVc3wshAE6C',getUserSuccess,getUserUnsuccess)
+      firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
     } else {
       console.warn('No ID found in location state');
     }
@@ -139,7 +145,7 @@ function ProfileEdit() {
           <div className="main">
             <div className="main-contain">
               <div className='block_img'>
-                <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />
+                {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center'}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
@@ -149,7 +155,7 @@ function ProfileEdit() {
                     style={{width:400,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={uid}
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <TextField
@@ -253,7 +259,8 @@ function ProfileEdit() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button onClick={()=>onSave}>บันทึกขอมูล</button>
+                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกขอมูล</button>
+                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>
 
             </div>

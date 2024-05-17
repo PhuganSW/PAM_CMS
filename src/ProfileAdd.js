@@ -92,7 +92,7 @@ function ProfileAdd() {
       position:position,
       workstart:firstDay,
       address:address,
-      phone:phone,
+      tel:phone,
       email:email,
       sex:sex,
       level:level,
@@ -115,7 +115,7 @@ function ProfileAdd() {
           <div className="main">
             <div className="main-contain">
               <div className='block_img'>
-                <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />
+                {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center'}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
@@ -229,7 +229,8 @@ function ProfileAdd() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button onClick={onSave}>บันทึกขอมูล</button>
+              <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกขอมูล</button>
+                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>
 
             </div>
