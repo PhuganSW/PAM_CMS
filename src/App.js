@@ -13,6 +13,7 @@ import Annouce from './Annouce';
 import ProfileAdd from './ProfileAdd';
 import ManageAccount from './ManageAccount';
 import ProfileEdit from './ProfileEdit';
+import AnnouceAdd  from './AnnouceAdd';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path='/welthfare_manage' Component={Welthfare} />
         <Route path='/salary_manage' Component={Salary}/>
         <Route path='/annouce' Component={Annouce} />
+        <Route path='/add_annouce' Component={AnnouceAdd} />
         <Route path='/add_profile' Component={ProfileAdd} />
         <Route path='/edit_profile' Component={ProfileEdit} />
         <Route path='/manage_account' Component={ManageAccount} />

@@ -1,11 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
+import { useEffect, useState } from 'react';
 
 function Annouce() {
+  const navigate = useNavigate();
+
+
 
   return (
     
@@ -25,7 +29,7 @@ function Annouce() {
                 <button class="search-button"></button>
               </div>
               
-              <button className='Add-button'>เพิ่มประกาศ</button>
+              <button className='Add-button' onClick={()=> navigate('/add_annouce')}>เพิ่มประกาศ</button>
               <div style={{width:'95%',alignSelf:'center'}}>
               <TableBootstrap striped bordered hover>
                 <thead>
