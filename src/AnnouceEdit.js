@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import './addProfile.css'
 import { TextField } from '@mui/material';
 import firestore from './Firebase/Firestore';
@@ -15,20 +15,34 @@ import dayjs from 'dayjs';
 
 
 
-function AnnouceAdd() {
+function AnnouceEdit() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [title,setTitle] = useState('');
   const [desc,setDesc] = useState('');
   const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
   const [detail,setDetail] = useState('');
+  const [selectID,setSelectID] = useState('');
 
 
-  const addAnnouceSuc=()=>{
+  const getAnnouceSuc=(data)=>{
+    setTitle(data.title)
+    setDesc(data.desc)
+    setDate(dayjs(data.date,'DD-MM-YYYY'))
+    setDetail(data.detail)
+
+  }
+
+  const getAnnouceUnsuc=(e)=>{
+    console.log('f edit'+e)
+  }
+
+  const updateAnnouceSuc=()=>{
     navigate('/annouce')
   }
 
-  const addAnnouceUnsuc=(e)=>{
-    console.log(e)
+  const updateAnnouceUnsuc=(error)=>{
+    console.log(error)
   }
 
   const onSave=()=>{
@@ -40,8 +54,19 @@ function AnnouceAdd() {
       date:date_str,
       file:""
     }
-    firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)
+    firestore.updateAnnouce(selectID,item,updateAnnouceSuc,updateAnnouceUnsuc)
   }
+
+  useEffect(() => {
+    if (location.state && location.state.id) {
+      setSelectID(location.state.id);
+      //console.log('from eff'+uid)
+      firestore.getAnnouce(location.state.id,getAnnouceSuc,getAnnouceUnsuc)
+    } else {
+      console.warn('No ID found in location state');
+    }
+  }, [location.state]);
+
 
   return (
     
@@ -111,7 +136,7 @@ function AnnouceAdd() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-              <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกขอมูล</button>
+                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกขอมูล</button>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
               </div>
 
@@ -124,6 +149,6 @@ function AnnouceAdd() {
   );
 }
 
-export default AnnouceAdd;
+export default AnnouceEdit;
 
   

@@ -74,7 +74,7 @@ class FireStore{
     try{
       const docRef = doc(this.db, "users", id);
 
-      // Set the "capital" field of the city 'DC'
+      
       await updateDoc(docRef,data);
       success();
     }catch(e){
@@ -197,6 +197,69 @@ class FireStore{
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
   };
+
+  addAnnouce= async (item,success,unsuccess)=>{
+    try{
+      const docRef = await addDoc(collection(this.db, "annouce"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  updateAnnouce=async(id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "annouce", id);
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  getAnnouce=async(id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "annouce", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
+
+  getAllAnnouce = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "annouce"), (querySnapshot) => {
+      const allAnnouce = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allAnnouce.push({
+          id:doc.id,
+          title:data.title,
+          date: data.date,
+        });
+      });
+      success(allAnnouce);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  deleteAnnouce=async(id)=>{
+    await deleteDoc(doc(this.db, "annouce", id));
+  }
+
 }
 
 const firestore = new FireStore();
