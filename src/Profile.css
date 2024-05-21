@@ -6,7 +6,7 @@
 .main-contain{
     display: flex;
     background-color: rgba(247, 247, 247, 0.956);
-    width: 96%;
+    width: 75vmax;
     height: 100vmax;
     border-width: 20px;
     border-top-left-radius: 20px;
