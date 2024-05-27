@@ -1,9 +1,51 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import React,{useState,useEffect} from 'react';
+import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
+import "bootstrap/dist/css/bootstrap.min.css";
+import TableBootstrap from "react-bootstrap/Table";
+import firestore from './Firebase/Firestore';
 
 function Salary() {
+  const navigate = useNavigate();
+  const [allUser,setAllUser] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(5);
+  const [selectID, setSelectID] = useState();
+
+  const getAllUsersSuccess=(doc)=>{
+    let users = []
+    if (allUser.length === 0) {
+        
+      doc.forEach((item) => {
+        users.push({id: item.id, name: item.name, position: item.position});
+      });
+      setAllUser(users);
+    }
+  }
+
+  const getAllUsersUnsuccess=(error)=>{
+    console.log("getAllUsers: "+error)
+  }
+
+  const calSalary=(id)=>{
+
+  }
+
+  useEffect(() => {
+    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
+  }, []);
+
+  const onNext = () => {
+    setStartIndex(startIndex + 5); // Increment the start index by 5
+    setEndIndex(endIndex + 5); // Increment the end index by 5
+  };
+
+  const onPrevious = () => {
+    setStartIndex(Math.max(startIndex - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
+
 
   return (
     
@@ -17,7 +59,45 @@ function Salary() {
           </header>
           <div class="main">
             <div class="main-contain">
-
+            <div className="search-field">
+                <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
+                <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
+                <button className="search-button"></button>
+              </div>
+              
+      
+              <div style={{width:'95%',alignSelf:'center'}}>
+              <TableBootstrap striped bordered hover>
+                <thead>
+                  <tr>
+                    <th scope="col">ลำดับ</th>
+                    <th scope="col">ชื่อ-สกุล</th>
+                    <th scope="col">ตำแหน่ง</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
+                  {allUser.map((item, index) => (
+                    <tr key={item.id} onClick={()=>calSalary(item.id)}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        {item.name}
+                      </td>
+                      <td>{item.position}</td>
+                      <td style={{width:'20%',textAlign:'center'}}>
+                        
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </TableBootstrap>
+              {/*<div>
+                <button onClick={onPrevious}>Previous</button>
+                <button onClick={onNext}>Next</button>
+                </div>*/}
+              </div>
             </div>
           </div>
         </main>
