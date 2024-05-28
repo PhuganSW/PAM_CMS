@@ -29,7 +29,7 @@ function Salary() {
   }
 
   const calSalary=(id)=>{
-
+    navigate('/salary_cal',{state:{uid:id}})
   }
 
   useEffect(() => {

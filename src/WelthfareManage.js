@@ -13,7 +13,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 
-function SalaryCal() {
+function WelthfareManage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [uid,setUid] = useState('')
@@ -35,7 +35,12 @@ function SalaryCal() {
   const [missing,setMissing] = useState(''); //ขาดงาน
   const [borrow,setBorrow] = useState(''); //เงินกู้ยืม
   const [withdraw,setWithdraw] = useState(''); //เงินเบิกล่วงหน้า
-  const [amount,setAmount] = useState('');
+  const [amount,setAmount] = useState(''); 
+  const [absence,setAbsence] = useState(''); //ลากิจ
+  const [sick,setSick] = useState(''); //ลาป่วย
+  const [holiday,setHoliday] = useState(''); //ลาพักร้อน
+  const [maternity,setMaternity] = useState(''); //ลาคลอด
+  const [other,setOther] = useState(''); //ลาสิทธิ์อื่น
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -71,7 +76,7 @@ function SalaryCal() {
         
         <main className="main-content">
           <header>
-            <h1>คำนวณเงินเดือน</h1>
+            <h1>จัดการสิทธิ์และวันหยุด</h1>
             {/* Add user profile and logout here */}
           </header>
           <div className="main">
@@ -195,6 +200,6 @@ function SalaryCal() {
   );
 }
 
-export default SalaryCal;
+export default WelthfareManage;
 
   

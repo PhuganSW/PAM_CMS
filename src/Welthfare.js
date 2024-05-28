@@ -29,7 +29,7 @@ function Welthfare() {
   }
 
   const manageWel=(id)=>{
-
+    navigate('/welthfare_manage',{state:{uid:id}})
   }
 
   useEffect(() => {

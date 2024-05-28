@@ -28,7 +28,7 @@ function Sidebar(){
             <li><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
             <li><Link to="/leave_request">คำขอลางาน</Link></li>
             <li><Link to="/ot_request">คำขอทำ OT</Link></li>
-            <li><Link to="/welthfare_manage">จัดการสิทธิ์และวันหยุด</Link></li>
+            <li><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>
             <li><Link to="/salary_manage">ทำเรื่องเงินเดือน</Link></li>
             <li><Link to="/annouce">ลงประกาศ</Link></li>
             <li><Link to="/manage_account">จัดการผู้ใช้</Link></li>

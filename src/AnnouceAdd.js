@@ -6,12 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import './addProfile.css'
 import { TextField } from '@mui/material';
 import firestore from './Firebase/Firestore';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+//import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-
+import 'dayjs/locale/th';
 
 
 
@@ -19,7 +19,7 @@ function AnnouceAdd() {
   const navigate = useNavigate();
   const [title,setTitle] = useState('');
   const [desc,setDesc] = useState('');
-  const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
+  const [date,setDate] = useState(dayjs().format('dd-mm-yyyy'));
   const [detail,setDetail] = useState('');
 
 
@@ -74,12 +74,14 @@ function AnnouceAdd() {
                   
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         
                         <DatePicker
                         label="วันที่ลงประกาศ"
-                        value={date}
+                        value={dayjs(date, 'dd/mm/yy')}
                         onChange={(newValue) => setDate(newValue)}
+                        renderInput={(params) => <TextField {...params} />}
+                        inputFormat="dd/MM/YYYY"
                         />
                 
                     </LocalizationProvider>

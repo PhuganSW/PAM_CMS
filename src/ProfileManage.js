@@ -102,12 +102,12 @@ function ProfileManage() {
                   {allUser.map((item, index) => (
                     <tr key={item.id}>
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
-                      <th scope="row">{index + 1}</th>
+                      <th scope="row" style={{width:80}}>{index + 1}</th>
                       <td>
                         {item.name}
                       </td>
                       <td>{item.position}</td>
-                      <td style={{width:'20%',textAlign:'center'}}>
+                      <td style={{width:'30%',textAlign:'center'}}>
                         <button className='Edit-button' onClick={()=>onEdit(item.id)}>แก้ไขประวัติ</button>
                         <button className='Delete-button' onClick={()=>handleDelShow(item.id)}>ลบประวัติ</button>
                       </td>

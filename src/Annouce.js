@@ -77,7 +77,7 @@ function Annouce() {
                 <thead>
                   <tr>
                     <th scope="col" style={{width:'10%'}}>ลำดับ</th>
-                    <th scope="col">หัวข้อ</th>
+                    <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
                     <th scope="col" style={{width:'20%'}}>วันที่</th>
                     <th scope="col"></th>
                   </tr>
@@ -91,7 +91,7 @@ function Annouce() {
                         {item.title}
                       </td>
                       <td>{item.date}</td>
-                      <td style={{width:'25%',textAlign:'center'}}>
+                      <td style={{width:'30%',textAlign:'center'}}>
                         <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
                         <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
                       </td>

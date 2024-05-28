@@ -11,7 +11,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-
+import 'dayjs/locale/th';
 
 
 
@@ -94,12 +94,9 @@ function AnnouceEdit() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
-                  
-                   
-                  
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         
                         <DatePicker
                         label="วันที่ลงประกาศ"
