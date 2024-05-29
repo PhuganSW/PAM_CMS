@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import firestore from './Firebase/Firestore';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { IoSearchOutline } from "react-icons/io5";
 
 function ProfileManage() {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ function ProfileManage() {
               <div className="search-field">
                 <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
                 <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button className="search-button"></button>
+                <button className="search-button"><IoSearchOutline size={24} /></button>
               </div>
               
               <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>

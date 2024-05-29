@@ -4,6 +4,7 @@ import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
+import { IoSearchOutline } from "react-icons/io5";
 
 function CheckHistory() {
 
@@ -22,7 +23,7 @@ function CheckHistory() {
             <div class="search-field">
                 <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
                 <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button class="search-button"></button>
+                <button class="search-button"><IoSearchOutline size={24} /></button>
               </div>
               
               <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>

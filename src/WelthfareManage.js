@@ -7,35 +7,12 @@ import './addProfile.css'
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
-import 'dayjs/locale/th';
 
 function WelthfareManage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [uid,setUid] = useState('')
   const [name,setName] = useState('');
-  const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
-  const [valuePos,setValuePos] = useState(''); //ค่าประจำตำแน่ง
-  const [costL,setCostL] = useState(''); //ค่าครองชีพ
-  const [food,setFood] = useState(''); //ค่าอาหาร
-  const [ot,setOT] = useState(''); //ค่าล่วงเวลา
-  const [allowance,setAllowance] = useState(''); //เบี้ยเลี้ยง
-  const [salary,setSalary] = useState(''); //ค่าเงินเดือน
-  const [venhicle,setVenhicle] = useState(''); //ค่ายานพาหนะ
-  const [sub,setSub] = useState(''); //เงินอุดหนุน
-  const [welth,setWelth] = useState(''); //ค่าสวัสดิการ
-  const [bonus,setBonus] = useState(''); //เงินโบนัส
-  const [tax,setTax] = useState(''); //หักภาษี
-  const [insurance,setInsurance] = useState(''); //ประกันสังคม
-  const [late,setLate] = useState(''); //เข้างานสาย
-  const [missing,setMissing] = useState(''); //ขาดงาน
-  const [borrow,setBorrow] = useState(''); //เงินกู้ยืม
-  const [withdraw,setWithdraw] = useState(''); //เงินเบิกล่วงหน้า
-  const [amount,setAmount] = useState(''); 
   const [absence,setAbsence] = useState(''); //ลากิจ
   const [sick,setSick] = useState(''); //ลาป่วย
   const [holiday,setHoliday] = useState(''); //ลาพักร้อน
@@ -81,109 +58,61 @@ function WelthfareManage() {
           </header>
           <div className="main">
             <div className="main-contain">
-              <p style={{fontSize:28,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</p>
+              <p style={{fontSize:28,marginLeft:15,marginTop:20}}>ชื่อ - นามสกุล: {name}</p>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
-                        
-                        <DatePicker
-                        label="วันที่"
-                        value={date}
-                        onChange={(newValue) => setDate(newValue)}
-                        />
-                
-                    </LocalizationProvider>
 
                   <TextField
-                    label="ค่าครองชีพ"
+                    label="ลากิจ"
                     variant="filled"
                     style={{width:400,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={costL}
-                    onChange={(e) => setCostL(e.target.value)}
+                    value={absence}
+                    onChange={(e) => setAbsence(e.target.value)}
                   />
                   <TextField
-                    label="ค่าประจำตำแหน่ง"
+                    label="ลาป่วย"
                     variant="filled"
                     style={{width:400,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={valuePos}
-                    onChange={(e) => setValuePos(e.target.value)}
+                    value={sick}
+                    onChange={(e) => setSick(e.target.value)}
                   />
                   <TextField
                     
-                    label="ค่าอาหาร"
+                    label="ลาพักร้อน"
                     variant="filled"
                     style={{width:150}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={food}
-                    onChange={(e) => setFood(e.target.value)}
+                    value={holiday}
+                    onChange={(e) => setHoliday(e.target.value)}
                   >
                   </TextField>
                   
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
                   <TextField
-                    label="ค่าล่วงเวลา"
+                    label="ลาคลอด"
                     variant="filled"
                     style={{width:300,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={ot}
-                    onChange={(e) => setOT(e.target.value)}
+                    value={maternity}
+                    onChange={(e) => setMaternity(e.target.value)}
                   >
                   </TextField>
                   <TextField
-                    label="ค่าเบี้ยเลี้ยง"
+                    label="ลาด้วยสิทธิ์อื่นๆ"
                     variant="filled"
                     style={{width:300,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={allowance}
-                    onChange={(e) => setAllowance(e.target.value)}
+                    value={other}
+                    onChange={(e) => setOther(e.target.value)}
                   />
-                  <TextField
-                    label="ค่าเงินเดือน"
-                    variant="filled"
-                    style={{width:500}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={salary}
-                    onChange={(e) => setSalary(e.target.value)}
-                  />
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                <TextField
-                    label="ค่ายานพาหนะ"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={venhicle}
-                    onChange={(e) => setVenhicle(e.target.value)}
-                  />
-                  <TextField
-                    label="เงินอุดหนุน"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={sub}
-                    onChange={(e) => setSub(e.target.value)}
-                  />
-                  <TextField
-                    label="ค่าสวัสดิการ"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={welth}
-                    onChange={(e) => setWelth(e.target.value)}
-                  >
-                  </TextField>
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>

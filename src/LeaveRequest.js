@@ -9,6 +9,7 @@ import firestore from './Firebase/Firestore';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import { IoSearchOutline } from "react-icons/io5";
 
 function LeaveRequest() {
   const navigate = useNavigate();
@@ -101,7 +102,7 @@ function LeaveRequest() {
             <div class="search-field">
                 <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
                 <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button class="search-button"></button>
+                <button class="search-button"><IoSearchOutline size={24} /></button>
               </div>
               
               <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
