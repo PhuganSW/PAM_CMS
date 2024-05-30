@@ -9,6 +9,7 @@ import firestore from './Firebase/Firestore';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import { IoSearchOutline } from "react-icons/io5";
 
 
 function OTRequest() {
@@ -23,7 +24,10 @@ function OTRequest() {
   const [timeEnd,setTimeEnd] = useState('');
   const [amount,setAmount] = useState('');
   const [detail,setDetail] = useState('');
-  const [status,setStatus] = useState('');
+  const [status,setStatus] = useState();
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -38,6 +42,7 @@ function OTRequest() {
         ots.push({id: item.id,date:item.date, name: item.name,time:item.time, state:item.state});
       });
       setAllOT(ots);
+      setFilteredUsers(ots);
     }
   }
 
@@ -53,10 +58,11 @@ function OTRequest() {
     setTimeEnd(data.timeEnd)
     setAmount(data.amount)
     setDetail(data.detail)
-    if(status){
+  
+    if(data.state){
       setStatus("Allowed")
     }else{
-      setStatus("Not allow")
+      setStatus("Not allowed")
     }
 
     handleShow()
@@ -75,6 +81,13 @@ function OTRequest() {
     firestore.getAllOT(getAllOTSuccess,getAllOTUnsuccess)
   }, []);
 
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearch(event.target.value);
+    setSearchQuery(query);
+    const filtered = allOT.filter(user => user.name.toLowerCase().includes(query));
+    setFilteredUsers(filtered);
+  };
 
 
   return (
@@ -90,9 +103,12 @@ function OTRequest() {
           <div class="main">
             <div class="main-contain">
             <div class="search-field">
-                <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
-                <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button class="search-button"></button>
+                <p style={{marginTop:17}}>ค้นหาพนักงาน</p>
+                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+                placeholder='search..' 
+                value={search}
+                onChange={handleSearch} />
+                {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               
               <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
@@ -111,7 +127,7 @@ function OTRequest() {
                   </thead>
                   <tbody>
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {allOT.map((item, index) => (
+                  {filteredUsers.map((item, index) => (
                     <tr key={item.id} onClick={()=>getOT(item.id)}> 
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row">{index + 1}</th>

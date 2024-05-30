@@ -7,6 +7,7 @@ import PieChart from './PieChart'; // Custom pie chart component
 import ApplicantList from './ApplicantList'; // Applicant list component
 import InterviewSchedule from './InterviewSchedule'; // Interview schedule component*/
 import { PieChart } from '@mui/x-charts/PieChart';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 function Home() {
 
@@ -22,19 +23,29 @@ function Home() {
             {/* Add user profile and logout here */}
           </header>
           <section className="most-applied-positions">
+          <p>จำนวนคนเข้าทำงาน</p>
           <PieChart
-  series={[
-    {
-      data: [
-        { id: 0, value: 10, label: 'series A' },
-        { id: 1, value: 15, label: 'series B' },
-        { id: 2, value: 20, label: 'series C' },
-      ],
-    },
-  ]}
-  width={400}
-  height={200}
-/>
+            series={[
+              {
+                data: [
+                  { value: 10, label: 'เข้างาน' },
+                  {  value: 15, label: 'ลางาน' },
+                  {  value: 20, label: 'เข้าสาย' },
+                ],
+              },
+            ]}
+            width={400}
+            height={200}
+          />
+          </section>
+
+          <section className="statistics">
+            <BarChart
+              xAxis={[{ scaleType: 'band', data: ['group A', 'group B', 'group C'] }]}
+              series={[{ data: [4, 3, 5] }, { data: [1, 6, 3] }, { data: [2, 5, 6] }]}
+              width={500}
+              height={300}
+            />
           </section>
          
         </main>

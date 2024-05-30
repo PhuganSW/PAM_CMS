@@ -5,6 +5,8 @@ import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
+import { IoSearchOutline } from "react-icons/io5";
+
 
 function Welthfare() {
   const navigate = useNavigate();
@@ -12,6 +14,9 @@ function Welthfare() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(5);
   const [selectID, setSelectID] = useState();
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
 
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -21,6 +26,7 @@ function Welthfare() {
         users.push({id: item.id, name: item.name, position: item.position});
       });
       setAllUser(users);
+      setFilteredUsers(users);
     }
   }
 
@@ -46,6 +52,14 @@ function Welthfare() {
     setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearch(event.target.value);
+    setSearchQuery(query);
+    const filtered = allUser.filter(user => user.name.toLowerCase().includes(query));
+    setFilteredUsers(filtered);
+  };
+
   return (
     
       <div className="dashboard">
@@ -59,13 +73,16 @@ function Welthfare() {
           <div class="main">
             <div class="main-contain">
             <div className="search-field">
-                <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
-                <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button className="search-button"></button>
+                <p style={{marginTop:17}}>ค้นหาพนักงาน</p>
+                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+                placeholder='search..' 
+                value={search}
+                onChange={handleSearch} />
+                {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               
       
-              <div style={{width:'95%',alignSelf:'center'}}>
+              <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
               <TableBootstrap striped bordered hover>
                 <thead>
                   <tr>
@@ -77,7 +94,7 @@ function Welthfare() {
                 </thead>
                 <tbody>
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {allUser.map((item, index) => (
+                  {filteredUsers.map((item, index) => (
                     <tr key={item.id} onClick={()=> manageWel(item.id)}>
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row">{index + 1}</th>

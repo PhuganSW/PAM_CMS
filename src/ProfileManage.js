@@ -18,6 +18,9 @@ function ProfileManage() {
   const [endIndex, setEndIndex] = useState(5);
   const [showDel, setShowDel] = useState(false);
   const [selectID, setSelectID] = useState();
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
   
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -27,6 +30,7 @@ function ProfileManage() {
         users.push({id: item.id, name: item.name, position: item.position});
       });
       setAllUser(users);
+      setFilteredUsers(users);
     }
   }
 
@@ -68,6 +72,15 @@ function ProfileManage() {
     setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearch(event.target.value);
+    setSearchQuery(query);
+    const filtered = allUser.filter(user => user.name.toLowerCase().includes(query) || 
+      user.position.toLowerCase().includes(query));
+    setFilteredUsers(filtered);
+  };
+
   return (
     
       <div className="dashboard">
@@ -82,9 +95,12 @@ function ProfileManage() {
             <div className="main-contain">
 
               <div className="search-field">
-                <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
-                <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
-                <button className="search-button"><IoSearchOutline size={24} /></button>
+                <p style={{marginTop:17}}>ค้นหาพนักงาน</p>
+                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+                placeholder='search..' 
+                value={search}
+                onChange={handleSearch} />
+                {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               
               <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
@@ -100,7 +116,7 @@ function ProfileManage() {
                 </thead>
                 <tbody>
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {allUser.map((item, index) => (
+                  {filteredUsers.map((item, index) => (
                     <tr key={item.id}>
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row" style={{width:80}}>{index + 1}</th>

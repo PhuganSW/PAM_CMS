@@ -75,7 +75,7 @@ function AnnouceEdit() {
         
         <main className="main-content">
           <header>
-            <h1>เพิ่มประกาศ</h1>
+            <h1>แก้ไขประกาศ</h1>
             {/* Add user profile and logout here */}
           </header>
           <div className="main">
@@ -133,7 +133,7 @@ function AnnouceEdit() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกขอมูล</button>
+                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
               </div>
 

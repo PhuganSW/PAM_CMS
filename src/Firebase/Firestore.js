@@ -163,7 +163,8 @@ class FireStore{
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        //console.log("Document data:", docSnap.data());
+        console.log("Document data:", docSnap.data());
+        //console.log("g ot: " + docSnap.data())
         success(docSnap.data())
       } else {
         // docSnap.data() will be undefined in this case
@@ -188,6 +189,7 @@ class FireStore{
           state: data.status,
         });
       });
+      
       success(allOT);
     }, (error) => {
       console.error("Error getting documents: ", error);
