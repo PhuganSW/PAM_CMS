@@ -58,8 +58,8 @@ function OTRequest() {
     setTimeEnd(data.timeEnd)
     setAmount(data.amount)
     setDetail(data.detail)
-  
-    if(data.state){
+    
+    if(data.status){
       setStatus("Allowed")
     }else{
       setStatus("Not allowed")

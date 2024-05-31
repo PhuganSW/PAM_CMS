@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useCallback } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -12,6 +12,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
+import './FilePicker.css';
+import { useDropzone } from 'react-dropzone';
+import storage from './Firebase/Storage';
 
 
 
@@ -20,9 +23,12 @@ function AnnouceEdit() {
   const location = useLocation();
   const [title,setTitle] = useState('');
   const [desc,setDesc] = useState('');
-  const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
+  const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
   const [selectID,setSelectID] = useState('');
+
+  const [files, setFiles] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState({});
 
 
   const getAnnouceSuc=(data)=>{
@@ -46,8 +52,9 @@ function AnnouceEdit() {
   }
 
   const onSave=()=>{
-    let date_str = `${("0"+(date.get('date'))).slice(-2)}/${("0"+(date.month()+1)).slice(-2)}/${date.get('year')}`
-    let item={
+   // let date_str = `${("0"+(date.get('date'))).slice(-2)}/${("0"+(date.month()+1)).slice(-2)}/${date.get('year')}`
+   let date_str = date.format('DD/MM/YYYY');
+   let item={
       title:title,
       desc:desc,
       detail:detail,

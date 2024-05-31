@@ -1,0 +1,55 @@
+.file-picker {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .dropzone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 2px dashed #cccccc;
+    border-radius: 5px;
+    background-color: #fafafa;
+    cursor: pointer;
+  }
+  
+  .dropzone p {
+    margin: 0;
+    font-size: 16px;
+    color: #888888;
+  }
+  
+  .file-list {
+    margin-top: 20px;
+  }
+  
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .file-item span {
+    flex-grow: 1;
+  }
+  
+  .file-item button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .file-item button:hover {
+    background-color: darkred;
+  }
+  

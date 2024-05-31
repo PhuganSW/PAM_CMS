@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -12,6 +12,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
+import './FilePicker.css';
+import { useDropzone } from 'react-dropzone';
+import storage from './Firebase/Storage';
 
 
 
@@ -19,8 +22,15 @@ function AnnouceAdd() {
   const navigate = useNavigate();
   const [title,setTitle] = useState('');
   const [desc,setDesc] = useState('');
-  const [date,setDate] = useState(dayjs().format('dd-mm-yyyy'));
+  const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
+
+  const [files, setFiles] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState({});
+
+  const onDrop = useCallback((acceptedFiles) => {
+    setFiles([...files, ...acceptedFiles]);
+  }, [files]);
 
 
   const addAnnouceSuc=()=>{
@@ -31,17 +41,72 @@ function AnnouceAdd() {
     console.log(e)
   }
 
-  const onSave=()=>{
-    let date_str = `${("0"+(date.get('date'))).slice(-2)}/${("0"+(date.month()+1)).slice(-2)}/${date.get('year')}`
-    let item={
+  const handleSave = async () => {
+    
+  };
+
+  const onSave=async()=>{
+    //let date_str = `${("0"+(date.get('date'))).slice(-2)}/${("0"+(date.month()+1)).slice(-2)}/${date.get('year')}`
+    let date_str = date.format('DD/MM/YYYY');
+    const uploadPromises = files.map((file) => {
+      return new Promise((resolve, reject) => {
+        storage.uploadFile(
+          file,
+          (progress) => {
+            setUploadProgress((prevProgress) => ({
+              ...prevProgress,
+              [file.name]: progress,
+            }));
+          },
+          async (downloadURL) => {
+            let item={
+              title:title,
+              desc:desc,
+              detail:detail,
+              date:date_str,
+              file:downloadURL,
+              file_name:file.name
+            }
+            await firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)
+            resolve(downloadURL);
+          },
+          (error) => {
+            console.error('Upload failed:', error);
+            reject(error);
+          }
+        );
+      });
+    });
+
+    try {
+      await Promise.all(uploadPromises);
+      alert('Files uploaded and URLs saved to Firestore');
+      setFiles([]);
+      setUploadProgress({});
+    } catch (error) {
+      console.error('Error uploading files: ', error);
+      alert('Error uploading files');
+    }
+    /*let item={
       title:title,
       desc:desc,
       detail:detail,
       date:date_str,
       file:""
     }
-    firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)
+    firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)*/
   }
+
+  const removeFile = (file) => () => {
+    setFiles(files.filter((f) => f !== file));
+    setUploadProgress((prevProgress) => {
+      const newProgress = { ...prevProgress };
+      delete newProgress[file.name];
+      return newProgress;
+    });
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     
@@ -89,27 +154,46 @@ function AnnouceAdd() {
                     <TextField
                         label="คำอธิบาย"
                         variant="filled"
-                        style={{width:400,marginRight:10,marginLeft:10}}
+                        style={{width:800,marginLeft:10}}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />
                
-                    <TextField
+                    
+                    
+                </div>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <TextField
                         label="รายละเอียด"
                         variant="filled"
+                        multiline
+                        rows={4}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                        style={{width:300,marginRight:10}}
+                        style={{width:'100%',marginRight:10}}
                         value={detail}
                         onChange={(e) => setDetail(e.target.value)}
                     >
                     </TextField>
-                    
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
-                
+                <div className="file-picker">
+                  <div {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <p>Drag and drop some files here, or click to select files</p>
+                  </div>
+                  <div className="file-list">
+                    {files.map((file, index) => (
+                      <div key={index} className="file-item">
+                        <span>{file.name}</span>
+                        <span>{Math.round(uploadProgress[file.name] || 0)}%</span>
+                        <button onClick={removeFile(file)}>Remove</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
