@@ -1,5 +1,5 @@
 import app from "./Config";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 
 class Storage{
     constructor(){
@@ -25,6 +25,18 @@ class Storage{
           }
         );
       }
+
+      deleteFile = async (url) => {
+        if (url) {
+          const storageRef = ref(this.storage, url);
+          try {
+            await deleteObject(storageRef);
+            console.log('File deleted successfully');
+          } catch (error) {
+            console.error('Error deleting file:', error);
+          }
+        }
+      };
 
 }
 

@@ -26,9 +26,17 @@ function AnnouceEdit() {
   const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
   const [selectID,setSelectID] = useState('');
+  const [fileName,setFileName] = useState('');
+  const [fileURL, setFileURL] = useState('');
 
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
+
+  
+  const onDrop = useCallback((acceptedFiles) => {
+    setFiles([...files, ...acceptedFiles]);
+  }, [files]);
+
 
 
   const getAnnouceSuc=(data)=>{
@@ -36,7 +44,8 @@ function AnnouceEdit() {
     setDesc(data.desc)
     setDate(dayjs(data.date,'DD-MM-YYYY'))
     setDetail(data.detail)
-
+    setFileName(data.file_name)
+    setFileURL(data.file)
   }
 
   const getAnnouceUnsuc=(e)=>{
@@ -51,18 +60,54 @@ function AnnouceEdit() {
     console.log(error)
   }
 
-  const onSave=()=>{
+  const deleteFile = async (url) => {
+    storage.deleteFile(url);
+  };
+
+  const onSave=async()=>{
    // let date_str = `${("0"+(date.get('date'))).slice(-2)}/${("0"+(date.month()+1)).slice(-2)}/${date.get('year')}`
    let date_str = date.format('DD/MM/YYYY');
-   let item={
-      title:title,
-      desc:desc,
-      detail:detail,
-      date:date_str,
-      file:""
-    }
-    firestore.updateAnnouce(selectID,item,updateAnnouceSuc,updateAnnouceUnsuc)
+   let item = {
+    title: title,
+    desc: desc,
+    detail: detail,
+    date: date_str,
+    file: fileURL,
+    file_name: fileName,
+  };
+
+  if (files.length > 0) {
+    const file = files[0];
+    await deleteFile(fileURL); // Delete the existing file before uploading the new one
+
+    storage.uploadFile(
+      file,
+      (progress) => {
+        setUploadProgress((prevProgress) => ({
+          ...prevProgress,
+          [file.name]: progress,
+        }));
+      },
+      async (downloadURL) => {
+        item.file = downloadURL;
+        item.file_name = file.name;
+        await firestore.updateAnnouce(selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+      },
+      (error) => {
+        console.error('Upload failed:', error);
+      }
+    );
+  } else {
+    firestore.updateAnnouce(selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
   }
+  }
+
+  const removeExistingFile = async () => {
+    await deleteFile(fileURL);
+    setFileName('');
+    setFileURL('');
+  };
+
 
   useEffect(() => {
     if (location.state && location.state.id) {
@@ -73,6 +118,17 @@ function AnnouceEdit() {
       console.warn('No ID found in location state');
     }
   }, [location.state]);
+
+  const removeFile = (file) => () => {
+    setFiles(files.filter((f) => f !== file));
+    setUploadProgress((prevProgress) => {
+      const newProgress = { ...prevProgress };
+      delete newProgress[file.name];
+      return newProgress;
+    });
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
 
   return (
@@ -136,7 +192,32 @@ function AnnouceEdit() {
                     
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
-                
+                <div className="file-picker">
+                  <div {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <p>Drag and drop some files here, or click to select files</p>
+                  </div>
+                  <div className="file-list">
+                  {files.length > 0 ? (
+                      files.map((file, index) => (
+                        <div key={index} className="file-item">
+                          <span>{file.name}</span>
+                          <span>{Math.round(uploadProgress[file.name] || 0)}%</span>
+                          <button onClick={removeFile(file)}>Remove</button>
+                        </div>
+                      ))
+                    ) : (
+                      fileName && (
+                        <div className="file-item">
+                          <a href={fileURL} target="_blank" rel="noopener noreferrer">
+                            {fileName}
+                          </a>
+                          <button onClick={removeExistingFile}>Remove</button>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>

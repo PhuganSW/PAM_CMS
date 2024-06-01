@@ -77,10 +77,17 @@ function ManageAccount() {
       
     }
 
+    const delSuc =()=>{
+
+    }
+
+    const delUnsuc =(e)=>{
+      console.log(e)
+    }
     
     const Delete =()=>{
-      firestore.deleteAccount(selectID)
-      //auth.deleteUser(selectID)
+      //firestore.deleteAccount(selectID)
+      auth.deleteUser(selectID,delSuc,delUnsuc)
       console.log('Del'+selectID)
       handleDelClose()
     }
