@@ -1,7 +1,7 @@
 //Firestore.js
 import app from "./Config";
 import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, 
-        deleteDoc, updateDoc  } from "firebase/firestore";
+        deleteDoc, updateDoc, orderBy, query  } from "firebase/firestore";
 
 class FireStore{
   constructor(){
@@ -87,7 +87,9 @@ class FireStore{
   }
 
   getAllUser = (success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "users"), (querySnapshot) => {
+    //const unsubscribe = onSnapshot(collection(this.db, "users"),orderBy("name","desc"), (querySnapshot) => {
+      const q = query(collection(this.db, "users"), orderBy('name',"asc"));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const allaccount = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();

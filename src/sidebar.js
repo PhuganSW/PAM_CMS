@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css'; // Your custom CSS file
-import { auth } from './Firebase/Config';
+//import { auth } from './Firebase/Config';
 import { useNavigate } from 'react-router-dom'
+import auth from './Firebase/Auth';
 
 function Sidebar(){
   const navigate = useNavigate();
   const [currentUser,setCurrentUser] = useState('');
 
+  const logOutSuc =()=>{
+    setCurrentUser(null)
+    navigate("/")
+  }
+
   const logout=(e)=>{
     e.preventDefault()
-    auth.signOut().then(response => {
-      setCurrentUser(null)
-      navigate("/")
-    })
+    auth.signOut(logOutSuc)
   }
 
     return(

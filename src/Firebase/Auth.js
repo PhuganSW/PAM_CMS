@@ -1,5 +1,5 @@
 import app from './Config'
-import {getAuth,createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
+import {getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, deleteUser } from "firebase/auth";
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
 class Auth {
@@ -24,6 +24,42 @@ class Auth {
         .catch((error)=>{
           unsuccess(error)
         })
+      }
+
+      signin=async(email,password,success,unsuccess)=>{
+        signInWithEmailAndPassword(this.auth, email, password)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          console.log(user)
+          success(user)
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          unsuccess(errorCode,errorMessage)
+        });
+      }
+
+      checksignin=(suc)=>{
+       // const u = this.auth.currentUser;
+        //console.log(u)
+        onAuthStateChanged(this.auth, (user) => {
+          if(user){
+            console.log(user)
+            suc(user)
+          }
+        })
+      }
+
+      signOut=(success)=>{
+        signOut(this.auth).then(() => {
+          // Sign-out successful.
+          success()
+        }).catch((error) => {
+          // An error happened.
+        });
       }
 
       deleteUser = (uid, success, unsuccess) => {

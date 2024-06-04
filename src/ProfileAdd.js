@@ -72,6 +72,8 @@ function ProfileAdd() {
   const [phone,setPhone] = useState('');
   const [sex,setSex] = useState('');
   const [level,setLevel] = useState('');
+  const [username,setUsername] = useState('');
+  const [password,setPassword] = useState('');
 
   const addUserSuccess=()=>{
     navigate('/profile')
@@ -98,6 +100,8 @@ function ProfileAdd() {
       level:level,
       quote:'',
       image:'',
+      username:username,
+      password:password,
     }
     firestore.addUser(item,addUserSuccess,addUserUnsuccess)
   }
@@ -192,7 +196,7 @@ function ProfileAdd() {
                   />
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
-                <TextField
+                  <TextField
                     label="E-mail"
                     variant="filled"
                     style={{width:300,marginRight:10}}
@@ -226,6 +230,26 @@ function ProfileAdd() {
                       </MenuItem>
                     ))}
                   </TextField>
+                </div>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                  <TextField
+                    label="Username"
+                    variant="filled"
+                    style={{width:300,marginRight:10}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <TextField
+                    label="Password"
+                    variant="filled"
+                    style={{width:300,marginRight:10}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
