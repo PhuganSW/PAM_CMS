@@ -17,12 +17,14 @@ import AnnouceAdd  from './AnnouceAdd';
 import AnnouceEdit from './AnnouceEdit';
 import SalaryCal from './SalaryCal';
 import WelthfareManage from './WelthfareManage';
+import ForgotPass from './ForgotPass';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" Component={Login} />
+        <Route path='/forgot_password' Component={ForgotPass} />
         <Route path="/home" Component={Home} />
         <Route path='/profile' Component={ProfileManage} />
         <Route path='/checkin_history' Component={CheckHistory} />

@@ -23,7 +23,8 @@ function LeaveRequest() {
   const [dateStart,setDateStart] = useState('');
   const [dateEnd,setDateEnd] = useState('');
   const [amount,setAmount] = useState('');
-  const [state1,setState1] = useState('')
+  const [state,setState] = useState('')
+  const [state1,setState1] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
@@ -58,6 +59,7 @@ function LeaveRequest() {
     setDateStart(data.dateStart)
     setDateEnd(data.dateEnd)
     setAmount(data.amount)
+    setState(data.state)
     setState1(data.state1)
     handleShow()
   }
@@ -226,7 +228,16 @@ function LeaveRequest() {
                 value={amount}
               />
             </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>สถานะ(หัวหน้างาน)</Form.Label>
+              <Form.Control
+                type="name"
+                autoFocus
+                value={state}
+              />
+            </Form.Group>
           </Form>
+          
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

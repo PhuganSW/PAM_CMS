@@ -1,5 +1,6 @@
 import app from './Config'
-import {getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, deleteUser } from "firebase/auth";
+import {getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
+        , sendPasswordResetEmail } from "firebase/auth";
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
 class Auth {
@@ -59,6 +60,19 @@ class Auth {
           success()
         }).catch((error) => {
           // An error happened.
+        });
+      }
+
+      resetPassword=(email)=>{
+        sendPasswordResetEmail(this.auth, email)
+        .then(() => {
+          // Password reset email sent!
+          // ..
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
         });
       }
 

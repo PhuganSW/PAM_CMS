@@ -28,8 +28,7 @@ const Login = () => {
 
   // Define the forgotPassword function
   const forgotPassword = () => {
-    // Implement forgot password logic here
-    alert('Forgot password functionality not implemented yet');
+    navigate('/forgot_password')
   };
 
   const suc=(user)=>{
