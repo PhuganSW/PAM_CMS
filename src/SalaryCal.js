@@ -12,6 +12,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import './fonts/THSarabunNew-normal'
+import THSarabunNew from './fonts/THSarabunNew-normal';
+import 'jspdf-autotable';
+import logo from './fonts/logo';
+
 
 function SalaryCal() {
   const navigate = useNavigate();
@@ -63,6 +70,88 @@ function SalaryCal() {
       console.warn('No ID found in location state');
     }
   }, [location.state]);
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+
+    doc.addFileToVFS("THSarabunNew.ttf",THSarabunNew.base64);
+    doc.addFont("THSarabunNew.ttf", "THSarabunNew", "normal");
+    doc.setFont("THSarabunNew");
+
+    // Add title
+    doc.setFontSize(24);
+    doc.text("รายละเอียดเงินเดือน", 14, 22);
+
+    // Add user name and date
+    doc.setFontSize(22);
+    doc.text(`ชื่อ: ${name}`, 14, 30);
+    doc.text(`วันที่: ${date.format('DD/MM/YYYY')}`, 14, 36);
+
+    // Add table headers
+   /* doc.setFontSize(20);
+    doc.text('รายละเอียด', 14, 50);
+    doc.text('จำนวนเงิน', 90, 50);*/
+
+
+    // Add table
+    const tableColumn = ["รายละเอียด", "จำนวนเงิน"];
+    const tableRows = [
+      ["ค่าครองชีพ", costL],
+      ["ค่าประจำตำแหน่ง", valuePos],
+      ["ค่าอาหาร", food],
+      ["ค่าล่วงเวลา", ot],
+      ["ค่าเบี้ยเลี้ยง", allowance],
+      ["ค่าเงินเดือน", salary],
+      ["ค่ายานพาหนะ", venhicle],
+      ["เงินอุดหนุน", sub],
+      ["ค่าสวัสดิการ", welth],
+      ["เงินโบนัส", bonus],
+      ["หักภาษี", tax],
+      ["ประกันสังคม", insurance],
+      ["เข้างานสาย", late],
+      ["ขาดงาน", missing],
+      ["เงินกู้ยืม", borrow],
+      ["เงินเบิกล่วงหน้า", withdraw]
+    ];
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 40,
+      styles: { 
+        font: 'THSarabunNew',
+        fontSize: 18,
+        cellPadding: 3,
+        overflow: 'linebreak',
+        halign: 'left',
+        valign: 'middle',
+        lineWidth: 0.5,
+        lineColor: [0, 0, 0],
+        fillColor: [240, 240, 240], // Light gray background color for the cells
+      },
+      headStyles: {
+        fillColor: [0, 57, 107], // Dark blue background for header
+        textColor: [255, 255, 255], // White text color for header
+        fontSize: 20,
+      },
+      alternateRowStyles: {
+        fillColor: [250, 250, 250] // Alternate row color (lighter gray)
+      },
+      tableLineColor: [0, 0, 0], // Color of table borders
+      tableLineWidth: 0.75,
+    });
+
+    //doc.addImage(logo.base64, 'PNG', 14, 100, 50, 50);
+
+
+    //doc.save(`${name}_salary_details.pdf`);
+    const pdfDataUri = doc.output('dataurlstring');
+
+    // Open the PDF in a new tab
+    const newWindow = window.open();
+    newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
+  }
+
 
   return (
     
@@ -184,6 +273,7 @@ function SalaryCal() {
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/salary_manage')}>ยกเลิก</button>
+                <button style={{ width: 100, height: 50, borderRadius: 10, backgroundColor: '#4CAF50', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>
               </div>
 
             </div>
