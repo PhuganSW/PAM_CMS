@@ -167,21 +167,33 @@ function SalaryCal() {
             <div className="main-contain">
               <p style={{fontSize:28,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</p>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
-                <div style={{ gap: '10px', marginBottom: '20px'}}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
-                        
+                <div style={{display:'flex', gap: '10px', marginBottom: '10px',flexDirection:'row',alignItems:'center'}}>
+                  <p style={{fontSize:24}}>วันออกบิลเงินเดือน</p>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         <DatePicker
                         label="วันที่"
                         value={date}
                         onChange={(newValue) => setDate(newValue)}
                         />
+                  </LocalizationProvider>
+                </div>
+                <p style={{fontSize:24}}>รายได้</p>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
                 
-                    </LocalizationProvider>
-
+                
+                    <TextField
+                    label="เงินเดือนค่าจ้าง"
+                    variant="filled"
+                    style={{width:250,marginRight:10}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={salary}
+                    onChange={(e) => setSalary(e.target.value)}
+                  />
                   <TextField
                     label="ค่าครองชีพ"
                     variant="filled"
-                    style={{width:400,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={costL}
@@ -190,7 +202,7 @@ function SalaryCal() {
                   <TextField
                     label="ค่าประจำตำแหน่ง"
                     variant="filled"
-                    style={{width:400,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={valuePos}
@@ -200,20 +212,19 @@ function SalaryCal() {
                     
                     label="ค่าอาหาร"
                     variant="filled"
-                    style={{width:150}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={food}
                     onChange={(e) => setFood(e.target.value)}
-                  >
-                  </TextField>
-                  
+                  />
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
+                
                   <TextField
                     label="ค่าล่วงเวลา"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={ot}
@@ -223,7 +234,7 @@ function SalaryCal() {
                   <TextField
                     label="ค่าเบี้ยเลี้ยง"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allowance}
@@ -232,42 +243,63 @@ function SalaryCal() {
                   <TextField
                     label="ค่าเงินเดือน"
                     variant="filled"
-                    style={{width:500}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={salary}
                     onChange={(e) => setSalary(e.target.value)}
                   />
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                <TextField
-                    label="ค่ายานพาหนะ"
+                   <TextField
+                    label="ค่าพาหนะ"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={venhicle}
                     onChange={(e) => setVenhicle(e.target.value)}
                   />
+                </div>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
+               
                   <TextField
                     label="เงินอุดหนุน"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sub}
                     onChange={(e) => setSub(e.target.value)}
                   />
                   <TextField
-                    label="ค่าสวัสดิการ"
+                    label="เงินสวัสดิการ"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={welth}
                     onChange={(e) => setWelth(e.target.value)}
-                  >
-                  </TextField>
+                  />
+                 
+                 <TextField
+                    label="เงินโบนัส"
+                    variant="filled"
+                    style={{width:250,marginRight:10}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={welth}
+                    onChange={(e) => setWelth(e.target.value)}
+                  />
+                </div>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                  <p style={{fontSize:22}}>เงินได้สะสม</p>
+                  <TextField
+                    variant="filled"
+                    style={{width:250,marginRight:10}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={welth}
+                    onChange={(e) => setWelth(e.target.value)}
+                  />
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
