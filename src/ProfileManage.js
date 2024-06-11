@@ -10,6 +10,29 @@ import firestore from './Firebase/Firestore';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { IoSearchOutline } from "react-icons/io5";
+import { IoFilterOutline } from "react-icons/io5";
+import { TextField } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import Layout from './Layout';
+
+const positions = [
+  {
+    value: '',
+    label: 'None',
+  },
+  {
+    value: 'SW',
+    label: 'Software Engineer',
+  },
+  {
+    value: 'EE',
+    label: 'Electical Engineer',
+  },
+  {
+    value: 'MEC',
+    label: 'Mechanical',
+  },
+];
 
 function ProfileManage() {
   const navigate = useNavigate();
@@ -21,6 +44,9 @@ function ProfileManage() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
+  const [showFillter,setShowFillter] = useState(false);
+  const [selectFillter,setSelectFillter] = useState('');
+  const [position,setPosition] = useState('');
   
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -37,12 +63,17 @@ function ProfileManage() {
   const getAllUsersUnsuccess=(error)=>{
     console.log("getAllUsers: "+error)
   }
+  
+  const handleFillterClose = () => setShowFillter(false);
+  const handleFilterShow = () => { 
+    setShowFillter(true);
+  }
 
   const handleDelClose = () => setShowDel(false);
-    const handleDelShow = (id) => {
-      setSelectID(id)
-      setShowDel(true);
-    }
+  const handleDelShow = (id) => {
+    setSelectID(id)
+    setShowDel(true);
+  }
 
   const Delete =()=>{
     firestore.deleteUser(selectID)
@@ -81,10 +112,19 @@ function ProfileManage() {
     setFilteredUsers(filtered);
   };
 
+  const handleFillter = () => {
+    const query = position.toLowerCase();
+    //setSearch(event.target.value);
+    setSearchQuery(query);
+    const filtered = allUser.filter(user => user.position.toLowerCase().includes(query) );
+    setFilteredUsers(filtered);
+    setShowFillter(false)
+  };
+
   return (
     
       <div className="dashboard">
-        <Sidebar />
+        <Layout />
         
         <main className="main-content">
           <header>
@@ -102,8 +142,11 @@ function ProfileManage() {
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',width:'100%',height:'100%s'}}>
+                <button style={{width:50,height:50,borderRadius:25,marginRight:10}} onClick={()=>handleFilterShow()}><IoFilterOutline size={20} /></button>
+                <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
+              </div>
               
-              <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
               <div style={{width:'95%',alignSelf:'center'}}>
               <TableBootstrap striped bordered hover>
                 <thead>
@@ -153,6 +196,37 @@ function ProfileManage() {
             OK
           </Button>
           <Button variant="secondary" onClick={handleDelClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFillter} onHide={handleFillterClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>เลือกข้อมูลที่ต้องการกรอง</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <TextField
+                    id="filled-select"
+                    select
+                    label="ตำแหน่ง"
+                    variant="filled"
+                    style={{width:300,marginRight:10}}
+                    value={position}
+                    onChange={(e) => setPosition(e.target.value)}
+                  >
+                    {positions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleFillter}>
+            OK
+          </Button>
+          <Button variant="secondary" onClick={handleFillterClose}>
             Close
           </Button>
         </Modal.Footer>

@@ -95,8 +95,8 @@ function Annouce() {
                   <tr>
                     <th scope="col" style={{width:'10%'}}>ลำดับ</th>
                     <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
-                    <th scope="col" style={{width:'20%'}}>วันที่</th>
-                    <th scope="col"></th>
+                    <th scope="col" style={{width:'15%'}}>วันที่</th>
+                    <th scope="col" style={{width:'35%'}}></th>
                   </tr>
                 </thead>
                 <tbody>

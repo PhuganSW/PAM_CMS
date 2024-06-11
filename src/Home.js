@@ -8,16 +8,18 @@ import ApplicantList from './ApplicantList'; // Applicant list component
 import InterviewSchedule from './InterviewSchedule'; // Interview schedule component*/
 import { PieChart } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
+import Layout from './Layout';
 
 function Home() {
 
   return (
     
       <div className="dashboard">
-       
-        <Sidebar />
+       <Layout />
+        
         
         <main className="main-content">
+        
           <header>
             <h1>Dashboard</h1>
             {/* Add user profile and logout here */}

@@ -4,7 +4,8 @@
   }
   
   .sidebar {
-    flex: 0 0 200px; /* adjust width as needed */
+    /*flex: 0 0 200px; /* adjust width as needed */
+    width: 300px;
     background: #343434; /* dark shade for sidebar */
     color: #ecf0f1; /* light text color for contrast */
     padding: 20px;
@@ -36,7 +37,7 @@
   
   .main-content {
     flex: 1; /* takes up the remaining width */
-    padding: 20px;
+    padding-left: 20px;
     background: #D3D3D3; /* light background for content */
     overflow-y: auto; /* allows scrolling */
   }

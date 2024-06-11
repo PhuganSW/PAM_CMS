@@ -1,0 +1,79 @@
+.layout {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 300px;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+  
+  .sidebar.closed {
+    width: 0;
+    overflow: hidden;
+  }
+  
+  .sidebar-content {
+    background-color: #343434;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+  }
+  
+  .sidebar-content h1 {
+    font-size: 24px;
+  }
+  
+  .sidebar-content p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-content nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-content nav ul li {
+    margin: 10px 0;
+  }
+  
+  .sidebar-content nav ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .sidebar-content .sign-out {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .main-contented {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #f1f1f1;
+    padding-left: 20px;
+  }
+  
+  .toggle-button {
+    background-color: #343434;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .content {
+    margin-top: 20px;
+  }
+  

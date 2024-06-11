@@ -1,47 +1,67 @@
 import React, { useState } from 'react';
-import './Home.css';
+import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import './Layout.css';
+import auth from './Firebase/Auth';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const [currentUser,setCurrentUser] = useState('');
+
+  const logOutSuc =()=>{
+    setCurrentUser(null)
+    navigate("/")
+  }
+
+  const logout=(e)=>{
+    e.preventDefault()
+    auth.signOut(logOutSuc)
+  }
+
   return (
     <div className="layout">
       <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-content">
-          <h1>PAM</h1>
-          <p>Personnel Assistance Manager</p>
+        <div className='head-sidebar'>
+            <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={80} height={80} style={{marginRight:20}} alt="Logo" />
+            <h4>Personnel Assistance Manager</h4>
+          </div>
           <nav>
-            <ul>
-              <li><a href="#">หน้าหลัก</a></li>
-              <li><a href="#">จัดการประวัติพนักงาน</a></li>
-              <li><a href="#">ประวัติการเข้า-ออกงาน</a></li>
-              <li><a href="#">คำขอลางาน</a></li>
-              <li><a href="#">คำขอทำ OT</a></li>
-              <li><a href="#">จัดการสิทธิ์และวันหยุด</a></li>
-              <li><a href="#">ทำเรื่องเงินเดือน</a></li>
-              <li><a href="#">ลงประกาศ</a></li>
-              <li><a href="#">จัดการผู้ใช้</a></li>
-            </ul>
+          <ul>
+            <li><Link to="/home">หน้าหลัก</Link></li>
+            <li><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
+            <li><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
+            <li><Link to="/leave_request">คำขอลางาน</Link></li>
+            <li><Link to="/ot_request">คำขอทำ OT</Link></li>
+            <li><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>
+            <li><Link to="/salary_manage">ทำเรื่องเงินเดือน</Link></li>
+            <li><Link to="/annouce">ลงประกาศ</Link></li>
+            <li><Link to="/manage_account">จัดการผู้ใช้</Link></li>
+            {/* Add other navigation links here */}
+          </ul>
           </nav>
-          <button className="sign-out">Sign Out</button>
+          <div className='logout-button'> 
+            <button onClick={logout}>Sign Out</button>
+          </div>
         </div>
       </div>
-      <div className="main-content">
-        <header className="header">
+      
+        
           <button className="toggle-button" onClick={toggleSidebar}>
             {sidebarOpen ? '☰' : '☰'}
           </button>
-          <h2>คำขอลางาน</h2>
-        </header>
+          
+       
         <div className="content">
           {children}
         </div>
       </div>
-    </div>
+    
   );
 };
 
