@@ -14,11 +14,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Layout from './Layout';
 
 const positions = [
   {
-    value: 'None',
-    label: ' ',
+    value: '',
+    label: 'None',
   },
   {
     value: 'SW',
@@ -124,7 +125,7 @@ function ProfileAdd() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
+        <Layout />
         
         <main className="main-content">
           <header>
@@ -136,7 +137,7 @@ function ProfileAdd() {
               <div className='block_img'>
                 {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center'}}>
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',margin:20}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
                   <TextField
                     label="ชื่อ-นามสกุล"
@@ -181,7 +182,7 @@ function ProfileAdd() {
                     label="ตำแหน่ง"
                     defaultValue="None"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:250,marginRight:10}}
                     value={position}
                     onChange={(e) => setPosition(e.target.value)}
                   >

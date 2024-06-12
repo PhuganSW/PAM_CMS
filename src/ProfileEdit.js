@@ -7,11 +7,12 @@ import './addProfile.css'
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
+import Layout from './Layout';
 
 const positions = [
   {
-    value: 'None',
-    label: ' ',
+    value: '',
+    label: 'None',
   },
   {
     value: 'SW',
@@ -135,7 +136,7 @@ function ProfileEdit() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
+        <Layout />
         
         <main className="main-content">
           <header>
@@ -147,7 +148,7 @@ function ProfileEdit() {
               <div className='block_img'>
                 {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center'}}>
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',margin:20,width:'95%'}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
                   <TextField
                     label="ชื่อ-นามสกุล"
@@ -259,7 +260,7 @@ function ProfileEdit() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>
 

@@ -8,12 +8,14 @@
     display: flex;
     align-self: center;
     background-color: rgba(247, 247, 247, 0.956);
-    width: 95%;
-    height: 100vmax;
+    width: 1100px;
+    height: 100vh;
+    max-width: 95%;
     border-width: 20px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     flex-direction: column;
+    
 }
 .search-field{
     display: flex;
@@ -47,9 +49,60 @@
     border-radius: 5px;
     margin-right: 5px;
     margin-left: 5px;
+    width: 120;
+   
 }   
 .Delete-button{
     background-color: crimson;
     border-radius: 5px;
     margin-left: 5px;
+    width: 120;
+    
 }
+
+@media (max-width: 767px) {
+    .main-content {
+      padding: 10px;
+    }
+  
+    .main-contain {
+      padding: 10px;
+      width: 100%; /* Ensure it uses full width on very small screens */
+    }
+  
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+    }
+  
+    .block_img img {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+    }
+  
+    .Add-button,
+    .Edit-button,
+    .Delete-button {
+     
+      padding: 10px;
+      margin: 10px 0;
+    }
+  
+    button {
+      max-width: 100%;
+    }
+  
+    .main-contain div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .main-contain div div {
+      flex-direction: column;
+      width: 100%;
+      
+    }
+  }

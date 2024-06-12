@@ -26,12 +26,12 @@ function SalaryCal() {
   const [uid,setUid] = useState('')
   const [name,setName] = useState('');
   const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
-  const [valuePos,setValuePos] = useState(''); //ค่าประจำตำแน่ง
+  const [valuePos,setValuePos] = useState(0); //ค่าประจำตำแน่ง
   const [costL,setCostL] = useState(''); //ค่าครองชีพ
   const [food,setFood] = useState(''); //ค่าอาหาร
   const [ot,setOT] = useState(''); //ค่าล่วงเวลา
   const [allowance,setAllowance] = useState(''); //เบี้ยเลี้ยง
-  const [salary,setSalary] = useState(''); //ค่าเงินเดือน
+  const [salary,setSalary] = useState(0); //ค่าเงินเดือน
   const [venhicle,setVenhicle] = useState(''); //ค่ายานพาหนะ
   const [sub,setSub] = useState(''); //เงินอุดหนุน
   const [welth,setWelth] = useState(''); //ค่าสวัสดิการ
@@ -70,6 +70,19 @@ function SalaryCal() {
       console.warn('No ID found in location state');
     }
   }, [location.state]);
+
+  useEffect(() => {
+    calculateTotalAmount();
+  }, [valuePos, costL, food, ot, allowance, salary, venhicle, sub, welth, bonus, tax, insurance, late, missing, borrow, withdraw]);
+
+  const calculateTotalAmount = () => {
+    const total =
+      Number(valuePos) +
+      
+      Number(salary) ;
+
+    setAmount(total);
+  };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
@@ -179,17 +192,6 @@ function SalaryCal() {
                 </div>
                 <p style={{fontSize:24}}>รายได้</p>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
-                
-                
-                    <TextField
-                    label="เงินเดือนค่าจ้าง"
-                    variant="filled"
-                    style={{width:250,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={salary}
-                    onChange={(e) => setSalary(e.target.value)}
-                  />
                   <TextField
                     label="ค่าครองชีพ"
                     variant="filled"
@@ -206,7 +208,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={valuePos}
-                    onChange={(e) => setValuePos(e.target.value)}
+                    onChange={(e) => setValuePos(Number(e.target.value))}
                   />
                   <TextField
                     
@@ -218,9 +220,6 @@ function SalaryCal() {
                     value={food}
                     onChange={(e) => setFood(e.target.value)}
                   />
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                
                   <TextField
                     label="ค่าล่วงเวลา"
                     variant="filled"
@@ -231,6 +230,9 @@ function SalaryCal() {
                     onChange={(e) => setOT(e.target.value)}
                   >
                   </TextField>
+                </div>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                
                   <TextField
                     label="ค่าเบี้ยเลี้ยง"
                     variant="filled"
@@ -247,7 +249,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={salary}
-                    onChange={(e) => setSalary(e.target.value)}
+                    onChange={(e) => setSalary(Number(e.target.value))}
                   />
                    <TextField
                     label="ค่าพาหนะ"
@@ -258,9 +260,6 @@ function SalaryCal() {
                     value={venhicle}
                     onChange={(e) => setVenhicle(e.target.value)}
                   />
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-               
                   <TextField
                     label="เงินอุดหนุน"
                     variant="filled"
@@ -270,6 +269,10 @@ function SalaryCal() {
                     value={sub}
                     onChange={(e) => setSub(e.target.value)}
                   />
+                </div>
+                <div style={{ gap: '10px', marginBottom: '10px'}}>
+               
+                  
                   <TextField
                     label="เงินสวัสดิการ"
                     variant="filled"
@@ -297,14 +300,15 @@ function SalaryCal() {
                     style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={welth}
-                    onChange={(e) => setWelth(e.target.value)}
+                    value={amount}
+                    readOnly
+                    // onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/salary_manage')}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/salary_list',{state:{uid:uid}})}>ยกเลิก</button>
                 <button style={{ width: 100, height: 50, borderRadius: 10, backgroundColor: '#4CAF50', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>
               </div>
 

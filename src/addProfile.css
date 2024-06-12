@@ -27,4 +27,52 @@
     font-size: 18px;
     color: aliceblue;
     background-color: #343434;
+
 }
+
+@media (max-width: 767px) {
+    .main-content {
+      padding: 10px;
+    }
+  
+    .main-contain {
+      padding: 10px;
+      width: 100%;
+    }
+  
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+    }
+  
+    .block_img img {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+    }
+  
+    .Add-button,
+    .Edit-button,
+    .Delete-button {
+      
+      padding: 10px;
+      margin: 10px 0;
+    }
+  
+    button {
+      max-width: 100%;
+    }
+  
+    .main-contain div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .main-contain div div {
+      flex-direction: column;
+      width: 100%;
+      
+    }
+  }

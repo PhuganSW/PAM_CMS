@@ -18,6 +18,7 @@ import AnnouceEdit from './AnnouceEdit';
 import SalaryCal from './SalaryCal';
 import WelthfareManage from './WelthfareManage';
 import ForgotPass from './ForgotPass';
+import SalaryList from './SalaryList';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path='/edit_profile' Component={ProfileEdit} />
         <Route path='/manage_account' Component={ManageAccount} />
         <Route path='/salary_cal' Component={SalaryCal} />
+        <Route path='/salary_list' Component={SalaryList} />
         <Route path='/welthfare_manage' Component={WelthfareManage} />
       </Routes>
     </Router>

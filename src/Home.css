@@ -80,4 +80,53 @@
   /* Additional styling for charts, lists, buttons, etc. */
   
   /* ... */
+
+  @media (min-width: 768px) {
+    .layout {
+      flex-direction: row;
+    }
+  
+    .sidebar {
+      width: 300px;
+    }
+  
+    .main-content {
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .layout {
+      flex-direction: column;
+    }
+  
+    .sidebar {
+      width: 100%;
+    }
+  
+    .sidebar.closed {
+      display: none;
+    }
+  
+    .sidebar-content {
+      height: auto;
+      padding: 10px;
+    }
+  
+    .sidebar-content h1 {
+      font-size: 20px;
+    }
+  
+    .sidebar-content p {
+      font-size: 14px;
+    }
+  
+    .main-content {
+      padding: 10px;
+    }
+  
+    .toggle-button {
+      width: 100%;
+    }
+  }
   

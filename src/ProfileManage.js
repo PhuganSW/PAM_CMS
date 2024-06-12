@@ -142,7 +142,7 @@ function ProfileManage() {
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',width:'100%',height:'100%s'}}>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end'}}>
                 <button style={{width:50,height:50,borderRadius:25,marginRight:10}} onClick={()=>handleFilterShow()}><IoFilterOutline size={20} /></button>
                 <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
               </div>
