@@ -23,11 +23,12 @@ import logo from './fonts/logo';
 function SalaryCal() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [uid,setUid] = useState('')
+  const [id_file,setID_File] = useState('');
+  const [uid,setUid] = useState('');
   const [name,setName] = useState('');
-  const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
+  const [date,setDate] = useState(dayjs(new Date()));
   const [valuePos,setValuePos] = useState(0); //ค่าประจำตำแน่ง
-  const [costL,setCostL] = useState(''); //ค่าครองชีพ
+  const [costL,setCostL] = useState(0); //ค่าครองชีพ
   const [food,setFood] = useState(''); //ค่าอาหาร
   const [ot,setOT] = useState(''); //ค่าล่วงเวลา
   const [allowance,setAllowance] = useState(''); //เบี้ยเลี้ยง
@@ -52,13 +53,35 @@ function SalaryCal() {
     console.log(e)
   }
 
+  const getBillSuc = (data) => {
+    if (data.length > 0) {
+      const billData = data[0]; // Assuming you want the first item
+      setDate(dayjs(billData.date, 'DD-MM-YYYY'));
+      
+    }
+  };
+
+  const getBillUnsuc=()=>{
+
+  }
+
+  const saveSuc=()=>{
+    navigate('/salary_list',{state:{uid:uid}})
+  }
+
+  const saveUnsuc=(e)=>{
+    console.log(e)
+  }
+
   const onSave=()=>{
+    let date_str = date.format('DD/MM/YYYY');
     let item ={
       id:uid,
       name:name,
+      date:date_str,
     }
     console.log('save')
-    
+    firestore.addBill(item,saveSuc,saveUnsuc)
   }
 
   useEffect(() => {
@@ -66,6 +89,10 @@ function SalaryCal() {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
       firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
+      if(location.state.act=="edit"){
+        //console.log("edit "+ location.state.date)
+        firestore.getBill(location.state.uid,location.state.date,getBillSuc,getBillUnsuc)
+      }
     } else {
       console.warn('No ID found in location state');
     }
@@ -299,10 +326,9 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ readOnly: true,style: { color: '#000', backgroundColor: '#fff' } }}
                     value={amount}
-                    readOnly
-                    // onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
               </div>

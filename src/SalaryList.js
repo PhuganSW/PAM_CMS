@@ -25,6 +25,7 @@ function SalaryList() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
+  const [allBill,setAllBill] = useState([])
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -34,8 +35,29 @@ function SalaryList() {
     console.log(e)
   }
 
+  const getAllBillSuc=(doc)=>{
+    let bills = []
+    if (allBill.length === 0) {
+        
+      doc.forEach((item) => {
+        bills.push({id: item.id, uid: item.uid, date: item.date});
+      });
+      setAllBill(bills);
+      
+    }
+  }
+
+  const getAllBillUnsuc=(error)=>{
+    console.log(error)
+  }
+
   const calSalary=(id)=>{
     navigate('/salary_cal',{state:{uid:id}})
+  }
+
+  const toEdit=(date)=>{
+    let act = "edit";
+    navigate('/salary_cal',{state:{uid,date,act:uid,date,act}})
   }
 
   useEffect(() => {
@@ -43,6 +65,7 @@ function SalaryList() {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
       firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getAllBill(location.state.uid,getAllBillSuc,getAllBillUnsuc)
     } else {
       console.warn('No ID found in location state');
     }
@@ -75,7 +98,7 @@ function SalaryList() {
         
         <main className="main-content">
           <header>
-            <h1>ทำเรื่องเงินเดือน</h1>
+            <h1 onClick={()=> navigate('/salary_manage')}>ทำเรื่องเงินเดือน</h1>
             {/* Add user profile and logout here */}
           </header>
           <div class="main">
@@ -98,25 +121,21 @@ function SalaryList() {
                   <tr>
                     <th scope="col">ลำดับ</th>
                     <th scope="col">เดือน</th>
-                    <th scope="col">ตำแหน่ง</th>
-                    <th scope="col"></th>
+                    <th scope="col">actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {/* {filteredUsers.map((item, index) => (
-                    <tr key={item.id} onClick={()=>calSalary(item.id)}>
-                      {/*<th scope="row">{startIndex + index + 1}</th>*
+                  {allBill.map((item, index) => (
+                    <tr key={item.id}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row">{index + 1}</th>
                       <td>
-                        {item.name}
+                        {item.date}
                       </td>
-                      <td>{item.position}</td>
-                      <td style={{width:'20%',textAlign:'center'}}>
-                        
-                      </td>
+                      <td><button className='Edit-button' onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button></td>
                     </tr>
-                  ))} */}
+                  ))}
                 </tbody>
               </TableBootstrap>
               {/*<div>

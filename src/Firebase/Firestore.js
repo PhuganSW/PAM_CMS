@@ -1,7 +1,7 @@
 //Firestore.js
 import app from "./Config";
 import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, 
-        deleteDoc, updateDoc, orderBy, query  } from "firebase/firestore";
+        deleteDoc, updateDoc, orderBy, query, where, getDocs  } from "firebase/firestore";
 
 class FireStore{
   constructor(){
@@ -200,6 +200,71 @@ class FireStore{
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
   };
+
+  addWelth=async(item,success,unsuccess)=>{
+    try{
+      const docRef = await addDoc(collection(this.db, "wealthfare"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  addBill=async(item,success,unsuccess)=>{
+    try{
+      const docRef = await addDoc(collection(this.db, "Salary"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  getBill=async(id,date,success,unsuccess)=>{
+    try {
+      const q = query(
+        collection(this.db, "Salary"),
+        where('id', '==', id),
+        where('date', '==', date)
+      );
+  
+      const querySnapshot = await getDocs(q);
+      const bills = [];
+      querySnapshot.forEach((doc) => {
+        bills.push(doc.data());
+      });
+  
+      if (bills.length > 0) {
+        success(bills);
+      } else {
+        console.log("No such document!");
+        success([]);
+      }
+    } catch (e) {
+      unsuccess(e);
+    }
+  }
+
+  getAllBill=(id,success,unsuccess)=>{
+    const q = query(collection(this.db, "Salary"), where("id", "==", id));
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const allBill = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      allBill.push({
+        id: doc.id,
+        uid: data.id,
+        date: data.date,
+      });
+    });
+    success(allBill);
+  }, (error) => {
+    console.error("Error getting documents: ", error);
+    unsuccess(error);
+  });
+
+  // Return unsubscribe function to stop listening for updates
+  return unsubscribe;
+  }
 
   addAnnouce= async (item,success,unsuccess)=>{
     try{

@@ -27,13 +27,27 @@ function WelthfareManage() {
     console.log(e)
   }
 
+  const addWelthSuc=()=>{
+    navigate('/welthfare')
+  }
+
+  const addWelthUnsuc=()=>{
+
+  }
+
+
   const onSave=()=>{
     let item ={
       id:uid,
       name:name,
+      absence:absence,
+      sick:sick,
+      holiday:holiday,
+      maternity:maternity,
+      other:other
     }
-    console.log('save')
-    
+    //console.log('save')
+    firestore.addWelth(item,addWelthSuc,addWelthUnsuc)
   }
 
   useEffect(() => {

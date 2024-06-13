@@ -17,6 +17,7 @@ function Welthfare() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
+  const [status,setStatus] = useState(false)
 
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -89,7 +90,7 @@ function Welthfare() {
                     <th scope="col">ลำดับ</th>
                     <th scope="col">ชื่อ-สกุล</th>
                     <th scope="col">ตำแหน่ง</th>
-                    <th scope="col"></th>
+                    <th scope="col">actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -103,7 +104,9 @@ function Welthfare() {
                       </td>
                       <td>{item.position}</td>
                       <td style={{width:'20%',textAlign:'center'}}>
-                        
+                        {status && <button>ให้สิทธิ์</button>}
+                        <button>ตรวจสอบ</button>
+                        <button>แก้ไข</button>
                       </td>
                     </tr>
                   ))}
