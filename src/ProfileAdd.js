@@ -15,6 +15,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Layout from './Layout';
+import { sha256 } from 'crypto-hash';
 
 const positions = [
   {
@@ -37,7 +38,7 @@ const positions = [
 
 const sexs = [
   {
-    value: 'None',
+    value: '',
     label: ' ',
   },
   {
@@ -56,7 +57,7 @@ const sexs = [
 
 const Levels = [
   {
-    value: 'None',
+    value: '',
     label: ' ',
   },
   {
@@ -91,8 +92,39 @@ function ProfileAdd() {
     event.preventDefault();
   };
 
-  const addUserSuccess=()=>{
+  const addUsernameSuc=()=>{
     navigate('/profile')
+  }
+
+  const addUsernameUnsuc=(e)=>{
+    console.log(e)
+  }
+
+  const hashPass=async(password)=>{
+    try {
+      const hashedPassword = await sha256(password);
+      console.log("Encrypt pass: " + hashedPassword)
+      return hashedPassword;
+    } catch (error) {
+      console.error('Error hashing password:', error);
+      throw new Error('Hashing failed');
+    }
+  }
+
+  const addUserSuccess=async(id)=>{
+    let pass = await hashPass(password);
+    setPassword(pass)
+    let user={
+      username:username,
+      password:pass,
+      nameth:name,
+      nameEng:nameEng,
+      level:level,
+      email:email,
+      state:false
+    }
+    firestore.addUsername(id,user,addUsernameSuc,addUsernameUnsuc)
+
   }
 
   const addUserUnsuccess=(e)=>{
@@ -116,8 +148,6 @@ function ProfileAdd() {
       level:level,
       quote:'',
       image:'',
-      username:username,
-      password:password,
     }
     firestore.addUser(item,addUserSuccess,addUserUnsuccess)
   }

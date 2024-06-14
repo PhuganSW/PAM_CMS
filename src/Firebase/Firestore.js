@@ -47,6 +47,15 @@ class FireStore{
   addUser= async (item,success,unsuccess)=>{
     try{
       const docRef = await addDoc(collection(this.db, "users"), item);
+      success(docRef.id);
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  addUsername= async (id,item,success,unsuccess)=>{
+    try{
+      const docRef = await setDoc(doc(this.db, "username", id), item);
       success();
     }catch(e){
       unsuccess(e);
@@ -82,8 +91,24 @@ class FireStore{
     }
   }
 
+  updateUsername=async(id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "username", id);
+
+      
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
   deleteUser=async(id)=>{
     await deleteDoc(doc(this.db, "users", id));
+  }
+
+  deleteUsername=async(id)=>{
+    await deleteDoc(doc(this.db, "username", id));
   }
 
   getAllUser = (success, unsuccess) => {

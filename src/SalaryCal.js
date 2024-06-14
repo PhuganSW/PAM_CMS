@@ -316,8 +316,8 @@ function SalaryCal() {
                     style={{width:250,marginRight:10}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={welth}
-                    onChange={(e) => setWelth(e.target.value)}
+                    value={bonus}
+                    onChange={(e) => setBonus(e.target.value)}
                   />
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
