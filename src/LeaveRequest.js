@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline } from "react-icons/io5";
+import Layout from './Layout';
 
 function LeaveRequest() {
   const navigate = useNavigate();
@@ -104,8 +105,8 @@ function LeaveRequest() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>คำขอลางาน</h1>

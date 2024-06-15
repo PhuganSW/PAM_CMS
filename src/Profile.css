@@ -1,6 +1,6 @@
 .main{
     display: flex;
-    height: 100vh;
+    /* height: 100%; */
     justify-content: center;
     flex-direction: column;
 }
@@ -10,6 +10,7 @@
     background-color: rgba(247, 247, 247, 0.956);
     width: 1100px;
     height: 100vh;
+    max-height: 100%;
     max-width: 95%;
     border-width: 20px;
     border-top-left-radius: 20px;
@@ -17,6 +18,11 @@
     flex-direction: column;
     
 }
+
+.header-page{
+  padding-left: 20px;
+}
+
 .search-field{
     display: flex;
     flex-direction: row;
@@ -62,12 +68,16 @@
 
 @media (max-width: 767px) {
     .main-content {
-      padding: 10px;
+      /* padding: 10px; */
+      padding-left: 40px;
+      
     }
   
     .main-contain {
       padding: 10px;
       width: 100%; /* Ensure it uses full width on very small screens */
+      height: auto;
+      /* overflow-y: scroll; */
     }
   
     .header {
@@ -103,6 +113,17 @@
     .main-contain div div {
       flex-direction: column;
       width: 100%;
-      
+      height: auto;
+      /* overflow-y: scroll; */
+    }
+
+    .form-field {
+      width: 100% !important;
+      margin-bottom: 10px;
+    }
+  
+    .form-row {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }

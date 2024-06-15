@@ -37,7 +37,8 @@
   
   .main-content {
     flex: 1; /* takes up the remaining width */
-    padding-left: 20px;
+    padding-left: 40px;
+    width: 100%;
     background: #D3D3D3; /* light background for content */
     overflow-y: auto; /* allows scrolling */
   }
@@ -91,7 +92,7 @@
     }
   
     .main-content {
-      padding: 20px;
+      padding: 40px;
     }
   }
   
@@ -122,7 +123,7 @@
     }
   
     .main-content {
-      padding: 10px;
+      padding: 40px;
     }
   
     .toggle-button {

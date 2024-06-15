@@ -15,6 +15,7 @@ import 'dayjs/locale/th';
 import './FilePicker.css';
 import { useDropzone } from 'react-dropzone';
 import storage from './Firebase/Storage';
+import Layout from './Layout';
 
 
 
@@ -134,8 +135,8 @@ function AnnouceEdit() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>แก้ไขประกาศ</h1>

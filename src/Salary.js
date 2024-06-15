@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
 import { IoSearchOutline } from "react-icons/io5";
-
+import Layout from './Layout';
 
 function Salary() {
   const navigate = useNavigate();
@@ -64,8 +64,8 @@ function Salary() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>ทำเรื่องเงินเดือน</h1>

@@ -77,6 +77,7 @@ function ProfileManage() {
 
   const Delete =()=>{
     firestore.deleteUser(selectID)
+    firestore.deleteUsername(selectID)
     //console.log('Del'+selectID)
     handleDelClose()
   }
@@ -128,7 +129,7 @@ function ProfileManage() {
         
         <main className="main-content">
           <header>
-            <h1>จัดการประวัติพนักงาน</h1>
+            <h1 className='header-page'>จัดการประวัติพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
           <div className="main">
@@ -142,7 +143,7 @@ function ProfileManage() {
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end'}}>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:20}}>
                 <button style={{width:50,height:50,borderRadius:25,marginRight:10}} onClick={()=>handleFilterShow()}><IoFilterOutline size={20} /></button>
                 <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
               </div>

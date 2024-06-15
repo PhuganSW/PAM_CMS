@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline } from "react-icons/io5";
+import Layout from './Layout';
 
 
 function OTRequest() {
@@ -93,8 +94,8 @@ function OTRequest() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>คำขอทำ OT</h1>

@@ -12,6 +12,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import auth from './Firebase/Auth';
 import firestore from './Firebase/Firestore';
+import Layout from './Layout';
 
 
 
@@ -96,8 +97,8 @@ function ManageAccount() {
     return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>จัดการผู้ใช้</h1>

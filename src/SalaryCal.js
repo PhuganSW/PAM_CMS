@@ -18,7 +18,7 @@ import './fonts/THSarabunNew-normal'
 import THSarabunNew from './fonts/THSarabunNew-normal';
 import 'jspdf-autotable';
 import logo from './fonts/logo';
-
+import Layout from './Layout';
 
 function SalaryCal() {
   const navigate = useNavigate();
@@ -196,8 +196,8 @@ function SalaryCal() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>คำนวณเงินเดือน</h1>

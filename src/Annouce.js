@@ -9,6 +9,7 @@ import firestore from './Firebase/Firestore';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { IoSearchOutline } from "react-icons/io5";
+import Layout from './Layout';
 
 function Annouce() {
   const navigate = useNavigate();
@@ -70,8 +71,8 @@ function Annouce() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>ประกาศ</h1>

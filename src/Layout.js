@@ -27,6 +27,10 @@ const Layout = ({ children }) => {
     <div className="layout">
       <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-content">
+        {/* <button className="toggle-button" onClick={toggleSidebar}>
+            {sidebarOpen ? '☰' : '☰'}
+          </button>
+           */}
         <div className='head-sidebar'>
             <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={80} height={80} style={{marginRight:20}} alt="Logo" />
             <h4>Personnel Assistance Manager</h4>

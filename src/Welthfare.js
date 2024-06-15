@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
 import { IoSearchOutline } from "react-icons/io5";
+import Layout from './Layout';
 
 
 function Welthfare() {
@@ -64,8 +65,8 @@ function Welthfare() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>จัดการสิทธิ์และวันหยุด</h1>

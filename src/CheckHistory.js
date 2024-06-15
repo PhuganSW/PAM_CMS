@@ -5,14 +5,15 @@ import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { IoSearchOutline } from "react-icons/io5";
+import Layout from './Layout';
 
 function CheckHistory() {
 
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>ประวัติการเข้า-ออกงาน</h1>

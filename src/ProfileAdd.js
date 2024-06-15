@@ -159,7 +159,7 @@ function ProfileAdd() {
         
         <main className="main-content">
           <header>
-            <h1>เพิ่มประวัติพนักงาน</h1>
+            <h1 className='header-page'>เพิ่มประวัติพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
           <div className="main">
@@ -167,150 +167,157 @@ function ProfileAdd() {
               <div className='block_img'>
                 {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',margin:20}}>
-                <div style={{ gap: '10px', marginBottom: '20px'}}>
-                  <TextField
-                    label="ชื่อ-นามสกุล"
-                    variant="filled"
-                    style={{width:400,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <TextField
-                    label="ชื่อ-นามสกุล ภาษาอังกฤษ"
-                    variant="filled"
-                    style={{width:400,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={nameEng}
-                    onChange={(e) => setNameEng(e.target.value)}
-                  />
-                  <TextField
-                    id="filled-select"
-                    select
-                    label="เพศ"
-                    defaultValue="None"
-                    variant="filled"
-                    style={{width:150}}
-                    value={sex}
-                    onChange={(e) => setSex(e.target.value)}
-                  >
-                    {sexs.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                  <TextField
-                    id="filled-select"
-                    select
-                    label="ตำแหน่ง"
-                    defaultValue="None"
-                    variant="filled"
-                    style={{width:250,marginRight:10}}
-                    value={position}
-                    onChange={(e) => setPosition(e.target.value)}
-                  >
-                    {positions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <TextField
-                    label="วันเข้าทำงาน"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={firstDay}
-                    onChange={(e) => setFirstDay(e.target.value)}
-                  />
-                  <TextField
-                    label="ที่อยู๋"
-                    variant="filled"
-                    style={{width:500}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                  <TextField
-                    label="E-mail"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <TextField
-                    label="เบอร์โทร"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  <TextField
-                    id="filled-select"
-                    select
-                    label="ระดับ"
-                    defaultValue="None"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    value={level}
-                    onChange={(e) => setLevel(e.target.value)}
-                  >
-                    {Levels.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                  <TextField
-                    label="Username"
-                    variant="filled"
-                    style={{width:300,marginRight:10}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <FormControl sx={{ width: 300,backgroundColor:'#fff' }} variant="filled">
-                    <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
-                    <FilledInput
-                      id="filled-adornment-password"
-                      type={showPassword ? 'text' : 'password'}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </FormControl>
-                </div>
+              <div style={{display:'flex',flexDirection:'column',margin:20,alignSelf:'center',width:'95%',}}>
+    
+              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+                <TextField
+                  className="form-field"
+                  label="ชื่อ-นามสกุล"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: 10 }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ชื่อ-นามสกุล ภาษาอังกฤษ"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: 10 }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={nameEng}
+                  onChange={(e) => setNameEng(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  id="filled-select"
+                  select
+                  label="เพศ"
+                  variant="filled"
+                  style={{ width: '20%' }}
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value)}
+                >
+                  {sexs.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </div>
-              <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
+              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+                <TextField
+                  className="form-field"
+                  select
+                  label="ตำแหน่ง"
+                  variant="filled"
+                  style={{ width: '20%', marginRight: 10 }}
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                >
+                  {positions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  className="form-field"
+                  label="วันเข้าทำงาน"
+                  variant="filled"
+                  style={{ width: '25%', marginRight: 10 }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={firstDay}
+                  onChange={(e) => setFirstDay(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ที่อยู๋"
+                  variant="filled"
+                  style={{ width: '50%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+                <TextField
+                  className="form-field"
+                  label="E-mail"
+                  variant="filled"
+                  style={{ width: '30%', marginRight: 10 }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เบอร์โทร"
+                  variant="filled"
+                  style={{ width: '30%', marginRight: 10 }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  id="filled-select"
+                  select
+                  label="ระดับ"
+                  variant="filled"
+                  style={{ width: '20%', marginRight: 10 }}
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                >
+                  {Levels.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
+              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+                <TextField
+                  className="form-field"
+                  label="Username"
+                  variant="filled"
+                  style={{ width: '30%', marginRight: 10 }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <FormControl className="form-field" sx={{ width: '30%', backgroundColor: '#fff' }} variant="filled">
+                  <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+                  <FilledInput
+                    id="filled-adornment-password"
+                    type={showPassword ? 'text' : 'password'}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FormControl>
+              </div>
+            
+              </div>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>

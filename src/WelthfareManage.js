@@ -7,6 +7,7 @@ import './addProfile.css'
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
+import Layout from './Layout';
 
 function WelthfareManage() {
   const navigate = useNavigate();
@@ -63,8 +64,8 @@ function WelthfareManage() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>จัดการสิทธิ์และวันหยุด</h1>

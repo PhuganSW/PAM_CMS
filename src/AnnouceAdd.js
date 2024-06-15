@@ -15,6 +15,7 @@ import 'dayjs/locale/th';
 import './FilePicker.css';
 import { useDropzone } from 'react-dropzone';
 import storage from './Firebase/Storage';
+import Layout from './Layout';
 
 
 
@@ -111,8 +112,8 @@ function AnnouceAdd() {
   return (
     
       <div className="dashboard">
-        <Sidebar />
-        
+        {/* <Sidebar /> */}
+        <Layout />
         <main className="main-content">
           <header>
             <h1>เพิ่มประกาศ</h1>

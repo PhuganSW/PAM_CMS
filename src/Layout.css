@@ -9,7 +9,7 @@
   }
   
   .sidebar.closed {
-    width: 0;
+    width: 0px;
     overflow: hidden;
   }
   
@@ -69,15 +69,19 @@
     background-color: #343434;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 10px;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 5px; /* Move to top-right */
+    
   }
   
   .content {
     margin-top: 20px;
   }
   
-  @media (min-width: 768px) {
+  @media (min-width: 767px) {
     .layout {
       flex-direction: row;
     }
@@ -91,7 +95,7 @@
     }
   }
   
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     .layout {
       flex-direction: column;
     }
@@ -118,11 +122,14 @@
     }
   
     .main-content {
-      padding: 10px;
+      /* padding: 10px; */
+      padding-left: 20px;
     }
   
     .toggle-button {
-      width: 100%;
+      width: 10%;
+      background-color: #34343460;
+      border-radius: 50px;
     }
   }
   
