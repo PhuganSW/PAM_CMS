@@ -26,6 +26,10 @@ const positions = [
     value: 'MEC',
     label: 'Mechanical',
   },
+  {
+    value:'HR',
+    label:'Human Resource'
+  },
 ];
 
 const sexs = [
