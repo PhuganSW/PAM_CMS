@@ -29,20 +29,20 @@ function SalaryCal() {
   const [date,setDate] = useState(dayjs(new Date()));
   const [valuePos,setValuePos] = useState(0); //ค่าประจำตำแน่ง
   const [costL,setCostL] = useState(0); //ค่าครองชีพ
-  const [food,setFood] = useState(''); //ค่าอาหาร
-  const [ot,setOT] = useState(''); //ค่าล่วงเวลา
-  const [allowance,setAllowance] = useState(''); //เบี้ยเลี้ยง
+  const [food,setFood] = useState(0); //ค่าอาหาร
+  const [ot,setOT] = useState(0); //ค่าล่วงเวลา
+  const [allowance,setAllowance] = useState(0); //เบี้ยเลี้ยง
   const [salary,setSalary] = useState(0); //ค่าเงินเดือน
-  const [venhicle,setVenhicle] = useState(''); //ค่ายานพาหนะ
-  const [sub,setSub] = useState(''); //เงินอุดหนุน
-  const [welth,setWelth] = useState(''); //ค่าสวัสดิการ
-  const [bonus,setBonus] = useState(''); //เงินโบนัส
-  const [tax,setTax] = useState(''); //หักภาษี
-  const [insurance,setInsurance] = useState(''); //ประกันสังคม
-  const [late,setLate] = useState(''); //เข้างานสาย
-  const [missing,setMissing] = useState(''); //ขาดงาน
-  const [borrow,setBorrow] = useState(''); //เงินกู้ยืม
-  const [withdraw,setWithdraw] = useState(''); //เงินเบิกล่วงหน้า
+  const [venhicle,setVenhicle] = useState(0); //ค่ายานพาหนะ
+  const [sub,setSub] = useState(0); //เงินอุดหนุน
+  const [welth,setWelth] = useState(0); //ค่าสวัสดิการ
+  const [bonus,setBonus] = useState(0); //เงินโบนัส
+  const [tax,setTax] = useState(0); //หักภาษี
+  const [insurance,setInsurance] = useState(0); //ประกันสังคม
+  const [late,setLate] = useState(0); //เข้างานสาย
+  const [missing,setMissing] = useState(0); //ขาดงาน
+  const [borrow,setBorrow] = useState(0); //เงินกู้ยืม
+  const [withdraw,setWithdraw] = useState(0); //เงินเบิกล่วงหน้า
   const [amount,setAmount] = useState('');
 
   const getUserSuccess=(data)=>{
@@ -79,6 +79,7 @@ function SalaryCal() {
       id:uid,
       name:name,
       date:date_str,
+      amount:amount,
     }
     console.log('save')
     firestore.addBill(item,saveSuc,saveUnsuc)
@@ -105,8 +106,15 @@ function SalaryCal() {
   const calculateTotalAmount = () => {
     const total =
       Number(valuePos) +
-      
-      Number(salary) ;
+      Number(costL)+
+      Number(food)+
+      Number(ot)+
+      Number(allowance)+
+      Number(salary)+
+      Number(venhicle)+
+      Number(sub)+
+      Number(welth)+
+      Number(bonus) ;
 
     setAmount(total);
   };
@@ -226,7 +234,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={costL}
-                    onChange={(e) => setCostL(e.target.value)}
+                    onChange={(e) => setCostL(Number(e.target.value))}
                   />
                   <TextField
                     label="ค่าประจำตำแหน่ง"
@@ -245,7 +253,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={food}
-                    onChange={(e) => setFood(e.target.value)}
+                    onChange={(e) => setFood(Number(e.target.value))}
                   />
                   <TextField
                     label="ค่าล่วงเวลา"
@@ -254,7 +262,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={ot}
-                    onChange={(e) => setOT(e.target.value)}
+                    onChange={(e) => setOT(Number(e.target.value))}
                   >
                   </TextField>
                 </div>
@@ -267,7 +275,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allowance}
-                    onChange={(e) => setAllowance(e.target.value)}
+                    onChange={(e) => setAllowance(Number(e.target.value))}
                   />
                   <TextField
                     label="ค่าเงินเดือน"
@@ -285,8 +293,8 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={venhicle}
-                    onChange={(e) => setVenhicle(e.target.value)}
-                  />
+                    onChange={(e) => setVenhicle(Number(e.target.value))}
+                      />
                   <TextField
                     label="เงินอุดหนุน"
                     variant="filled"
@@ -294,7 +302,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sub}
-                    onChange={(e) => setSub(e.target.value)}
+                    onChange={(e) => setSub(Number(e.target.value))}
                   />
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
@@ -307,7 +315,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={welth}
-                    onChange={(e) => setWelth(e.target.value)}
+                    onChange={(e) => setWelth(Number(e.target.value))}
                   />
                  
                  <TextField
@@ -317,7 +325,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={bonus}
-                    onChange={(e) => setBonus(e.target.value)}
+                    onChange={(e) => setBonus(Number(e.target.value))}
                   />
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>

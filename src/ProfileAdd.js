@@ -151,7 +151,7 @@ function ProfileAdd() {
       sex:sex,
       level:level,
       quote:'',
-      image:'',
+      image:'https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/image-10.png?alt=media&token=db1833a9-afab-4b4f-808c-2fe62c29b4cc',
     }
     firestore.addUser(item,addUserSuccess,addUserUnsuccess)
   }
