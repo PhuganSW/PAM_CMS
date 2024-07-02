@@ -38,7 +38,7 @@ function ProfileManage() {
   const navigate = useNavigate();
   const [allUser,setAllUser] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(5);
+  const [endIndex, setEndIndex] = useState(10);
   const [showDel, setShowDel] = useState(false);
   const [selectID, setSelectID] = useState();
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -95,13 +95,13 @@ function ProfileManage() {
   }, []);
 
   const onNext = () => {
-    setStartIndex(startIndex + 5); // Increment the start index by 5
-    setEndIndex(endIndex + 5); // Increment the end index by 5
+    setStartIndex(startIndex + 10); // Increment the start index by 5
+    setEndIndex(endIndex + 10); // Increment the end index by 5
   };
 
   const onPrevious = () => {
-    setStartIndex(Math.max(startIndex - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
-    setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+    setStartIndex(Math.max(startIndex - 10, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndIndex(Math.max(endIndex - 10, 10)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
   const handleSearch = (event) => {
@@ -160,10 +160,10 @@ function ProfileManage() {
                 </thead>
                 <tbody>
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {filteredUsers.map((item, index) => (
+                  {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                     <tr key={item.id}>
-                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
-                      <th scope="row" style={{width:80}}>{index + 1}</th>
+                      <th scope="row">{startIndex + index + 1}</th>
+                      {/* <th scope="row" style={{width:80}}>{index + 1}</th> */}
                       <td>
                         {item.name}
                       </td>
@@ -176,10 +176,10 @@ function ProfileManage() {
                   ))}
                 </tbody>
               </TableBootstrap>
-              {/*<div>
+              <div>
                 <button onClick={onPrevious}>Previous</button>
                 <button onClick={onNext}>Next</button>
-                </div>*/}
+                </div>
               </div>
 
             </div>

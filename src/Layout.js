@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
           </ul>
           </nav>
           <div className='logout-button'> 
-            <button onClick={logout}>Sign Out</button>
+            <button style={{fontSize:22}} onClick={logout}>Sign Out</button>
           </div>
         </div>
       </div>

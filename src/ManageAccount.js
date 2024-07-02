@@ -27,6 +27,8 @@ function ManageAccount() {
     const [level, setLevel] = useState('');
     const [allaccount, setAllAccount] = useState([]);
     const [selectID, setSelectID] = useState();
+    const [startIndex, setStartIndex] = useState(0);
+    const [endIndex, setEndIndex] = useState(10);
     
     const getallAccountSuccess=(doc)=>{
       let accounts = [];
@@ -94,6 +96,16 @@ function ManageAccount() {
       handleDelClose()
     }
 
+    const onNext = () => {
+      setStartIndex(startIndex + 10); // Increment the start index by 5
+      setEndIndex(endIndex + 10); // Increment the end index by 5
+    };
+  
+    const onPrevious = () => {
+      setStartIndex(Math.max(startIndex - 10, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+      setEndIndex(Math.max(endIndex - 10, 10)); // Decrement the end index by 5, ensuring it doesn't go below 5
+    };
+
     return (
     
       <div className="dashboard">
@@ -128,8 +140,9 @@ function ManageAccount() {
                     </tr>
                   </thead>
                   <tbody>
-                    {allaccount.map((item) =>(
+                    {allaccount.slice(startIndex, endIndex).map((item, index) => (
                       <tr key={item.id}>
+                        {/* <th scope="row">{startIndex + index + 1}</th> */}
                         <td>{item.email}</td>
                         <td>{item.name}</td>
                         <td>
@@ -141,6 +154,10 @@ function ManageAccount() {
                     ))}
                   </tbody> 
                 </TableBootstrap>
+                <div>
+                <button onClick={onPrevious}>Previous</button>
+                <button onClick={onNext}>Next</button>
+                </div>
                 </div>
                 
               </div>

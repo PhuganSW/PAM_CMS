@@ -21,6 +21,8 @@ function Annouce() {
   const [filteredAnnouces, setFilteredAnnouces] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
 
   const getAllAnnouceSuc=(doc)=>{
     let annouces = []
@@ -58,6 +60,16 @@ function Annouce() {
   useEffect(() => {
     firestore.getAllAnnouce(getAllAnnouceSuc,getAllAnnouceUnsuc)
   }, []);
+
+  const onNext = () => {
+    setStartIndex(startIndex + 10); // Increment the start index by 5
+    setEndIndex(endIndex + 10); // Increment the end index by 5
+  };
+
+  const onPrevious = () => {
+    setStartIndex(Math.max(startIndex - 10, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndIndex(Math.max(endIndex - 10, 10)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
 
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
@@ -101,10 +113,10 @@ function Annouce() {
                   </tr>
                 </thead>
                 <tbody>
-                {filteredAnnouces.map((item, index) => (
+                {filteredAnnouces.slice(startIndex, endIndex).map((item, index) => (
                     <tr key={item.id}> 
-                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
-                      <th scope="row">{index + 1}</th>
+                      <th scope="row">{startIndex + index + 1}</th>
+                      {/* <th scope="row">{index + 1}</th> */}
                       <td>
                         {item.title}
                       </td>
@@ -117,6 +129,10 @@ function Annouce() {
                   ))}
                 </tbody>
               </TableBootstrap>
+              <div>
+                <button onClick={onPrevious}>Previous</button>
+                <button onClick={onNext}>Next</button>
+                </div>
               </div>
 
             </div>
