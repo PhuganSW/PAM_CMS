@@ -216,8 +216,9 @@ function SalaryCal() {
               </header>
               </div>
             <div className="main-contain">
-              <p style={{fontSize:28,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</p>
+              
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
+                <p style={{fontSize:28,marginTop:20}}>เงินเดือน: {name}</p>
                 <div style={{display:'flex', gap: '10px', marginBottom: '10px',flexDirection:'row',alignItems:'center'}}>
                   <p style={{fontSize:24}}>วันออกบิลเงินเดือน</p>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
@@ -229,11 +230,12 @@ function SalaryCal() {
                   </LocalizationProvider>
                 </div>
                 <p style={{fontSize:24}}>รายได้</p>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                   <TextField
                     label="ค่าครองชีพ"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={costL}
@@ -241,8 +243,9 @@ function SalaryCal() {
                   />
                   <TextField
                     label="ค่าประจำตำแหน่ง"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={valuePos}
@@ -251,8 +254,9 @@ function SalaryCal() {
                   <TextField
                     
                     label="ค่าอาหาร"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={food}
@@ -260,30 +264,34 @@ function SalaryCal() {
                   />
                   <TextField
                     label="ค่าล่วงเวลา"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={ot}
                     onChange={(e) => setOT(Number(e.target.value))}
                   >
                   </TextField>
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-                
                   <TextField
                     label="ค่าเบี้ยเลี้ยง"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allowance}
                     onChange={(e) => setAllowance(Number(e.target.value))}
                   />
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                
+                  
                   <TextField
                     label="ค่าเงินเดือน"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={salary}
@@ -291,8 +299,9 @@ function SalaryCal() {
                   />
                    <TextField
                     label="ค่าพาหนะ"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={venhicle}
@@ -300,21 +309,19 @@ function SalaryCal() {
                       />
                   <TextField
                     label="เงินอุดหนุน"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sub}
                     onChange={(e) => setSub(Number(e.target.value))}
                   />
-                </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
-               
-                  
                   <TextField
                     label="เงินสวัสดิการ"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={welth}
@@ -323,19 +330,26 @@ function SalaryCal() {
                  
                  <TextField
                     label="เงินโบนัส"
+                    className="form-field"
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    style={{width:'19%',}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={bonus}
                     onChange={(e) => setBonus(Number(e.target.value))}
                   />
                 </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                {/* <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+               
+                  
+                  
+                </div> */}
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
                   <p style={{fontSize:22}}>เงินได้สะสม</p>
                   <TextField
                     variant="filled"
-                    style={{width:250,marginRight:10}}
+                    className="form-field"
+                    style={{width:'100%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ readOnly: true,style: { color: '#000', backgroundColor: '#fff' } }}
                     value={amount}
@@ -343,10 +357,10 @@ function SalaryCal() {
                   />
                 </div>
               </div>
-              <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/salary_list',{state:{uid:uid}})}>ยกเลิก</button>
-                <button style={{ width: 100, height: 50, borderRadius: 10, backgroundColor: '#4CAF50', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/salary_list',{state:{uid:uid}})}>ยกเลิก</button>
+                <button style={{ width: 100, height: 50, borderRadius: 5, backgroundColor: '#026440', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>
               </div>
 
             </div>

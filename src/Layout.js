@@ -24,6 +24,10 @@ const Layout = ({ children }) => {
     auth.signOut(logOutSuc)
   }
 
+  const isActive = (path) => {
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <div className="layout">
       <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
@@ -38,17 +42,16 @@ const Layout = ({ children }) => {
           </div>
           <nav>
           <ul>
-          <li className={location.pathname === "/home" ? "active" : ""}><Link to="/home">Dashboard</Link></li>
-              <li className={location.pathname === "/profile" ? "active" : ""}><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
-              <li className={location.pathname === "/checkin_history" ? "active" : ""}><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
-              <li className={location.pathname === "/leave_request" ? "active" : ""}><Link to="/leave_request">คำขอลางาน</Link></li>
-              <li className={location.pathname === "/ot_request" ? "active" : ""}><Link to="/ot_request">คำขอทำ OT</Link></li>
-              <li className={location.pathname === "/welthfare" ? "active" : ""}><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>
-              <li className={location.pathname === "/salary_manage" ? "active" : ""}><Link to="/salary_manage">ทำเรื่องเงินเดือน</Link></li>
-              <li className={location.pathname === "/annouce" ? "active" : ""}><Link to="/annouce">ลงประกาศ</Link></li>
-              <li className={location.pathname === "/manage_account" ? "active" : ""}><Link to="/manage_account">จัดการผู้ใช้</Link></li>
-            {/* Add other navigation links here */}
-          </ul>
+              <li className={isActive("/home") ? "active" : ""}><Link to="/home">Dashboard</Link></li>
+              <li className={isActive("/profile") ? "active" : ""}><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
+              <li className={isActive("/checkin_history") ? "active" : ""}><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
+              <li className={isActive("/leave_request") ? "active" : ""}><Link to="/leave_request">คำขอลางาน</Link></li>
+              <li className={isActive("/ot_request") ? "active" : ""}><Link to="/ot_request">คำขอทำ OT</Link></li>
+              <li className={isActive("/welthfare") ? "active" : ""}><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>
+              <li className={isActive("/salary_manage") ? "active" : ""}><Link to="/salary_manage">ทำเรื่องเงินเดือน</Link></li>
+              <li className={isActive("/annouce") ? "active" : ""}><Link to="/annouce">ลงประกาศ</Link></li>
+              <li className={isActive("/manage_account") ? "active" : ""}><Link to="/manage_account">จัดการผู้ใช้</Link></li>
+            </ul>
           </nav>
           <div className='logout-button'> 
             <button style={{fontSize:22}} onClick={logout}>Sign Out</button>

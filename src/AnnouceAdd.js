@@ -124,15 +124,16 @@ function AnnouceAdd() {
               </header>
             </div>
             <div className="main-contain">
-              {/* <div className='block_img'>
-                <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />
-              </div> */}
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',marginTop:20}}>
-                <div style={{ gap: '10px', marginBottom: '20px'}}>
+              <div className='block_img'>
+                {/* <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" /> */}
+              </div>
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
+                <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                   <TextField
                     label="หัวข้อ"
+                    className="form-field"
                     variant="filled"
-                    style={{width:'100%',marginRight:10}}
+                    style={{width:'100%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={title}
@@ -142,11 +143,24 @@ function AnnouceAdd() {
                    
                   
                 </div>
-                <div style={{ gap: '10px', marginBottom: '20px'}}>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         
                         <DatePicker
                         label="วันที่ลงประกาศ"
+                        className="form-field"
+                        sx={{
+                          width: '30%',
+                          '& .MuiInputBase-root': {
+                            backgroundColor: '#fff',
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: '#000',
+                          },
+                          '& .MuiSvgIcon-root': {
+                            color: '#000',
+                          },marginRight:'1%'
+                        }}
                         value={dayjs(date, 'dd/mm/yy')}
                         onChange={(newValue) => setDate(newValue)}
                         renderInput={(params) => <TextField {...params} />}
@@ -157,8 +171,9 @@ function AnnouceAdd() {
 
                     <TextField
                         label="คำอธิบาย"
+                        className="form-field"
                         variant="filled"
-                        style={{width:800,marginLeft:10}}
+                        style={{width:'69%'}}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                         value={desc}
@@ -168,21 +183,22 @@ function AnnouceAdd() {
                     
                     
                 </div>
-                <div style={{ gap: '10px', marginBottom: '20px'}}>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
                         label="รายละเอียด"
+                        className="form-field"
                         variant="filled"
                         multiline
                         rows={4}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                        style={{width:'100%',marginRight:10}}
+                        style={{width:'100%'}}
                         value={detail}
                         onChange={(e) => setDetail(e.target.value)}
                     >
                     </TextField>
                 </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <div className="file-picker">
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
@@ -200,7 +216,7 @@ function AnnouceAdd() {
                 </div>
                 </div>
               </div>
-              <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
               </div>
