@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link, useNavigate, useLocation } from 'react-router-dom';
 import './Layout.css';
 import auth from './Firebase/Auth';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -37,15 +38,15 @@ const Layout = ({ children }) => {
           </div>
           <nav>
           <ul>
-            <li><Link to="/home">หน้าหลัก</Link></li>
-            <li><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
-            <li><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
-            <li><Link to="/leave_request">คำขอลางาน</Link></li>
-            <li><Link to="/ot_request">คำขอทำ OT</Link></li>
-            <li><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>
-            <li><Link to="/salary_manage">ทำเรื่องเงินเดือน</Link></li>
-            <li><Link to="/annouce">ลงประกาศ</Link></li>
-            <li><Link to="/manage_account">จัดการผู้ใช้</Link></li>
+          <li className={location.pathname === "/home" ? "active" : ""}><Link to="/home">Dashboard</Link></li>
+              <li className={location.pathname === "/profile" ? "active" : ""}><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
+              <li className={location.pathname === "/checkin_history" ? "active" : ""}><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
+              <li className={location.pathname === "/leave_request" ? "active" : ""}><Link to="/leave_request">คำขอลางาน</Link></li>
+              <li className={location.pathname === "/ot_request" ? "active" : ""}><Link to="/ot_request">คำขอทำ OT</Link></li>
+              <li className={location.pathname === "/welthfare" ? "active" : ""}><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>
+              <li className={location.pathname === "/salary_manage" ? "active" : ""}><Link to="/salary_manage">ทำเรื่องเงินเดือน</Link></li>
+              <li className={location.pathname === "/annouce" ? "active" : ""}><Link to="/annouce">ลงประกาศ</Link></li>
+              <li className={location.pathname === "/manage_account" ? "active" : ""}><Link to="/manage_account">จัดการผู้ใช้</Link></li>
             {/* Add other navigation links here */}
           </ul>
           </nav>

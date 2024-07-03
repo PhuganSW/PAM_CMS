@@ -7,6 +7,7 @@ import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
+import './Profile.css'
 
 
 function Welthfare() {
@@ -69,15 +70,18 @@ function Welthfare() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>จัดการสิทธิ์และวันหยุด</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div class="main">
+          <div className='header-page'>
+            <header>
+              <h1>จัดการสิทธิ์และวันหยุด</h1>
+              {/* Add user profile and logout here */}
+            </header>
+            </div>
             <div class="main-contain">
             <div className="search-field">
-                <p style={{marginTop:17}}>ค้นหาพนักงาน</p>
-                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+                {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
@@ -86,7 +90,7 @@ function Welthfare() {
               
       
               <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
-              <TableBootstrap striped bordered hover>
+              <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
                     <th scope="col">ลำดับ</th>
@@ -105,18 +109,18 @@ function Welthfare() {
                         {item.name}
                       </td>
                       <td>{item.position}</td>
-                      <td style={{width:'20%',textAlign:'center'}}>
+                      <td style={{width:'30%',textAlign:'center'}}>
                         {status && <button>ให้สิทธิ์</button>}
-                        <button>ตรวจสอบ</button>
-                        <button>แก้ไข</button>
+                        <button className='verify-wel'>ตรวจสอบ</button>
+                        <button className='Edit-button'>แก้ไข</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </TableBootstrap>
               <div>
-                <button onClick={onPrevious}>Previous</button>
-                <button onClick={onNext}>Next</button>
+              <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
               </div>
             </div>

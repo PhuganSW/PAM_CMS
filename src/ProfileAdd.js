@@ -16,6 +16,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Layout from './Layout';
 import { sha256 } from 'crypto-hash';
+import { validateDate } from '@mui/x-date-pickers/internals';
+import { Label } from '@mui/icons-material';
 
 const positions = [
   {
@@ -67,6 +69,10 @@ const Levels = [
   {
     value: 'employee',
     label: 'Employee',
+  },
+  {
+    value: 'Lead',
+    label: 'Leader'
   },
   {
     value: 'HR',
@@ -162,23 +168,26 @@ function ProfileAdd() {
         <Layout />
         
         <main className="main-content">
-          <header>
-            <h1 className='header-page'>เพิ่มประวัติพนักงาน</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>เพิ่มประวัติพนักงาน</h1>
+                {/* Add user profile and logout here */}
+              </header>
+            </div>
             <div className="main-contain">
               <div className='block_img'>
                 {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
-              <div style={{display:'flex',flexDirection:'column',margin:20,alignSelf:'center',width:'95%',}}>
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
     
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
                   className="form-field"
                   label="ชื่อ-นามสกุล"
                   variant="filled"
-                  style={{ width: '35%', marginRight: 10 }}
+                  style={{ width: '35%',marginRight:'1%'}}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={name}
@@ -188,7 +197,7 @@ function ProfileAdd() {
                   className="form-field"
                   label="ชื่อ-นามสกุล ภาษาอังกฤษ"
                   variant="filled"
-                  style={{ width: '35%', marginRight: 10 }}
+                  style={{ width: '35%',marginRight:'1%'}}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={nameEng}
@@ -200,7 +209,7 @@ function ProfileAdd() {
                   select
                   label="เพศ"
                   variant="filled"
-                  style={{ width: '20%' }}
+                  style={{ width: '28%' }}
                   value={sex}
                   onChange={(e) => setSex(e.target.value)}
                 >
@@ -211,13 +220,23 @@ function ProfileAdd() {
                   ))}
                 </TextField>
               </div>
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
+                <TextField
+                  className="form-field"
+                  label="ที่อยู๋"
+                  variant="filled"
+                  style={{ width: '71%',marginRight:'1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
                 <TextField
                   className="form-field"
                   select
                   label="ตำแหน่ง"
                   variant="filled"
-                  style={{ width: '20%', marginRight: 10 }}
+                  style={{ width: '28%'}}
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                 >
@@ -227,33 +246,14 @@ function ProfileAdd() {
                     </MenuItem>
                   ))}
                 </TextField>
-                <TextField
-                  className="form-field"
-                  label="วันเข้าทำงาน"
-                  variant="filled"
-                  style={{ width: '25%', marginRight: 10 }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={firstDay}
-                  onChange={(e) => setFirstDay(e.target.value)}
-                />
-                <TextField
-                  className="form-field"
-                  label="ที่อยู๋"
-                  variant="filled"
-                  style={{ width: '50%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
+                
               </div>
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
                 <TextField
                   className="form-field"
                   label="E-mail"
                   variant="filled"
-                  style={{ width: '30%', marginRight: 10 }}
+                  style={{ width: '35%', marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={email}
@@ -263,7 +263,7 @@ function ProfileAdd() {
                   className="form-field"
                   label="เบอร์โทร"
                   variant="filled"
-                  style={{ width: '30%', marginRight: 10 }}
+                  style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={phone}
@@ -271,33 +271,28 @@ function ProfileAdd() {
                 />
                 <TextField
                   className="form-field"
-                  id="filled-select"
-                  select
-                  label="ระดับ"
+                  label="วันเข้าทำงาน"
                   variant="filled"
-                  style={{ width: '20%', marginRight: 10 }}
-                  value={level}
-                  onChange={(e) => setLevel(e.target.value)}
-                >
-                  {Levels.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={firstDay}
+                  onChange={(e) => setFirstDay(e.target.value)}
+                />
+                
               </div>
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
                 <TextField
                   className="form-field"
                   label="Username"
                   variant="filled"
-                  style={{ width: '30%', marginRight: 10 }}
+                  style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
-                <FormControl className="form-field" sx={{ width: '30%', backgroundColor: '#fff' }} variant="filled">
+                <FormControl className="form-field" sx={{ width: '35%', backgroundColor: '#fff',marginRight:'1%' }} variant="filled">
                   <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
                   <FilledInput
                     id="filled-adornment-password"
@@ -318,12 +313,28 @@ function ProfileAdd() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </FormControl>
+                <TextField
+                  className="form-field"
+                  id="filled-select"
+                  select
+                  label="ระดับ"
+                  variant="filled"
+                  style={{ width: '28%'}}
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                >
+                  {Levels.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </div>
             
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
-              <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>
 
             </div>

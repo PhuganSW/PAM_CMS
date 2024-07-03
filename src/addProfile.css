@@ -19,12 +19,11 @@
 .addAccount-button{
     width: 120px;
     height: 50px;
-    border-radius: 60px;
+    border-radius: 5px;
     align-self: self-end;
     margin-right: 30px;
-    margin-bottom: 15px;
-    margin-top: 50px;
-    font-size: 18px;
+    margin-top: 20px;
+    font-size: px;
     color: aliceblue;
     background-color: #343434;
 

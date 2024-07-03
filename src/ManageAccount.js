@@ -112,24 +112,29 @@ function ManageAccount() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>จัดการผู้ใช้</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div class="main">
+            <div className='header-page'>
+            <header>
+              <h1>จัดการผู้ใช้</h1>
+              {/* Add user profile and logout here */}
+            </header>
+            </div>
             <div class="main-contain">
             {/*<div class="search-field">
                 <p style={{marginTop:10}}>ค้นหาพนักงาน</p>
                 <input style={{width:'40%',margin:5,height:30,borderRadius:20,paddingInlineStart:10,fontSize:18}} />
                 <button class="search-button"></button>
     </div>*/}
+              
+        
               <button className='addAccount-button' onClick={handleShow}>เพิ่มผู้ใช้</button>
               
-              <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
+              
                 
-                <div style={{width:'95%'}}>
+                <div style={{width:'95%',alignSelf:'center'}}>
                 
-                <TableBootstrap striped bordered hover style={{marginTop:20}}>
+                <TableBootstrap striped bordered hover className='table' style={{marginTop:20}} >
                   <thead>
                     <tr>
                       <th scope="col">Email</th>
@@ -155,13 +160,12 @@ function ManageAccount() {
                   </tbody> 
                 </TableBootstrap>
                 <div>
-                <button onClick={onPrevious}>Previous</button>
-                <button onClick={onNext}>Next</button>
+                <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
                 </div>
                 
-              </div>
-
+              
             </div>
           </div>
         </main>
@@ -220,12 +224,13 @@ function ManageAccount() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={onSave}>
+        <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={onSave}>
             Save Changes
           </Button>
+          <Button variant="secondary" style={{backgroundColor:'#343434',width:'20%'}} onClick={handleClose}>
+            Close
+          </Button>
+          
         </Modal.Footer>
       </Modal>
       <Modal show={showDel} onHide={handleDelClose}>
@@ -236,10 +241,10 @@ function ManageAccount() {
           <h5>ยืนยันจะลบบัญชีผู้ใช้หรือไม่</h5>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={Delete}>
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={Delete}>
             OK
           </Button>
-          <Button variant="secondary" onClick={handleDelClose}>
+          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleDelClose}>
             Close
           </Button>
         </Modal.Footer>

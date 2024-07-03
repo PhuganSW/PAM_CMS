@@ -138,16 +138,19 @@ function AnnouceEdit() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>แก้ไขประกาศ</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>แก้ไขประกาศ</h1>
+                {/* Add user profile and logout here */}
+              </header>
+            </div>
             <div className="main-contain">
-              <div className='block_img'>
-                {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
-              </div>
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center'}}>
+              {/* <div className='block_img'>
+                <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />
+              </div> */}
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',marginTop:20}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
                   <TextField
                     label="หัวข้อ"
@@ -158,14 +161,19 @@ function AnnouceEdit() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
+                  
+                   
+                  
                 </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <div style={{ gap: '10px', marginBottom: '20px'}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         
                         <DatePicker
                         label="วันที่ลงประกาศ"
-                        value={date}
+                        value={dayjs(date, 'dd/mm/yy')}
                         onChange={(newValue) => setDate(newValue)}
+                        renderInput={(params) => <TextField {...params} />}
+                        inputFormat="dd/MM/YYYY"
                         />
                 
                     </LocalizationProvider>
@@ -173,30 +181,35 @@ function AnnouceEdit() {
                     <TextField
                         label="คำอธิบาย"
                         variant="filled"
-                        style={{width:400,marginRight:10,marginLeft:10}}
+                        style={{width:800,marginLeft:10}}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />
                
-                    <TextField
+                    
+                    
+                </div>
+                <div style={{ gap: '10px', marginBottom: '20px'}}>
+                <TextField
                         label="รายละเอียด"
                         variant="filled"
+                        multiline
+                        rows={4}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                        style={{width:300,marginRight:10}}
+                        style={{width:'100%',marginRight:10}}
                         value={detail}
                         onChange={(e) => setDetail(e.target.value)}
                     >
                     </TextField>
-                    
                 </div>
                 <div style={{ gap: '10px', marginBottom: '10px'}}>
                 <div className="file-picker">
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
-                    <p>Drag and drop some files here, or click to select files</p>
+                    <p style={{fontSize:22}}>Drag and drop some files here, or click to select files</p>
                   </div>
                   <div className="file-list">
                   {files.length > 0 ? (
@@ -222,8 +235,8 @@ function AnnouceEdit() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
+              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
               </div>
 
             </div>

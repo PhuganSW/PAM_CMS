@@ -18,6 +18,7 @@ function WelthfareManage() {
   const [sick,setSick] = useState(''); //ลาป่วย
   const [holiday,setHoliday] = useState(''); //ลาพักร้อน
   const [maternity,setMaternity] = useState(''); //ลาคลอด
+  const [kama,setKama] = useState('') //ลาบวช
   const [other,setOther] = useState(''); //ลาสิทธิ์อื่น
 
   const getUserSuccess=(data)=>{
@@ -67,20 +68,24 @@ function WelthfareManage() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>จัดการสิทธิ์และวันหยุด</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>จัดการสิทธิ์และวันหยุด</h1>
+                {/* Add user profile and logout here */}
+              </header>
+            </div>
             <div className="main-contain">
               <p style={{fontSize:28,marginLeft:15,marginTop:20}}>ชื่อ - นามสกุล: {name}</p>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
-                <div style={{ gap: '10px', marginBottom: '20px'}}>
+                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
 
                   <TextField
                     label="ลากิจ"
+                    className="form-field"
                     variant="filled"
-                    style={{width:400,marginRight:10}}
+                    style={{width:'33%',marginRight:'0.5%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={absence}
@@ -88,8 +93,9 @@ function WelthfareManage() {
                   />
                   <TextField
                     label="ลาป่วย"
+                    className="form-field"
                     variant="filled"
-                    style={{width:400,marginRight:10}}
+                    style={{width:'33%',marginRight:'0.5%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sick}
@@ -98,8 +104,9 @@ function WelthfareManage() {
                   <TextField
                     
                     label="ลาพักร้อน"
+                    className="form-field"
                     variant="filled"
-                    style={{width:150}}
+                    style={{width:'33%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={holiday}
@@ -108,11 +115,12 @@ function WelthfareManage() {
                   </TextField>
                   
                 </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
                   <TextField
                     label="ลาคลอด"
+                    className="form-field"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:'33%',marginRight:'0.5%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={maternity}
@@ -120,9 +128,21 @@ function WelthfareManage() {
                   >
                   </TextField>
                   <TextField
-                    label="ลาด้วยสิทธิ์อื่นๆ"
+                    label="ลาบวช"
+                    className="form-field"
                     variant="filled"
-                    style={{width:300,marginRight:10}}
+                    style={{width:'33%',marginRight:'0.5%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={maternity}
+                    onChange={(e) => setKama(e.target.value)}
+                  >
+                  </TextField>
+                  <TextField
+                    label="ลาด้วยสิทธิ์อื่นๆ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'33%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={other}
@@ -130,9 +150,9 @@ function WelthfareManage() {
                   />
                 </div>
               </div>
-              <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/welthfare')}>ยกเลิก</button>
+              <div style={{display:'flex', flexDirection:'row',justifyContent:'center',width:'100%'}}>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/welthfare')}>ยกเลิก</button>
               </div>
 
             </div>

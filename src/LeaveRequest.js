@@ -120,26 +120,29 @@ function LeaveRequest() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
+          
+          <div class="main">
+          <div className='header-page'>
           <header>
             <h1>คำขอลางาน</h1>
             {/* Add user profile and logout here */}
           </header>
-          <div class="main">
+          </div>
             <div class="main-contain">
-            <div class="search-field">
-                <p style={{marginTop:17}}>ค้นหาพนักงาน</p>
-                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+            <div className="search-field">
+                {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               
-              <div style={{display:'flex',width:'95%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
+              
                 
-                <div style={{width:'95%'}}>
+                <div style={{width:'95%',alignSelf:'center'}}>
                 
-                <TableBootstrap striped bordered hover style={{marginTop:20}}>
+                <TableBootstrap striped bordered hover className='table' style={{marginTop:20}}>
                   <thead>
                     <tr>
                       <th scope="col">ลำดับ</th>
@@ -168,12 +171,12 @@ function LeaveRequest() {
                 </tbody>
                 </TableBootstrap>
                 <div>
-                <button onClick={onPrevious}>Previous</button>
-                <button onClick={onNext}>Next</button>
+                <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
                 </div>
                 
-              </div>
+              
 
             </div>
           </div>
@@ -257,11 +260,11 @@ function LeaveRequest() {
           
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Deny
-          </Button>
-          <Button variant="primary" style={{backgroundColor:'#50C878'}} onClick={onAllow}>
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={onAllow}>
             Allow
+          </Button>
+          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>
+            Deny
           </Button>
         </Modal.Footer>
       </Modal>

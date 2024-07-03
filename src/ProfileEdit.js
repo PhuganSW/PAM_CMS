@@ -53,12 +53,16 @@ const sexs = [
 
 const Levels = [
   {
-    value: 'None',
+    value: '',
     label: ' ',
   },
   {
     value: 'employee',
     label: 'Employee',
+  },
+  {
+    value: 'Lead',
+    label: 'Leader'
   },
   {
     value: 'HR',
@@ -143,23 +147,26 @@ function ProfileEdit() {
         <Layout />
         
         <main className="main-content">
-          <header>
-            <h1>แก้ไขประวัติพนักงาน</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>แก้ไขประวัติพนักงาน</h1>
+                {/* Add user profile and logout here */}
+              </header>
+            </div>
             <div className="main-contain">
               <div className='block_img'>
                 {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
               </div>
-              <div style={{display:'flex',flexDirection:'column',margin:20,alignSelf:'center',width:'95%',}}>
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
     
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
                   className="form-field"
                   label="ชื่อ-นามสกุล"
                   variant="filled"
-                  style={{ width: '35%', marginRight: 10 }}
+                  style={{ width: '35%',marginRight:'1%'}}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={name}
@@ -169,7 +176,7 @@ function ProfileEdit() {
                   className="form-field"
                   label="ชื่อ-นามสกุล ภาษาอังกฤษ"
                   variant="filled"
-                  style={{ width: '35%', marginRight: 10 }}
+                  style={{ width: '35%',marginRight:'1%'}}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={nameEng}
@@ -181,7 +188,7 @@ function ProfileEdit() {
                   select
                   label="เพศ"
                   variant="filled"
-                  style={{ width: '20%' }}
+                  style={{ width: '28%' }}
                   value={sex}
                   onChange={(e) => setSex(e.target.value)}
                 >
@@ -192,13 +199,23 @@ function ProfileEdit() {
                   ))}
                 </TextField>
               </div>
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
+                <TextField
+                  className="form-field"
+                  label="ที่อยู๋"
+                  variant="filled"
+                  style={{ width: '71%',marginRight:'1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
                 <TextField
                   className="form-field"
                   select
                   label="ตำแหน่ง"
                   variant="filled"
-                  style={{ width: '20%', marginRight: 10 }}
+                  style={{ width: '28%'}}
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                 >
@@ -208,33 +225,14 @@ function ProfileEdit() {
                     </MenuItem>
                   ))}
                 </TextField>
-                <TextField
-                  className="form-field"
-                  label="วันเข้าทำงาน"
-                  variant="filled"
-                  style={{ width: '25%', marginRight: 10 }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={firstDay}
-                  onChange={(e) => setFirstDay(e.target.value)}
-                />
-                <TextField
-                  className="form-field"
-                  label="ที่อยู๋"
-                  variant="filled"
-                  style={{ width: '50%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
+                
               </div>
-              <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
                 <TextField
                   className="form-field"
                   label="E-mail"
                   variant="filled"
-                  style={{ width: '30%', marginRight: 10 }}
+                  style={{ width: '35%', marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={email}
@@ -244,7 +242,7 @@ function ProfileEdit() {
                   className="form-field"
                   label="เบอร์โทร"
                   variant="filled"
-                  style={{ width: '30%', marginRight: 10 }}
+                  style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={phone}
@@ -252,33 +250,28 @@ function ProfileEdit() {
                 />
                 <TextField
                   className="form-field"
-                  id="filled-select"
-                  select
-                  label="ระดับ"
+                  label="วันเข้าทำงาน"
                   variant="filled"
-                  style={{ width: '20%', marginRight: 10 }}
-                  value={level}
-                  onChange={(e) => setLevel(e.target.value)}
-                >
-                  {Levels.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={firstDay}
+                  onChange={(e) => setFirstDay(e.target.value)}
+                />
+                
               </div>
-              {/* <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '20px', width: '100%' }}>
-                <TextField
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+                {/* <TextField
                   className="form-field"
                   label="Username"
                   variant="filled"
-                  style={{ width: '30%', marginRight: 10 }}
+                  style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
-                <FormControl className="form-field" sx={{ width: '30%', backgroundColor: '#fff' }} variant="filled">
+                <FormControl className="form-field" sx={{ width: '35%', backgroundColor: '#fff',marginRight:'1%' }} variant="filled">
                   <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
                   <FilledInput
                     id="filled-adornment-password"
@@ -298,13 +291,29 @@ function ProfileEdit() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                </FormControl>
-              </div> */}
+                </FormControl> */}
+                <TextField
+                  className="form-field"
+                  id="filled-select"
+                  select
+                  label="ระดับ"
+                  variant="filled"
+                  style={{ width: '35%'}}
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                >
+                  {Levels.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
             
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-                <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+                <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>
 
             </div>

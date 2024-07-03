@@ -1,6 +1,7 @@
 import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login';
 import Home from './Home';
 import ProfileManage from './ProfileManage';
@@ -19,29 +20,58 @@ import SalaryCal from './SalaryCal';
 import WelthfareManage from './WelthfareManage';
 import ForgotPass from './ForgotPass';
 import SalaryList from './SalaryList';
+import { auth } from './Firebase/Config';
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      setCurrentUser(user);
+      setLoading(false); // Stop loading when auth state is determined
+    });
+    return unsubscribe;
+  }, []);
+
+  // if (loading) {
+  //   return <div>Loading...</div>; // Show loading indicator while checking auth state
+  // }
+
   return (
     <Router>
       <Routes>
-        <Route path="/" Component={Login} />
+        {/* <Route path="/" element={currentUser ? <Navigate to="/home" /> : <Login />} />
+        <Route path="/home" element={currentUser ? <Home /> : <Navigate to="/" />} />
+        <Route path="/profile" element={currentUser ? <ProfileManage /> : <Navigate to="/" />} />
+        <Route path="/checkin_history" element={currentUser ? <CheckHistory /> : <Navigate to="/" />} />
+        <Route path="/leave_request" element={currentUser ? <LeaveRequest /> : <Navigate to="/" />} />
+        <Route path="/ot_request" element={currentUser ? <OTRequest /> : <Navigate to="/" />} />
+        <Route path="/welthfare_manage" element={currentUser ? <Welthfare /> : <Navigate to="/" />} />
+        <Route path="/salary_manage" element={currentUser ? <Salary /> : <Navigate to="/" />} />
+        <Route path="/annouce" element={currentUser ? <Annouce /> : <Navigate to="/" />} />
+        <Route path="/add_profile" element={currentUser ? <ProfileAdd /> : <Navigate to="/" />} />
+        <Route path="/edit_profile" element={currentUser ? <ProfileEdit /> : <Navigate to="/" />} />
+        <Route path="/manage_account" element={currentUser ? <ManageAccount /> : <Navigate to="/" />} /> */}
+
+        <Route path="/" element={currentUser ? <Navigate to="/home" /> : <Login />} />
         <Route path='/forgot_password' Component={ForgotPass} />
-        <Route path="/home" Component={Home} />
-        <Route path='/profile' Component={ProfileManage} />
-        <Route path='/checkin_history' Component={CheckHistory} />
-        <Route path='/leave_request' Component={LeaveRequest} />
-        <Route path='/ot_request' Component={OTRequest} />
-        <Route path='/welthfare' Component={Welthfare} />
-        <Route path='/salary_manage' Component={Salary}/>
-        <Route path='/annouce' Component={Annouce} />
-        <Route path='/add_annouce' Component={AnnouceAdd} />
-        <Route path='/edit_annouce' Component={AnnouceEdit} />
-        <Route path='/add_profile' Component={ProfileAdd} />
-        <Route path='/edit_profile' Component={ProfileEdit} />
-        <Route path='/manage_account' Component={ManageAccount} />
-        <Route path='/salary_cal' Component={SalaryCal} />
-        <Route path='/salary_list' Component={SalaryList} />
-        <Route path='/welthfare_manage' Component={WelthfareManage} />
+        <Route path="/home" element={currentUser ? <Home /> : <Navigate to="/" />} />
+        <Route path='/profile' element={currentUser ? <ProfileManage /> : <Navigate to="/" />} />
+        <Route path='/checkin_history' element={currentUser ? <CheckHistory /> : <Navigate to="/" />} />
+        <Route path='/leave_request' element={currentUser ? <LeaveRequest /> : <Navigate to="/" />} />
+        <Route path='/ot_request' element={currentUser ? <OTRequest /> : <Navigate to="/" />} />
+        <Route path='/welthfare' element={currentUser ? <Welthfare /> : <Navigate to="/" />} />
+        <Route path='/salary_manage' element={currentUser ? <Salary /> : <Navigate to="/" />}/>
+        <Route path='/annouce' element={currentUser ? <Annouce /> : <Navigate to="/" />} />
+        <Route path='/add_annouce' element={currentUser ? <AnnouceAdd /> : <Navigate to="/" />} />
+        <Route path='/edit_annouce' element={currentUser ? <AnnouceEdit /> : <Navigate to="/" />} />
+        <Route path='/add_profile' element={currentUser ? <ProfileAdd /> : <Navigate to="/" />} />
+        <Route path='/edit_profile' element={currentUser ? <ProfileEdit /> : <Navigate to="/" />} />
+        <Route path='/manage_account' element={currentUser ? <ManageAccount /> : <Navigate to="/" />} />
+        <Route path='/salary_cal' element={currentUser ? <SalaryCal /> : <Navigate to="/" />} />
+        <Route path='/salary_list' element={currentUser ? <SalaryList /> : <Navigate to="/" />} />
+        <Route path='/welthfare_manage' element={currentUser ? <WelthfareManage /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );

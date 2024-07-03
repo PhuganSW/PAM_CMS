@@ -98,15 +98,18 @@ function SalaryList() {
         <Layout />
         
         <main className="main-content">
-          <header>
-            <h1 onClick={()=> navigate('/salary_manage')}>ทำเรื่องเงินเดือน</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div class="main">
+            <div className='header-page'>
+            <header>
+              <h1>ทำเรื่องเงินเดือน</h1>
+              {/* Add user profile and logout here */}
+            </header>
+            </div>
             <div class="main-contain">
-                <p style={{fontSize:28,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</p>
+                <h4 style={{fontSize:36,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</h4>
             <div className="search-field">
-                <button onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
+                <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
             {/* <p style={{marginTop:17}}>ค้นหา</p>
                 <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
                 placeholder='search..' 
@@ -117,7 +120,7 @@ function SalaryList() {
               
       
               <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
-              <TableBootstrap striped bordered hover>
+              <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
                     <th scope="col">ลำดับ</th>

@@ -207,11 +207,14 @@ function SalaryCal() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>คำนวณเงินเดือน</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>คำนวณเงินเดือน</h1>
+                {/* Add user profile and logout here */}
+              </header>
+              </div>
             <div className="main-contain">
               <p style={{fontSize:28,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</p>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>

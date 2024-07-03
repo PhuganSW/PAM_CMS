@@ -128,28 +128,31 @@ function ProfileManage() {
         <Layout />
         
         <main className="main-content">
+          
+          <div className="main">
+          <div className='header-page'>
           <header>
-            <h1 className='header-page'>จัดการประวัติพนักงาน</h1>
+            <h1 >จัดการประวัติพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
-          <div className="main">
+          </div>
             <div className="main-contain">
 
               <div className="search-field">
-                <p style={{marginTop:17}}>ค้นหาพนักงาน</p>
-                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+                {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:20}}>
-                <button style={{width:50,height:50,borderRadius:25,marginRight:10}} onClick={()=>handleFilterShow()}><IoFilterOutline size={20} /></button>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10}}>
+                <button className='fillter-button' onClick={()=>handleFilterShow()}><IoFilterOutline size={20} /></button>
                 <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
               </div>
               
               <div style={{width:'95%',alignSelf:'center'}}>
-              <TableBootstrap striped bordered hover>
+              <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
                     <th scope="col">ลำดับ</th>
@@ -177,8 +180,8 @@ function ProfileManage() {
                 </tbody>
               </TableBootstrap>
               <div>
-                <button onClick={onPrevious}>Previous</button>
-                <button onClick={onNext}>Next</button>
+                <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
               </div>
 
@@ -193,10 +196,10 @@ function ProfileManage() {
           <h5>ยืนยันจะลบข้อมูลพนักงานหรือไม่</h5>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={Delete}>
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={Delete}>
             OK
           </Button>
-          <Button variant="secondary" onClick={handleDelClose}>
+          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleDelClose}>
             Close
           </Button>
         </Modal.Footer>
@@ -224,10 +227,10 @@ function ProfileManage() {
                   </TextField>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleFillter}>
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={handleFillter}>
             OK
           </Button>
-          <Button variant="secondary" onClick={handleFillterClose}>
+          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleFillterClose}>
             Close
           </Button>
         </Modal.Footer>

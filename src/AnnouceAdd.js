@@ -115,16 +115,19 @@ function AnnouceAdd() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>เพิ่มประกาศ</h1>
-            {/* Add user profile and logout here */}
-          </header>
+          
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>เพิ่มประกาศ</h1>
+                {/* Add user profile and logout here */}
+              </header>
+            </div>
             <div className="main-contain">
-              <div className='block_img'>
-                {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
-              </div>
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center'}}>
+              {/* <div className='block_img'>
+                <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />
+              </div> */}
+              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',marginTop:20}}>
                 <div style={{ gap: '10px', marginBottom: '20px'}}>
                   <TextField
                     label="หัวข้อ"
@@ -139,7 +142,7 @@ function AnnouceAdd() {
                    
                   
                 </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <div style={{ gap: '10px', marginBottom: '20px'}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         
                         <DatePicker
@@ -165,7 +168,7 @@ function AnnouceAdd() {
                     
                     
                 </div>
-                <div style={{ gap: '10px', marginBottom: '10px'}}>
+                <div style={{ gap: '10px', marginBottom: '20px'}}>
                 <TextField
                         label="รายละเอียด"
                         variant="filled"
@@ -183,7 +186,7 @@ function AnnouceAdd() {
                 <div className="file-picker">
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
-                    <p>Drag and drop some files here, or click to select files</p>
+                    <p style={{fontSize:22}}>Drag and drop some files here, or click to select files</p>
                   </div>
                   <div className="file-list">
                     {files.map((file, index) => (
@@ -198,8 +201,8 @@ function AnnouceAdd() {
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
-              <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:10,backgroundColor:'#ff6666',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
+              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
               </div>
 
             </div>

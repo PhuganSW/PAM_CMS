@@ -86,24 +86,28 @@ function Annouce() {
         {/* <Sidebar /> */}
         <Layout />
         <main className="main-content">
-          <header>
-            <h1>ประกาศ</h1>
-            {/* Add user profile and logout here */}
-          </header>
+         
           <div className="main">
+            <div className='header-page'>
+              <header>
+                <h1>ประกาศ</h1>
+                {/* Add user profile and logout here */}
+              </header>
+            </div>
             <div className="main-contain">
             <div className="search-field">
-                <p style={{marginTop:17}}>ค้นหาประกาศ</p>
-                <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
+                {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              
-              <button className='Add-button' onClick={()=> navigate('/add_annouce')}>เพิ่มประกาศ</button>
-              <div style={{width:'90%',alignSelf:'center'}}>
-              <TableBootstrap striped bordered hover>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10}}>
+                <button className='Add-button' onClick={()=> navigate('/add_annouce')}>เพิ่มประกาศ</button>
+              </div>
+              <div style={{width:'95%',alignSelf:'center'}}>
+              <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
                     <th scope="col" style={{width:'10%'}}>ลำดับ</th>
@@ -130,8 +134,8 @@ function Annouce() {
                 </tbody>
               </TableBootstrap>
               <div>
-                <button onClick={onPrevious}>Previous</button>
-                <button onClick={onNext}>Next</button>
+              <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
               </div>
 
@@ -145,10 +149,10 @@ function Annouce() {
           <h5>ยืนยันจะลบประกาศหรือไม่</h5>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={deleteAnnouce}>
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={deleteAnnouce}>
             OK
           </Button>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>

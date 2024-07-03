@@ -58,6 +58,18 @@ body {
     color: white;
     text-decoration: none;
     font-size: 22px;
+    transition: background 0.3s ease;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+  }
+
+  .sidebar-content nav ul li a:hover {
+    background: #a39e9ef8;
+  }
+  
+  .sidebar-content nav ul li.active a {
+    background: #a39e9ef8; /* slightly lighter shade for active link */
   }
   
   .sidebar-content .sign-out {
@@ -109,7 +121,7 @@ body {
     }
   
     .main-content {
-      padding: 20px;
+      padding: 40px;
     }
   }
   
@@ -130,7 +142,7 @@ body {
   
     .sidebar-content {
       height: 100vh; /* Ensure the sidebar takes full viewport height */
-      padding: 10px;
+      padding: 40px;
     }
   
     .sidebar-content h1 {
