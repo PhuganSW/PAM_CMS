@@ -62,12 +62,12 @@ function App() {
         <Route path='/leave_request' element={currentUser ? <LeaveRequest /> : <Navigate to="/" />} />
         <Route path='/ot_request' element={currentUser ? <OTRequest /> : <Navigate to="/" />} />
         <Route path='/welthfare' element={currentUser ? <Welthfare /> : <Navigate to="/" />} />
-        <Route path='/salary_manage' element={currentUser ? <Salary /> : <Navigate to="/" />}/>
+        <Route path='/salary' element={currentUser ? <Salary /> : <Navigate to="/" />}/>
         <Route path='/annouce' element={currentUser ? <Annouce /> : <Navigate to="/" />} />
-        <Route path='/add_annouce' element={currentUser ? <AnnouceAdd /> : <Navigate to="/" />} />
-        <Route path='/edit_annouce' element={currentUser ? <AnnouceEdit /> : <Navigate to="/" />} />
-        <Route path='/add_profile' element={currentUser ? <ProfileAdd /> : <Navigate to="/" />} />
-        <Route path='/edit_profile' element={currentUser ? <ProfileEdit /> : <Navigate to="/" />} />
+        <Route path='/annouce_add' element={currentUser ? <AnnouceAdd /> : <Navigate to="/" />} />
+        <Route path='/annouce_edit' element={currentUser ? <AnnouceEdit /> : <Navigate to="/" />} />
+        <Route path='/profile_add' element={currentUser ? <ProfileAdd /> : <Navigate to="/" />} />
+        <Route path='/profile_edit' element={currentUser ? <ProfileEdit /> : <Navigate to="/" />} />
         <Route path='/manage_account' element={currentUser ? <ManageAccount /> : <Navigate to="/" />} />
         <Route path='/salary_cal' element={currentUser ? <SalaryCal /> : <Navigate to="/" />} />
         <Route path='/salary_list' element={currentUser ? <SalaryList /> : <Navigate to="/" />} />

@@ -83,11 +83,11 @@ function ProfileManage() {
   }
 
   const onAdd =()=>{
-    navigate('/add_profile');
+    navigate('/profile_add');
   }
 
   const onEdit =(id)=>{
-    navigate('/edit_profile',{state:{uid:id}})
+    navigate('/profile_edit',{state:{uid:id}})
   }
 
   useEffect(() => {

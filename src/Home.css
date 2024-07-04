@@ -97,7 +97,7 @@ body {
     padding: 5px;
     border: none;
     border-radius: 5px;
-    background-color: #ff4b4b;
+    background-color: #601616;
     color: #fff;
     
     cursor: pointer;
@@ -105,7 +105,7 @@ body {
   }
   
   .logout-button button:hover {
-    background-color: #ff2c2c;
+    background-color: #60161699;
   }
   /* Additional styling for charts, lists, buttons, etc. */
   

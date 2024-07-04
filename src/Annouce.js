@@ -53,7 +53,7 @@ function Annouce() {
   }
 
   const editAnnouce =(id)=>{
-    navigate('/edit_annouce',{state:{id:id}})
+    navigate('/annouce_edit',{state:{id:id}})
   }
 
 
@@ -104,7 +104,7 @@ function Annouce() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10}}>
-                <button className='Add-button' onClick={()=> navigate('/add_annouce')}>เพิ่มประกาศ</button>
+                <button className='Add-button' onClick={()=> navigate('/annouce_add')}>เพิ่มประกาศ</button>
               </div>
               <div style={{width:'95%',alignSelf:'center'}}>
               <TableBootstrap striped bordered hover className='table'>
