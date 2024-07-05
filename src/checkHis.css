@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'THSarabunNew';
+    src: url('./fonts/THSarabunNew.ttf') format('truetype');
+  }
+  
+  body {
+    font-family: 'THSarabunNew', sans-serif;
+  }
+.table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .table-section {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .table-title {
+    font-size: 26px;
+    text-align: center;
+    font-family: 'THSarabunNew', sans-serif;
+  }
+  
+  /* Media queries for responsiveness */
+  @media (min-width: 768px) {
+    .table-container {
+      flex-direction: row;
+      justify-content: space-around;
+    }
+  
+    .table-section {
+      width: 45%;
+    }
+  }
+  
+  /* Additional styles for small screens */
+  @media (max-width: 767px) {
+    .table-section {
+      width: 90%;
+    }
+  
+    .table-title {
+      font-size: 26px;
+      font-family: 'THSarabunNew', sans-serif;
+    }
+  }

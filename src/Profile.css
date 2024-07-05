@@ -46,13 +46,14 @@
     border-radius: 25px;
     align-items: center;
     justify-content: center;
+    align-self: center;
 }
 .Add-button{
     width: 120px;
     height: 50px;
     border-radius: 5px;
     align-self: self-end;
-    margin-right: 30px;
+    
     margin-bottom: 15px;
     font-size: 22px;
     color: aliceblue;
@@ -115,6 +116,7 @@ color: #FFF;
 .table {
   border-radius: 10px;
   overflow: hidden;
+  
 }
 
 .table thead th {
@@ -162,8 +164,9 @@ color: #FFF;
     }
   
     .Add-button{
-      padding: 10px;
-      margin: 10px 0;
+      padding: 0px;
+      margin: 0px 0;
+         
     }
 
     .fillter-button{

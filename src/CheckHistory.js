@@ -7,6 +7,7 @@ import TableBootstrap from "react-bootstrap/Table";
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
 import './Profile.css';
+import './checkHis.css'
 
 function CheckHistory() {
 
@@ -47,10 +48,10 @@ function CheckHistory() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               
-              <div style={{display:'flex',width:'100%',alignSelf:'center',flexDirection:'row',justifyContent: 'space-around'}}>
+              <div className="table-container">
                 
-                <div style={{width:'45%'}}>
-                <p style={{fontSize:24}}>เวลาเข้างาน</p>
+                <div className="table-section">
+                <p className="table-title">เวลาเข้างาน</p>
                 <TableBootstrap striped bordered hover className='table' style={{marginTop:10}}>
                   <thead>
                     <tr>
@@ -74,8 +75,8 @@ function CheckHistory() {
                 </TableBootstrap>
                 </div>
                 
-                <div style={{width:'45%'}}>
-                <p style={{fontSize:24}}>เวลาออกงาน</p>
+                <div className="table-section">
+                <p className="table-title">เวลาออกงาน</p>
                 <TableBootstrap striped bordered hover style={{marginTop:10}}>
                   <thead>
                     <tr>

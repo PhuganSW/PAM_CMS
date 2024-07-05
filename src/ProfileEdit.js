@@ -311,7 +311,7 @@ function ProfileEdit() {
               </div>
             
               </div>
-              <div style={{display:'flex',justifyContent:'center',width:'100%'}}>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
               </div>

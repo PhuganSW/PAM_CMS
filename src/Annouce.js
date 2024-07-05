@@ -103,7 +103,7 @@ function Annouce() {
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10}}>
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
                 <button className='Add-button' onClick={()=> navigate('/annouce_add')}>เพิ่มประกาศ</button>
               </div>
               <div style={{width:'95%',alignSelf:'center'}}>

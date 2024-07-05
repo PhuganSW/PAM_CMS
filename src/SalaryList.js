@@ -109,7 +109,7 @@ function SalaryList() {
             <div class="main-contain">
                 <h4 style={{fontSize:36,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</h4>
             <div className="search-field">
-                <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
+                {/* <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button> */}
             {/* <p style={{marginTop:17}}>ค้นหา</p>
                 <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
                 placeholder='search..' 
@@ -117,9 +117,12 @@ function SalaryList() {
                 onChange={handleSearch} /> */}
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              
+              <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
+              <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
+              </div>
       
               <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
+              
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>

@@ -137,7 +137,7 @@ function OTRequest() {
                       <th scope="col">ลำดับ</th>
                       <th scope="col">วันที่</th>
                       <th scope="col">ชื่อ-สกุล</th>
-                      <th scope="col">เวลา</th>
+                      {/* <th scope="col">เวลา</th> */}
                       <th scope='col'>สถานะ</th>
                     </tr>
                   </thead>
@@ -151,7 +151,7 @@ function OTRequest() {
                         {item.date}
                       </td>
                       <td>{item.name}</td>
-                      <td>{item.time}</td>
+                      {/* <td>{item.time}</td> */}
                       {item.state ? (
                         <td>allowed</td>
                       ) : (

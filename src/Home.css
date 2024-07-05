@@ -81,6 +81,7 @@ body {
     border-radius: 6px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.766);
     width: 48%;
+    height: 300px;
     font-size: 24px;
     font-family: 'THSarabunNew', sans-serif;
     margin-bottom: 20px;
@@ -162,6 +163,7 @@ body {
 
     .chart-container {
       width: 100%; /* Make charts full width on small screens */
+      
     }
   }
   
