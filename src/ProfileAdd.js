@@ -61,24 +61,24 @@ const sexs = [
   },
 ];
 
-const Levels = [
-  {
-    value: '',
-    label: ' ',
-  },
-  {
-    value: 'employee',
-    label: 'Employee',
-  },
-  {
-    value: 'Lead',
-    label: 'Leader'
-  },
-  {
-    value: 'HR',
-    label: 'HR',
-  },
-];
+// const Levels = [
+//   {
+//     value: '',
+//     label: ' ',
+//   },
+//   {
+//     value: 'employee',
+//     label: 'Employee',
+//   },
+//   {
+//     value: 'Lead',
+//     label: 'Leader'
+//   },
+//   {
+//     value: 'HR',
+//     label: 'HR',
+//   },
+// ];
 
 function ProfileAdd() {
   const navigate = useNavigate();
@@ -95,6 +95,25 @@ function ProfileAdd() {
   const [password,setPassword] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const Levels = [
+    {
+      value: '',
+      label: ' ',
+    },
+    {
+      value: 'employee',
+      label: 'Employee',
+    },
+    {
+      value: 'Lead',
+      label: 'Leader'
+    },
+    {
+      value: 'HR',
+      label: 'HR',
+    },
+  ];
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -223,7 +242,7 @@ function ProfileAdd() {
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
                 <TextField
                   className="form-field"
-                  label="ที่อยู๋"
+                  label="ที่อยู๋ปัจจุบัน"
                   variant="filled"
                   style={{ width: '71%',marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
@@ -247,6 +266,28 @@ function ProfileAdd() {
                   ))}
                 </TextField>
                 
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  label="ที่อยู๋ตามบัตรประชาชน"
+                  variant="filled"
+                  style={{ width: '71%',marginRight:'1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เลขบัตรประจำตัวประชาชน"
+                  variant="filled"
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  style={{ width: '28%'}}
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                />
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
                 <TextField
@@ -282,6 +323,7 @@ function ProfileAdd() {
                 
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+                
                 <TextField
                   className="form-field"
                   label="Username"
