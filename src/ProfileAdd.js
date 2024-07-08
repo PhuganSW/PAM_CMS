@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -22,47 +22,47 @@ import { Label } from '@mui/icons-material';
 //import { image } from 'html2canvas/dist/types/css/types/image';
 import html2canvas from 'html2canvas';
 
-const positions = [
-  {
-    value: '',
-    label: 'None',
-  },
-  {
-    value: 'SW',
-    label: 'Software Engineer',
-  },
-  {
-    value: 'EE',
-    label: 'Electical Engineer',
-  },
-  {
-    value: 'MEC',
-    label: 'Mechanical',
-  },
-  {
-    value:'HR',
-    label:'Human Resource'
-  },
-];
+// const positions = [
+//   {
+//     value: '',
+//     label: 'None',
+//   },
+//   {
+//     value: 'SW',
+//     label: 'Software Engineer',
+//   },
+//   {
+//     value: 'EE',
+//     label: 'Electical Engineer',
+//   },
+//   {
+//     value: 'MEC',
+//     label: 'Mechanical',
+//   },
+//   {
+//     value:'HR',
+//     label:'Human Resource'
+//   },
+// ];
 
-const sexs = [
-  {
-    value: '',
-    label: ' ',
-  },
-  {
-    value: 'men',
-    label: 'ชาย',
-  },
-  {
-    value: 'lady',
-    label: 'หญิง',
-  },
-  {
-    value: 'other',
-    label: 'อื่นๆ',
-  },
-];
+// const sexs = [
+//   {
+//     value: '',
+//     label: ' ',
+//   },
+//   {
+//     value: 'men',
+//     label: 'ชาย',
+//   },
+//   {
+//     value: 'lady',
+//     label: 'หญิง',
+//   },
+//   {
+//     value: 'other',
+//     label: 'อื่นๆ',
+//   },
+// ];
 
 // const Levels = [
 //   {
@@ -111,26 +111,30 @@ function ProfileAdd() {
   const [emer_phone,setEmer_Phone] = useState('');
   const [address_off,setAddress_Off] = useState(''); //ที่อยู่ตามบัตรประชาชน
 
+  const [sexOptions, setSexOptions] = useState([]);
+  const [positionOptions, setPositionOptions] = useState([]);
+  const [levelOptions, setLevelOptions] = useState([]);
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const Levels = [
-    {
-      value: '',
-      label: ' ',
-    },
-    {
-      value: 'employee',
-      label: 'Employee',
-    },
-    {
-      value: 'Lead',
-      label: 'Leader'
-    },
-    {
-      value: 'HR',
-      label: 'HR',
-    },
-  ];
+  // const Levels = [
+  //   {
+  //     value: '',
+  //     label: ' ',
+  //   },
+  //   {
+  //     value: 'employee',
+  //     label: 'Employee',
+  //   },
+  //   {
+  //     value: 'Lead',
+  //     label: 'Leader'
+  //   },
+  //   {
+  //     value: 'HR',
+  //     label: 'HR',
+  //   },
+  // ];
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -162,7 +166,9 @@ function ProfileAdd() {
     if (file) {
       setImage_Off(file);
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -190,9 +196,7 @@ function ProfileAdd() {
   const onSave= async()=>{
     let imageUrl = '';
     if (image_off) {
-      const imageRef = storage.ref(`images/${image_off.name}`);
-      await imageRef.put(image_off);
-      imageUrl = await imageRef.getDownloadURL();
+      imageUrl = await storage.uploadImage(image_off);
     }
 
     var nameth = name.split(" ")
@@ -216,6 +220,32 @@ function ProfileAdd() {
     //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
     console.log(imageUrl)
   }
+
+  useEffect(() => {
+    const unsubscribeSex = firestore.getDropdownOptions(
+      'sex',
+      setSexOptions,
+      (error) => console.error(error)
+    );
+
+    const unsubscribePosition = firestore.getDropdownOptions(
+      'position',
+      setPositionOptions,
+      (error) => console.error(error)
+    );
+
+    const unsubscribeLevel = firestore.getDropdownOptions(
+      'level',
+      setLevelOptions,
+      (error) => console.error(error)
+    );
+
+    return () => {
+      unsubscribeSex();
+      unsubscribePosition();
+      unsubscribeLevel();
+    };
+  }, []);
 
   return (
     
@@ -278,9 +308,9 @@ function ProfileAdd() {
                   value={sex}
                   onChange={(e) => setSex(e.target.value)}
                 >
-                  {sexs.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {sexOptions.map((option) => (
+                    <MenuItem key={option.id} value={option.name}>
+                      {option.name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -305,9 +335,9 @@ function ProfileAdd() {
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                 >
-                  {positions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {positionOptions.map((option) => (
+                    <MenuItem key={option.id} value={option.name}>
+                      {option.name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -500,9 +530,9 @@ function ProfileAdd() {
                   value={level}
                   onChange={(e) => setLevel(e.target.value)}
                 >
-                  {Levels.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {levelOptions.map((option) => (
+                    <MenuItem key={option.id} value={option.name}>
+                      {option.name}
                     </MenuItem>
                   ))}
                 </TextField>

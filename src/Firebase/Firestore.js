@@ -353,6 +353,78 @@ class FireStore{
     await deleteDoc(doc(this.db, "annouce", id));
   }
 
+  addCategory = async (category, success, unsuccess) => {
+    try {
+      const docRef = await addDoc(collection(this.db, "categories"), { name: category });
+      success(docRef.id);
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+
+  // Get all categories
+  getAllCategories = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "categories"), (querySnapshot) => {
+      const categories = [];
+      querySnapshot.forEach((doc) => {
+        categories.push({ id: doc.id, ...doc.data() });
+      });
+      success(categories);
+    }, (error) => {
+      unsuccess(error);
+    });
+
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  // Add item to a category
+  addItemToCategory = async (categoryId, item, success, unsuccess) => {
+    try {
+      const docRef = await addDoc(collection(this.db, "categories", categoryId, "items"), { name: item });
+      success(docRef.id);
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+
+  // Get items of a category
+  getItemsOfCategory = (categoryId, success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "categories", categoryId, "items"), (querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push({ id: doc.id, ...doc.data() });
+      });
+      success(items);
+    }, (error) => {
+      unsuccess(error);
+    });
+
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  // Delete item from category
+  deleteItemFromCategory = async (categoryId, itemId) => {
+    await deleteDoc(doc(this.db, "categories", categoryId, "items", itemId));
+  };
+
+  // Update item in category
+  updateItemInCategory = async (categoryId, itemId, newData, success, unsuccess) => {
+    try {
+      const docRef = doc(this.db, "categories", categoryId, "items", itemId);
+      await updateDoc(docRef, newData);
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+
+  // Delete category
+  deleteCategory = async (categoryId) => {
+    await deleteDoc(doc(this.db, "categories", categoryId));
+  };
+
 }
 
 const firestore = new FireStore();
