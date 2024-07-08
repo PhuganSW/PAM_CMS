@@ -43,6 +43,7 @@ const Layout = ({ children }) => {
           <nav>
           <ul>
               <li className={isActive("/home") ? "active" : ""}><Link to="/home">Dashboard</Link></li>
+              <li className={isActive("/manageIndex") ? "active" : ""}><Link to="/manageIndex">จัดการ Index</Link></li>
               <li className={isActive("/profile") ? "active" : ""}><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
               <li className={isActive("/checkin_history") ? "active" : ""}><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
               <li className={isActive("/leave_request") ? "active" : ""}><Link to="/leave_request">คำขอลางาน</Link></li>

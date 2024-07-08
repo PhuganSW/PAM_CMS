@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -7,6 +7,7 @@ import './addProfile.css'
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
+import storage from './Firebase/Storage';
 import IconButton from '@mui/material/IconButton';
 import FilledInput from '@mui/material/FilledInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -18,6 +19,8 @@ import Layout from './Layout';
 import { sha256 } from 'crypto-hash';
 import { validateDate } from '@mui/x-date-pickers/internals';
 import { Label } from '@mui/icons-material';
+//import { image } from 'html2canvas/dist/types/css/types/image';
+import html2canvas from 'html2canvas';
 
 const positions = [
   {
@@ -82,6 +85,8 @@ const sexs = [
 
 function ProfileAdd() {
   const navigate = useNavigate();
+  const formRef = useRef(null);
+
   const [name,setName] = useState('');
   const [nameEng,setNameEng] = useState('');
   const [position,setPosition] = useState('');
@@ -93,6 +98,18 @@ function ProfileAdd() {
   const [level,setLevel] = useState('');
   const [username,setUsername] = useState('');
   const [password,setPassword] = useState('');
+  const [image_off,setImage_Off] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [nat_id,setNat_ID] = useState('');
+  const [personal_status,setPersonal_Status] = useState('');
+  const [child,setChild] = useState('');
+  const [bank,setBank] = useState('');
+  const [bank_type,setBank_type] = useState('');
+  const [bank_id,setBank_ID] = useState('');
+  const [emer_name,setEmer_Name] = useState('');
+  const [emer_relate,setEmer_Relate] = useState('');
+  const [emer_phone,setEmer_Phone] = useState('');
+  const [address_off,setAddress_Off] = useState(''); //ที่อยู่ตามบัตรประชาชน
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -140,6 +157,16 @@ function ProfileAdd() {
     }
   }
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage_Off(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const addUserSuccess=async(id)=>{
     let pass = await hashPass(password);
     setPassword(pass)
@@ -160,7 +187,14 @@ function ProfileAdd() {
     console.log(e)
   }
 
-  const onSave=()=>{
+  const onSave= async()=>{
+    let imageUrl = '';
+    if (image_off) {
+      const imageRef = storage.ref(`images/${image_off.name}`);
+      await imageRef.put(image_off);
+      imageUrl = await imageRef.getDownloadURL();
+    }
+
     var nameth = name.split(" ")
     var nameEn = nameEng.split(" ")
     let item ={
@@ -177,8 +211,10 @@ function ProfileAdd() {
       level:level,
       quote:'',
       image:'https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/image-10.png?alt=media&token=db1833a9-afab-4b4f-808c-2fe62c29b4cc',
+      image_off:imageUrl
     }
-    firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+    //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+    console.log(imageUrl)
   }
 
   return (
@@ -197,7 +233,17 @@ function ProfileAdd() {
             </div>
             <div className="main-contain">
               <div className='block_img'>
-                {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
+                <img src={imagePreview || 'https://i.postimg.cc/YChjY7Pc/image-10.png'} width={150} height={150} alt="Profile" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                  id="imagePicker"
+                />
+                <label htmlFor="imagePicker" style={{ cursor: 'pointer', color: '#007bff' }}>
+                  <p>Click to upload image</p>
+                </label>
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
     
@@ -242,7 +288,7 @@ function ProfileAdd() {
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
                 <TextField
                   className="form-field"
-                  label="ที่อยู๋ปัจจุบัน"
+                  label="ที่อยู่ปัจจุบัน"
                   variant="filled"
                   style={{ width: '71%',marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
@@ -270,7 +316,7 @@ function ProfileAdd() {
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
               <TextField
                   className="form-field"
-                  label="ที่อยู๋ตามบัตรประชาชน"
+                  label="ที่อยู่ตามบัตรประชาชน"
                   variant="filled"
                   style={{ width: '71%',marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
@@ -287,6 +333,27 @@ function ProfileAdd() {
                   style={{ width: '28%'}}
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+              <TextField
+                  className="form-field"
+                  select
+                  label="สถานภาพ"
+                  variant="filled"
+                  style={{ width: '35%', marginRight:'1%' }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="จำนวนบุตร"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
@@ -322,8 +389,76 @@ function ProfileAdd() {
                 />
                 
               </div>
+              <div className="form-row" style={{ display: 'flex',}}>
+                <p style={{fontSize:28}}>บัญชีธนาคาร :</p>
+              </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-                
+              <TextField
+                  className="form-field"
+                  select
+                  label="ชื่อธนาคาร"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ประเภทบัญชี"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เลขที่บัญชี"
+                  variant="filled"
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>บุคคลติดต่อฉุกเฉิน :</p>
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  label="ชื่อ - นามสกุล"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ความสัมพันธ์"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เบอร์โทร"
+                  variant="filled"
+                  style={{ width: '28%',}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
                 <TextField
                   className="form-field"
                   label="Username"
