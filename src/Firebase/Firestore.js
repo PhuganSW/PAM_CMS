@@ -1,4 +1,5 @@
 //Firestore.js
+//import { image } from "html2canvas/dist/types/css/types/image";
 import app from "./Config";
 import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, 
         deleteDoc, updateDoc, orderBy, query, where, getDocs  } from "firebase/firestore";
@@ -122,9 +123,58 @@ class FireStore{
           id: doc.id,
           name: data.name+" "+data.lastname,
           position: data.position,
+          image_off:data.image_off,
         });
       });
       success(allaccount);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  getAllCheckin = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "checkin"), (querySnapshot) => {
+      const allcheckin = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allcheckin.push({
+          id:doc.id,
+          date: data.date,
+          name: data.name,
+          time: data.time,
+          workplace: data.workplace,
+          late: data.late,
+        });
+      });
+      success(allcheckin);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  getAllCheckout = (success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "checkout"), (querySnapshot) => {
+      const allcheckout = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allcheckout.push({
+          id:doc.id,
+          date: data.date,
+          name: data.name,
+          time: data.time,
+          workplace: data.workplace,
+          late: data.late,
+        });
+      });
+      success(allcheckout);
     }, (error) => {
       console.error("Error getting documents: ", error);
       unsuccess(error);
@@ -271,7 +321,7 @@ class FireStore{
 
   getAllBill=(id,success,unsuccess)=>{
     const q = query(collection(this.db, "Salary"), where("id", "==", id));
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const allBill = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -424,6 +474,22 @@ class FireStore{
   deleteCategory = async (categoryId) => {
     await deleteDoc(doc(this.db, "categories", categoryId));
   };
+
+  getDropdownOptions = async (collectionName) => {
+    try {
+      const querySnapshot = await getDocs(collection(this.db, collectionName));
+      const options = [];
+      querySnapshot.forEach((doc) => {
+        options.push(doc.data().value);
+        console.log(`${collectionName} options:`, doc.data().value);
+      });
+      console.log(`${collectionName} options:`, options.items);
+      return options;
+    } catch (e) {
+      console.error(`Error getting documents from ${collectionName}: `, e);
+      throw new Error(e);
+    }
+  }
 
 }
 

@@ -8,6 +8,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
 import Layout from './Layout';
+import storage from './Firebase/Storage';
 
 const positions = [
   {
@@ -83,7 +84,26 @@ function ProfileEdit() {
   const [phone,setPhone] = useState('');
   const [sex,setSex] = useState('');
   const [level,setLevel] = useState('');
-  
+  const [image_off,setImage_Off] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [nat_id,setNat_ID] = useState('');
+  const [personal_status,setPersonal_Status] = useState('');
+  const [child,setChild] = useState('');
+  const [bank,setBank] = useState('');
+  const [bank_type,setBank_type] = useState('');
+  const [bank_id,setBank_ID] = useState('');
+  const [emer_name,setEmer_Name] = useState('');
+  const [emer_relate,setEmer_Relate] = useState('');
+  const [emer_phone,setEmer_Phone] = useState('');
+  const [address_off,setAddress_Off] = useState(''); //ที่อยู่ตามบัตรประชาชน
+  const [disease,setDisease] = useState('');
+  const [blood_type,setBlood_type] = useState('');
+  const [Ldrug,setLdrug] = useState('');
+  const [wealthHos,setWealthHos] = useState('');
+
+  const [sexOptions, setSexOptions] = useState([]);
+  const [positionOptions, setPositionOptions] = useState([]);
+  const [levelOptions, setLevelOptions] = useState([]);
 
   const getUserSuccess=(data)=>{
 
@@ -96,7 +116,17 @@ function ProfileEdit() {
     setEmail(data.email)
     setPhone(data.tel)
     setLevel(data.level)
-
+    setImage_Off(data.image_off)
+    setNat_ID(data.nat_id)
+    setPersonal_Status(data.personal_status)
+    setChild(data.child)
+    setBank(data.bank)
+    setBank_type(data.bank_type)
+    setBank_ID(data.bank_id)
+    setEmer_Name(data.emer_name)
+    setEmer_Relate(data.emer_relate)
+    setEmer_Phone(data.emer_phone)
+    setAddress_Off(data.address_off)
   }
 
   const getUserUnsuccess=(e)=>{
@@ -111,7 +141,24 @@ function ProfileEdit() {
     console.log(error)
   }
 
-  const onSave=()=>{
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage_Off(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onSave=async()=>{
+    let imageUrl = '';
+    if (image_off) {
+      imageUrl = await storage.uploadImage(image_off);
+    }
+
     var nameth = name.split(" ")
     var nameEn = nameEng.split(" ")
     let item ={
@@ -125,7 +172,8 @@ function ProfileEdit() {
       phone:phone,
       email:email,
       sex:sex,
-      level:level
+      level:level,
+      image_off:imageUrl
     }
     console.log('save')
     firestore.updateUser(uid,item,updateSuccess,updateUnsuccess)
@@ -157,7 +205,17 @@ function ProfileEdit() {
             </div>
             <div className="main-contain">
               <div className='block_img'>
-                {/*<img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" />*/}
+                <img src={imagePreview || image_off } width={150} height={150} alt="Logo" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                  id="imagePicker"
+                />
+                <label htmlFor="imagePicker" style={{ cursor: 'pointer', color: '#007bff' }}>
+                  <p>Click to upload image</p>
+                </label>
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
     
@@ -202,7 +260,7 @@ function ProfileEdit() {
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
                 <TextField
                   className="form-field"
-                  label="ที่อยู๋"
+                  label="ที่อยู่ปัจจุบัน"
                   variant="filled"
                   style={{ width: '71%',marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
@@ -219,13 +277,35 @@ function ProfileEdit() {
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                 >
-                  {positions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {positionOptions.map((option) => (
+                    <MenuItem key={option.id} value={option.name}>
+                      {option.name}
                     </MenuItem>
                   ))}
                 </TextField>
                 
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  label="ที่อยู่ตามบัตรประชาชน"
+                  variant="filled"
+                  style={{ width: '71%',marginRight:'1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={address_off}
+                  onChange={(e) => setAddress_Off(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เลขบัตรประจำตัวประชาชน"
+                  variant="filled"
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  style={{ width: '28%'}}
+                  value={nat_id}
+                  onChange={(e) => setNat_ID(e.target.value)}
+                />
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
                 <TextField
@@ -259,6 +339,141 @@ function ProfileEdit() {
                   onChange={(e) => setFirstDay(e.target.value)}
                 />
                 
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+              <TextField
+                  className="form-field"
+                  select
+                  label="สถานภาพ"
+                  variant="filled"
+                  style={{ width: '35%', marginRight:'1%' }}
+                  value={personal_status}
+                  onChange={(e) => setPersonal_Status(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="จำนวนบุตร"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={child}
+                  onChange={(e) => setChild(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="กรุ๊ปเลือด"
+                  variant="filled"
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={blood_type}
+                  onChange={(e) => setBlood_type(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+                <TextField
+                    className="form-field"
+                    label="โรงพยาบาล ที่มีสิทธิประกันสังคม"
+                    variant="filled"
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={wealthHos}
+                    onChange={(e) => setWealthHos(e.target.value)}
+                  />
+                <TextField
+                    className="form-field"
+                    label="โรคประจำตัว"
+                    variant="filled"
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={disease}
+                    onChange={(e) => setDisease(e.target.value)}
+                  />
+                  <TextField
+                    className="form-field"
+                    label="แพ้ยา"
+                    variant="filled"
+                    style={{ width: '28%' }}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={Ldrug}
+                    onChange={(e) => setLdrug(e.target.value)}
+                  />
+              </div>
+              <div className="form-row" style={{ display: 'flex',}}>
+                <p style={{fontSize:28}}>บัญชีธนาคาร :</p>
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  select
+                  label="ชื่อธนาคาร"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  value={bank}
+                  onChange={(e) => setBank(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ประเภทบัญชี"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={bank_type}
+                  onChange={(e) => setBank_type(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เลขที่บัญชี"
+                  variant="filled"
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={bank_id}
+                  onChange={(e) => setBank_ID(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>บุคคลติดต่อฉุกเฉิน :</p>
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  label="ชื่อ - นามสกุล"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={emer_name}
+                  onChange={(e) => setEmer_Name(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ความสัมพันธ์"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={emer_relate}
+                  onChange={(e) => setEmer_Relate(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เบอร์โทร"
+                  variant="filled"
+                  style={{ width: '28%',}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={emer_phone}
+                  onChange={(e) => setEmer_Phone(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>สิทธิ์การใช้งานแอปฯ :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
                 {/* <TextField

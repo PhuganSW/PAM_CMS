@@ -110,10 +110,16 @@ function ProfileAdd() {
   const [emer_relate,setEmer_Relate] = useState('');
   const [emer_phone,setEmer_Phone] = useState('');
   const [address_off,setAddress_Off] = useState(''); //ที่อยู่ตามบัตรประชาชน
+  const [disease,setDisease] = useState('');
+  const [blood_type,setBlood_type] = useState('');
+  const [Ldrug,setLdrug] = useState('');
+  const [wealthHos,setWealthHos] = useState('');
 
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
   const [levelOptions, setLevelOptions] = useState([]);
+  const [positions, setPositions] = useState([]);
+  const [levels, setLevels] = useState([]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -222,29 +228,20 @@ function ProfileAdd() {
   }
 
   useEffect(() => {
-    const unsubscribeSex = firestore.getDropdownOptions(
-      'sex',
-      setSexOptions,
-      (error) => console.error(error)
-    );
-
-    const unsubscribePosition = firestore.getDropdownOptions(
-      'position',
-      setPositionOptions,
-      (error) => console.error(error)
-    );
-
-    const unsubscribeLevel = firestore.getDropdownOptions(
-      'level',
-      setLevelOptions,
-      (error) => console.error(error)
-    );
-
-    return () => {
-      unsubscribeSex();
-      unsubscribePosition();
-      unsubscribeLevel();
+    const fetchDropdownOptions = async () => {
+      try {
+        const positions = await firestore.getDropdownOptions('position');
+        setPositionOptions(positions);
+        const sexOptions = await firestore.getDropdownOptions('categories');
+        setSexOptions(sexOptions);
+        const levels = await firestore.getDropdownOptions('levels');
+        setLevelOptions(levels);
+      } catch (error) {
+        console.error('Error fetching dropdown options:', error);
+      }
     };
+
+    fetchDropdownOptions();
   }, []);
 
   return (
@@ -309,8 +306,8 @@ function ProfileAdd() {
                   onChange={(e) => setSex(e.target.value)}
                 >
                   {sexOptions.map((option) => (
-                    <MenuItem key={option.id} value={option.name}>
-                      {option.name}
+                    <MenuItem key={option} value={option}>
+                      {option}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -351,8 +348,8 @@ function ProfileAdd() {
                   style={{ width: '71%',marginRight:'1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={address_off}
+                  onChange={(e) => setAddress_Off(e.target.value)}
                 />
                 <TextField
                   className="form-field"
@@ -361,29 +358,8 @@ function ProfileAdd() {
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   style={{ width: '28%'}}
-                  value={position}
-                  onChange={(e) => setPosition(e.target.value)}
-                />
-              </div>
-              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
-              <TextField
-                  className="form-field"
-                  select
-                  label="สถานภาพ"
-                  variant="filled"
-                  style={{ width: '35%', marginRight:'1%' }}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                  className="form-field"
-                  label="จำนวนบุตร"
-                  variant="filled"
-                  style={{ width: '35%', marginRight: '1%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={nat_id}
+                  onChange={(e) => setNat_ID(e.target.value)}
                 />
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
@@ -419,6 +395,69 @@ function ProfileAdd() {
                 />
                 
               </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+              <TextField
+                  className="form-field"
+                  select
+                  label="สถานภาพ"
+                  variant="filled"
+                  style={{ width: '35%', marginRight:'1%' }}
+                  value={personal_status}
+                  onChange={(e) => setPersonal_Status(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="จำนวนบุตร"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={child}
+                  onChange={(e) => setChild(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="กรุ๊ปเลือด"
+                  variant="filled"
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={blood_type}
+                  onChange={(e) => setBlood_type(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+              <TextField
+                    className="form-field"
+                    label="โรงพยาบาล ที่มีสิทธิประกันสังคม"
+                    variant="filled"
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={wealthHos}
+                    onChange={(e) => setWealthHos(e.target.value)}
+                  />
+                <TextField
+                    className="form-field"
+                    label="โรคประจำตัว"
+                    variant="filled"
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={disease}
+                    onChange={(e) => setDisease(e.target.value)}
+                  />
+                  <TextField
+                    className="form-field"
+                    label="แพ้ยา"
+                    variant="filled"
+                    style={{ width: '28%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={Ldrug}
+                    onChange={(e) => setLdrug(e.target.value)}
+                  />
+              </div>
               <div className="form-row" style={{ display: 'flex',}}>
                 <p style={{fontSize:28}}>บัญชีธนาคาร :</p>
               </div>
@@ -429,8 +468,8 @@ function ProfileAdd() {
                   label="ชื่อธนาคาร"
                   variant="filled"
                   style={{ width: '35%', marginRight: '1%' }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={bank}
+                  onChange={(e) => setBank(e.target.value)}
                 />
                 <TextField
                   className="form-field"
@@ -439,8 +478,8 @@ function ProfileAdd() {
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={bank_type}
+                  onChange={(e) => setBank_type(e.target.value)}
                 />
                 <TextField
                   className="form-field"
@@ -449,8 +488,8 @@ function ProfileAdd() {
                   style={{ width: '28%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={bank_id}
+                  onChange={(e) => setBank_ID(e.target.value)}
                 />
               </div>
               <div className="form-row" style={{ display: 'flex'}}>
@@ -464,8 +503,8 @@ function ProfileAdd() {
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={emer_name}
+                  onChange={(e) => setEmer_Name(e.target.value)}
                 />
                 <TextField
                   className="form-field"
@@ -474,8 +513,8 @@ function ProfileAdd() {
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={emer_relate}
+                  onChange={(e) => setEmer_Relate(e.target.value)}
                 />
                 <TextField
                   className="form-field"
@@ -484,9 +523,18 @@ function ProfileAdd() {
                   style={{ width: '28%',}}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={emer_phone}
+                  onChange={(e) => setEmer_Phone(e.target.value)}
                 />
+              </div>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>เงินเดือน :</p>
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+                {/* add about salary */}
+              </div>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>สิทธิ์การใช้งานแอปฯ :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
                 <TextField

@@ -21,6 +21,13 @@ function WelthfareManage() {
   const [kama,setKama] = useState('') //ลาบวช
   const [other,setOther] = useState(''); //ลาสิทธิ์อื่น
 
+  const [absenceR,setAbsenceR] = useState(''); //ลากิจ
+  const [sickR,setSickR] = useState(''); //ลาป่วย
+  const [holidayR,setHolidayR] = useState(''); //ลาพักร้อน
+  const [maternityR,setMaternityR] = useState(''); //ลาคลอด
+  const [kamaR,setKamaR] = useState('') //ลาบวช
+  const [otherR,setOtherR] = useState(''); //ลาสิทธิ์อื่น
+
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
   }
@@ -46,7 +53,12 @@ function WelthfareManage() {
       sick:sick,
       holiday:holiday,
       maternity:maternity,
-      other:other
+      other:otherR,
+      absenceR:absenceR,
+      sickR:sickR,
+      holidayR:holidayR,
+      maternityR:maternityR,
+      otherR:otherR
     }
     //console.log('save')
     firestore.addWelth(item,addWelthSuc,addWelthUnsuc)
@@ -85,68 +97,127 @@ function WelthfareManage() {
                     label="ลากิจ"
                     className="form-field"
                     variant="filled"
-                    style={{width:'33%',marginRight:'0.5%'}}
+                    style={{width:'25%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={absence}
                     onChange={(e) => setAbsence(e.target.value)}
                   />
                   <TextField
+                    label="สิทธิ์ลากิจที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'24%',marginRight:'1%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={absenceR}
+                    onChange={(e) => setAbsenceR(e.target.value)}
+                  />
+                  <TextField
                     label="ลาป่วย"
                     className="form-field"
                     variant="filled"
-                    style={{width:'33%',marginRight:'0.5%'}}
+                    style={{width:'24%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sick}
                     onChange={(e) => setSick(e.target.value)}
                   />
                   <TextField
-                    
+                    label="สิทธิ์ลาป่วยที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'23%',}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={sickR}
+                    onChange={(e) => setSickR(e.target.value)}
+                  />
+                  
+                </div>
+                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
+                <TextField
                     label="ลาพักร้อน"
                     className="form-field"
                     variant="filled"
-                    style={{width:'33%'}}
+                    style={{width:'25%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={holiday}
                     onChange={(e) => setHoliday(e.target.value)}
-                  >
-                  </TextField>
-                  
-                </div>
-                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
+                  />
+                  <TextField
+                    label="สิทธิ์ลาพักร้อนที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'24%',marginRight:'1%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={holidayR}
+                    onChange={(e) => setHolidayR(e.target.value)}
+                  />
                   <TextField
                     label="ลาคลอด"
                     className="form-field"
                     variant="filled"
-                    style={{width:'33%',marginRight:'0.5%'}}
+                    style={{width:'24%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={maternity}
                     onChange={(e) => setMaternity(e.target.value)}
-                  >
-                  </TextField>
-                  <TextField
+                  />
+                   <TextField
+                    label="สิทธิ์ลาคลอดที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'23%',}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={maternityR}
+                    onChange={(e) => setMaternityR(e.target.value)}
+                  />
+                  
+                </div>
+                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
+                <TextField
                     label="ลาบวช"
                     className="form-field"
                     variant="filled"
-                    style={{width:'33%',marginRight:'0.5%'}}
+                    style={{width:'25%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={maternity}
+                    value={kama}
                     onChange={(e) => setKama(e.target.value)}
-                  >
-                  </TextField>
+                  />
+                  <TextField
+                    label="สิทธิ์ลาบวชที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'24%',marginRight:'1%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={kamaR}
+                    onChange={(e) => setKamaR(e.target.value)}
+                  />
                   <TextField
                     label="ลาด้วยสิทธิ์อื่นๆ"
                     className="form-field"
                     variant="filled"
-                    style={{width:'33%'}}
+                    style={{width:'24%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={other}
                     onChange={(e) => setOther(e.target.value)}
+                  />
+                  <TextField
+                    label="จำนวนวันลาด้วยสิทธิ์อื่นๆ ที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'23%',}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={otherR}
+                    onChange={(e) => setOtherR(e.target.value)}
                   />
                 </div>
               </div>

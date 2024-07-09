@@ -111,7 +111,7 @@ function Welthfare() {
                       <td>{item.position}</td>
                       <td style={{width:'30%',textAlign:'center'}}>
                         {status && <button>ให้สิทธิ์</button>}
-                        <button className='verify-wel'>ตรวจสอบ</button>
+                        {/* <button className='verify-wel'>ตรวจสอบ</button> */}
                         <button className='Edit-button'>แก้ไข</button>
                       </td>
                     </tr>

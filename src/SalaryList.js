@@ -107,22 +107,22 @@ function SalaryList() {
             </header>
             </div>
             <div class="main-contain">
-                <h4 style={{fontSize:36,marginLeft:15,marginTop:20}}>เงินเดือน: {name}</h4>
-            <div className="search-field">
-                {/* <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button> */}
-            {/* <p style={{marginTop:17}}>ค้นหา</p>
+                <p style={{fontSize:36,marginLeft:15,marginTop:20}} onClick={()=>navigate('/salary')}>เงินเดือน: {name}</p>
+            {/* <div className="search-field">
+                <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
+            <p style={{marginTop:17}}>ค้นหา</p>
                 <input style={{width:'40%',margin:5,height:40,borderRadius:20,paddingInlineStart:10,fontSize:18}}
                 placeholder='search..' 
                 value={search}
-                onChange={handleSearch} /> */}
-                {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
-              </div>
+                onChange={handleSearch} />
+                <button className="search-button" ><IoSearchOutline size={24} /></button>
+              </div> */}
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
               <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
               </div>
       
               <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
-              
+              <p style={{fontSize:28,textAlign:'center'}}>เงินเดือนล่าสุด</p>
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
@@ -140,7 +140,34 @@ function SalaryList() {
                       <td>
                         {item.date}
                       </td>
-                      <td><button className='Edit-button' onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button></td>
+                      <td><button className='Edit-button' onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button>
+                          <button className='Add-button' style={{height:'20%'}}>Submit</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </TableBootstrap>
+              <p style={{fontSize:28,textAlign:'center',marginTop:20}}>ประวัติการจัดทำเงินเดือน</p>
+              <TableBootstrap striped bordered hover className='table'>
+                <thead>
+                  <tr>
+                    <th scope="col">ลำดับ</th>
+                    <th scope="col">เดือน</th>
+                    <th scope="col">actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
+                  {allBill.map((item, index) => (
+                    <tr key={item.id}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        {item.date}
+                      </td>
+                      <td><button className='Edit-button' onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button>
+                
+                      </td>
                     </tr>
                   ))}
                 </tbody>

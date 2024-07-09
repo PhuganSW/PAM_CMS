@@ -21,6 +21,8 @@ import WelthfareManage from './WelthfareManage';
 import ForgotPass from './ForgotPass';
 import SalaryList from './SalaryList';
 import ManageIndex from './ManageIndex';
+import ManagePeople from './Managepeople';
+import Network from './Network';
 import { auth } from './Firebase/Config';
 
 function App() {
@@ -74,6 +76,8 @@ function App() {
         <Route path='/salary_list' element={currentUser ? <SalaryList /> : <Navigate to="/" />} />
         <Route path='/welthfare_manage' element={currentUser ? <WelthfareManage /> : <Navigate to="/" />} />
         <Route path='/manageIndex' element={currentUser ? <ManageIndex /> : <Navigate to="/" />} />
+        <Route path='/managment' element={currentUser ? <ManagePeople /> : <Navigate to="/" />} />
+        <Route path='/network' element={currentUser ? <Network /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );

@@ -44,6 +44,10 @@ function SalaryCal() {
   const [borrow,setBorrow] = useState(0); //เงินกู้ยืม
   const [withdraw,setWithdraw] = useState(0); //เงินเบิกล่วงหน้า
   const [amount,setAmount] = useState('');
+  const [deposit,setDeposit] = useState('');
+  const [allDeposit,setAllDeposit] = useState('');
+  const [allWithdraw,setAllWithdraw] = useState('');
+  const [allInsurance,setAllInsurance] = useState('');
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -100,14 +104,15 @@ function SalaryCal() {
   }, [location.state]);
 
   useEffect(() => {
+    calculateTotalDep();
+    calculateTotalwith();
     calculateTotalAmount();
-  }, [valuePos, costL, food, ot, allowance, salary, venhicle, sub, welth, bonus, tax, insurance, late, missing, borrow, withdraw]);
+  }, [valuePos, costL, food, ot, allowance, salary, venhicle, sub, welth, bonus, tax, insurance, late, missing, borrow, withdraw,deposit,allWithdraw]);
 
-  const calculateTotalAmount = () => {
+  const calculateTotalDep = () => {
     const total =
-      Number(valuePos) +
+     
       Number(costL)+
-      Number(food)+
       Number(ot)+
       Number(allowance)+
       Number(salary)+
@@ -116,7 +121,27 @@ function SalaryCal() {
       Number(welth)+
       Number(bonus) ;
 
-    setAmount(total);
+    setDeposit(total);
+  };
+
+  const calculateTotalwith = () => {
+    const total1 =
+      Number(insurance) +
+      Number(late)+
+      Number(withdraw)+
+      Number(borrow)+
+      Number(missing)+
+      Number(tax)
+
+    setAllWithdraw(total1);
+  };
+
+  const calculateTotalAmount = () => {
+    const total1 =
+      Number(deposit) -
+      Number(allWithdraw)
+
+    setAmount(total1);
   };
 
   const exportToPDF = () => {
@@ -232,63 +257,7 @@ function SalaryCal() {
                 <p style={{fontSize:24}}>รายได้</p>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                   <TextField
-                    label="ค่าครองชีพ"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={costL}
-                    onChange={(e) => setCostL(Number(e.target.value))}
-                  />
-                  <TextField
-                    label="ค่าประจำตำแหน่ง"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={valuePos}
-                    onChange={(e) => setValuePos(Number(e.target.value))}
-                  />
-                  <TextField
-                    
-                    label="ค่าอาหาร"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={food}
-                    onChange={(e) => setFood(Number(e.target.value))}
-                  />
-                  <TextField
-                    label="ค่าล่วงเวลา"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={ot}
-                    onChange={(e) => setOT(Number(e.target.value))}
-                  >
-                  </TextField>
-                  <TextField
-                    label="ค่าเบี้ยเลี้ยง"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={allowance}
-                    onChange={(e) => setAllowance(Number(e.target.value))}
-                  />
-                </div>
-                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
-                
-                  
-                  <TextField
-                    label="ค่าเงินเดือน"
+                    label="เงินเดือน"
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
@@ -297,18 +266,8 @@ function SalaryCal() {
                     value={salary}
                     onChange={(e) => setSalary(Number(e.target.value))}
                   />
-                   <TextField
-                    label="ค่าพาหนะ"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={venhicle}
-                    onChange={(e) => setVenhicle(Number(e.target.value))}
-                      />
                   <TextField
-                    label="เงินอุดหนุน"
+                    label="ค่าจ้าง"
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
@@ -318,6 +277,72 @@ function SalaryCal() {
                     onChange={(e) => setSub(Number(e.target.value))}
                   />
                   <TextField
+                    
+                    label="ค่าล่วงเวลา"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={ot}
+                    onChange={(e) => setOT(Number(e.target.value))}
+                  />
+                  <TextField
+                    label="ค่าเบี้ยเลี้ยง"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={allowance}
+                    onChange={(e) => setAllowance(Number(e.target.value))}
+                  >
+                  </TextField>
+                  <TextField
+                    label="ค่าพาหนะ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={venhicle}
+                    onChange={(e) => setVenhicle(Number(e.target.value))}
+                  />
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                
+                  
+                  <TextField
+                    label="ค่าสวัสดิการ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={welth}
+                    onChange={(e) => setWelth(Number(e.target.value))}
+                  />
+                   <TextField
+                    label="เงินโบนัส"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={bonus}
+                    onChange={(e) => setBonus(Number(e.target.value))}
+                      />
+                  <TextField
+                    label="เงินพิเศษ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={costL}
+                    onChange={(e) => setCostL(Number(e.target.value))}
+                  />
+                  {/* <TextField
                     label="เงินสวัสดิการ"
                     className="form-field"
                     variant="filled"
@@ -337,21 +362,141 @@ function SalaryCal() {
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={bonus}
                     onChange={(e) => setBonus(Number(e.target.value))}
+                  /> */}
+                </div>
+                <div className="form-row" style={{ display: 'flex'}}>
+                  <p style={{fontSize:22}}>รวมรายได้</p>
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
+                <TextField
+                    variant="filled"
+                    className="form-field"
+                    style={{width:'100%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ readOnly: true,style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={deposit}
+                    onChange={(e) => setDeposit(e.target.value)}
                   />
                 </div>
-                {/* <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
-               
-                  
-                  
-                </div> */}
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
-                  <p style={{fontSize:22}}>เงินได้สะสม</p>
+                  <p style={{fontSize:22}}>รวมรายได้สะสม</p>
+                  <TextField
+                    variant="filled"
+                    className="form-field"
+                    style={{width:'100%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={allDeposit}
+                    onChange={(e) => setAllDeposit(e.target.value)}
+                  />
+                </div>
+                <div className="form-row" style={{ display: 'flex',}} >
+                  <p style={{fontSize:22}}>รายการหัก</p>
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
+                <TextField
+                    label="เงินประกันสังคม"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={insurance}
+                    onChange={(e) => setInsurance(Number(e.target.value))}
+                  />
+                  <TextField
+                    label="เงินหัก ณ ที่จ่าย"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={late}
+                    onChange={(e) => setLate(Number(e.target.value))}
+                  />
+                  <TextField
+                    
+                    label="เงินเบิกล่วงหน้า"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={withdraw}
+                    onChange={(e) => setWithdraw(Number(e.target.value))}
+                  />
+                  <TextField
+                    label="เงินกู้ยืมสวัสดิการ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={borrow}
+                    onChange={(e) => setBorrow(Number(e.target.value))}
+                  >
+                  </TextField>
+                  <TextField
+                    label="ขาดงาน"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={missing}
+                    onChange={(e) => setMissing(Number(e.target.value))}
+                  />
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
+                  <TextField
+                    label="หักภาษีเงินได้"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={tax}
+                    onChange={(e) => setTax(Number(e.target.value))}
+                  />
+                </div>
+                <div className="form-row" style={{ display: 'flex'}}>
+                  <p style={{fontSize:22}}>รวมรายการหัก</p>
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
                   <TextField
                     variant="filled"
                     className="form-field"
                     style={{width:'100%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ readOnly: true,style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={allWithdraw}
+                    onChange={(e) => setAllWithdraw(e.target.value)}
+                  />
+                </div>
+                <div className="form-row" style={{ display: 'flex'}}>
+                  <p style={{fontSize:22}}>รวมเงินประกันสังคมสะสม</p>
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
+                  <TextField
+                    variant="filled"
+                    className="form-field"
+                    style={{width:'100%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={allInsurance}
+                    onChange={(e) => setAllWithdraw(e.target.value)}
+                  />
+                </div>
+                <div className="form-row" style={{ display: 'flex'}}>
+                  <p style={{fontSize:22}}>สรุปรวมทั้งหมด</p>
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
+                <TextField
+                    variant="filled"
+                    className="form-field"
+                    style={{width:'100%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{style: { color: '#000', backgroundColor: '#fff',readOnly:true } }}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />

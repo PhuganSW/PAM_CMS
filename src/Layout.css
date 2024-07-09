@@ -15,7 +15,7 @@ body {
   
   .sidebar {
     width: 300px;
-    transition: width 0.3s;
+    transition: width 0.5s;
     overflow: hidden;
     height: 100%;
   }
@@ -29,7 +29,7 @@ body {
     background-color: #343434;
     color: white;
     height: 100%;
-    padding: 20px;
+    padding-left: 20px;
     /* overflow-y: auto; */
     font-family: 'THSarabunNew', sans-serif;
     position: relative;
@@ -58,9 +58,10 @@ body {
     color: white;
     text-decoration: none;
     font-size: 22px;
-    transition: background 0.3s ease;
+    transition: background 0.5s ease;
     display: block;
-    padding: 10px;
+    
+    margin: 5px;
     border-radius: 4px;
   }
 

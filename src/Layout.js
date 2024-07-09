@@ -46,6 +46,8 @@ const Layout = ({ children }) => {
               <li className={isActive("/manageIndex") ? "active" : ""}><Link to="/manageIndex">จัดการ Index</Link></li>
               <li className={isActive("/profile") ? "active" : ""}><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
               <li className={isActive("/checkin_history") ? "active" : ""}><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
+              <li className={isActive("/managment") ? "active" : ""}><Link to="/managment">จัดการกำลังคน</Link></li>
+              <li className={isActive("/network") ? "active" : ""}><Link to="/network">Network</Link></li>
               <li className={isActive("/leave_request") ? "active" : ""}><Link to="/leave_request">คำขอลางาน</Link></li>
               <li className={isActive("/ot_request") ? "active" : ""}><Link to="/ot_request">คำขอทำ OT</Link></li>
               <li className={isActive("/welthfare") ? "active" : ""}><Link to="/welthfare">จัดการสิทธิ์และวันหยุด</Link></li>

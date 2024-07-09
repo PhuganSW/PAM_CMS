@@ -115,6 +115,7 @@ function ManageIndex() {
           </div>
             <div className="main-contain">
                 {/* Add component for manage data of dropdown*/}
+                <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%',marginTop:30}}>
                 <FormControl fullWidth style={{ marginBottom: 20 }}>
               <InputLabel>เลือกหมวดหมู่</InputLabel>
               <Select value={selectedCategory} onChange={handleCategoryChange}>
@@ -133,8 +134,8 @@ function ManageIndex() {
             />
             <Button
               onClick={handleAddCategory}
+              className='Add-button'
               variant="contained"
-              color="primary"
               style={{ marginBottom: 20 }}
             >
               เพิ่มหมวดหมู่
@@ -150,9 +151,9 @@ function ManageIndex() {
                 />
                 <Button
                   onClick={editingItem ? handleUpdateItem : handleAddItem}
+                  className='Edit-button'
                   variant="contained"
-                  color="primary"
-                  style={{ marginTop: 10 }}
+                  
                 >
                   {editingItem ? 'อัปเดตรายการ' : 'เพิ่มรายการ'}
                 </Button>
@@ -161,8 +162,8 @@ function ManageIndex() {
                     <li key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span>{item.name}</span>
                       <div>
-                        <Button onClick={() => handleEditItem(item)}>แก้ไข</Button>
-                        <Button onClick={() => handleDeleteItem(item.id)}>ลบ</Button>
+                        <Button className='Edit-button' onClick={() => handleEditItem(item)}>แก้ไข</Button>
+                        <Button className='Delete-button' onClick={() => handleDeleteItem(item.id)}>ลบ</Button>
                       </div>
                     </li>
                   ))}
@@ -170,7 +171,7 @@ function ManageIndex() {
               </div>
             )}    
           
-
+            </div>
             </div>
           </div>
         </main>
