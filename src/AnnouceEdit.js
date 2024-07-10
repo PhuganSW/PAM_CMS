@@ -16,7 +16,7 @@ import './FilePicker.css';
 import { useDropzone } from 'react-dropzone';
 import storage from './Firebase/Storage';
 import Layout from './Layout';
-
+import MenuItem from '@mui/material/MenuItem';
 
 
 function AnnouceEdit() {
@@ -29,9 +29,18 @@ function AnnouceEdit() {
   const [selectID,setSelectID] = useState('');
   const [fileName,setFileName] = useState('');
   const [fileURL, setFileURL] = useState('');
+  const [type,setType] = useState('');
+  const [count,setCount] =useState(null);
 
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
+
+  const types =[
+   
+    {label:'ประกาศฉุกเฉิน',value:1},
+    {label:'ข่าวสาร',value:2},
+    {label:'กฎระเบียบ',value:3}
+  ]
 
   
   const onDrop = useCallback((acceptedFiles) => {
@@ -47,6 +56,7 @@ function AnnouceEdit() {
     setDetail(data.detail)
     setFileName(data.file_name)
     setFileURL(data.file)
+    setType(data.type)
   }
 
   const getAnnouceUnsuc=(e)=>{
@@ -75,6 +85,7 @@ function AnnouceEdit() {
     date: date_str,
     file: fileURL,
     file_name: fileName,
+    type:type,
   };
 
   if (files.length > 0) {
@@ -164,6 +175,26 @@ function AnnouceEdit() {
                   />
                   
                    
+                  
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                    <TextField
+                        label="ประเภทประกาศ"
+                        className="form-field"
+                        select
+                        variant="filled"
+                        style={{width:'100%'}}
+                        InputLabelProps={{ style: { color: '#000' } }}
+                        
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                    >{types.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                      </TextField>
+                    
                   
                 </div>
                 <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>

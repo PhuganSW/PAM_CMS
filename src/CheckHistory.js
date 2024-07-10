@@ -9,6 +9,12 @@ import Layout from './Layout';
 import './Profile.css';
 import './checkHis.css'
 import firestore from './Firebase/Firestore';
+import { AiOutlineEdit } from "react-icons/ai";
+import { Select, FormControl, InputLabel } from '@mui/material';
+import Form from 'react-bootstrap/Form';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 function CheckHistory() {
 
@@ -23,6 +29,24 @@ function CheckHistory() {
   const [id,setID] = useState('');
   const [allIN,setAllIn] = useState('');
   const [allOut,setAllOut] = useState('');
+  const [show, setShow] = useState(false);
+  const [workplace,setWorkplace] =useState('');
+  const [selectFillter,setSelectFillter] = useState('');
+
+  const workplaces = [
+    { id: '1', name: 'กทม.' },
+    { id: '2', name: 'ระยอง' },
+    { id: '3', name: 'หนองใหญ่' },
+    
+    // Add more positions as needed
+  ];
+
+  const handleClose = () => setShow(false);
+  const handleShow = () =>{
+
+    setShow(true);
+  } 
+
 
   const getInSuc=(doc)=>{
     console.log(doc)
@@ -102,6 +126,7 @@ function CheckHistory() {
                       <th scope="col">ชื่อ-สกุล</th>
                       <th scope="col">เวลา</th>
                       <th scope="col">พื้นที่ปฏิบัติงาน</th>
+                      <th scope="col">action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -114,6 +139,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
+                        <td><button style={{borderRadius:10}} onClick={()=>handleShow()}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -129,6 +155,7 @@ function CheckHistory() {
                       <th scope="col">ชื่อ-สกุล</th>
                       <th scope="col">เวลา</th>
                       <th scope="col">พื้นที่ปฏิบัติงาน</th>
+                      <th scope="col">action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -140,6 +167,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
+                        <td><button style={{borderRadius:10}}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -150,6 +178,37 @@ function CheckHistory() {
             </div>
           </div>
         </main>
+        <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>การมอบหมายงาน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+          <FormControl variant="filled" fullWidth>
+              <InputLabel>พื้นที่ทำงาน</InputLabel>
+              <Select
+                value={selectFillter}
+                onChange={(e) => setSelectFillter(e.target.value)}
+              >
+                {workplaces.map((option) => (
+                  <MenuItem key={option.id} value={option.name}>
+                    {option.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Form>
+          
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} >
+            Allow
+          </Button>
+          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>
+            Deny
+          </Button>
+        </Modal.Footer>
+      </Modal>
       </div>
       
     

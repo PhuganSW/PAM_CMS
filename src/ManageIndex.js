@@ -27,6 +27,16 @@ function ManageIndex() {
   const [newCategory, setNewCategory] = useState('');
   const [editingItem, setEditingItem] = useState(null);
 
+  const cate =[
+    {label:'เพศ',value:'sex'},
+    {label:'ตำแหน่ง',value:'position'},
+    {label:'ระดับ',value:'level'},
+    {label:'สถานภาพ',value:'status_per'},
+    {label:'บัญชีธนาคาร',value:'bank'},
+    {label:'พื้นที่ปฏิบัติงาน',value:'workplace'},
+  ]
+  
+
   useEffect(() => {
     // Fetch categories from Firestore
     const unsubscribe = firestore.getAllCategories(
@@ -119,12 +129,17 @@ function ManageIndex() {
                 <FormControl fullWidth style={{ marginBottom: 20 }}>
               <InputLabel>เลือกหมวดหมู่</InputLabel>
               <Select value={selectedCategory} onChange={handleCategoryChange}>
-                {categories.map(category => (
+                {/* {categories.map(category => (
                   <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
-                ))}
+                ))} */}
+                {cate.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
-            <TextField
+            {/* <TextField
               fullWidth
               label="เพิ่มหมวดหมู่ใหม่"
               value={newCategory}
@@ -132,38 +147,40 @@ function ManageIndex() {
               variant="filled"
               style={{ marginBottom: 20 }}
             />
-            <Button
+            <button
               onClick={handleAddCategory}
               className='Add-button'
               variant="contained"
               style={{ marginBottom: 20 }}
             >
               เพิ่มหมวดหมู่
-            </Button>
+            </button> */}
             {selectedCategory && (
               <div style={{ marginTop: 20 }}>
                 <TextField
+                  className='form-field'
                   fullWidth
                   label="เพิ่มรายการใหม่"
                   value={newItem}
                   onChange={(e) => setNewItem(e.target.value)}
                   variant="filled"
                 />
-                <Button
+                <button
                   onClick={editingItem ? handleUpdateItem : handleAddItem}
                   className='Edit-button'
+                  style={{marginTop:20,marginLeft:0}}
                   variant="contained"
                   
                 >
                   {editingItem ? 'อัปเดตรายการ' : 'เพิ่มรายการ'}
-                </Button>
-                <ul style={{ marginTop: 20 }}>
+                </button>
+                <ul style={{ marginTop: 20, width:'100%',alignItems:'center' }}>
                   {items.map(item => (
-                    <li key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>{item.name}</span>
-                      <div>
-                        <Button className='Edit-button' onClick={() => handleEditItem(item)}>แก้ไข</Button>
-                        <Button className='Delete-button' onClick={() => handleDeleteItem(item.id)}>ลบ</Button>
+                    <li key={item.id} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop:20}}>
+                      <div style={{width:'100%',display:'flex',flexDirection:'row',}}>{item.name}</div>
+                      <div style={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <button className='Edit-button' onClick={() => handleEditItem(item)}>แก้ไข</button>
+                        <button className='Delete-button' onClick={() => handleDeleteItem(item.id)}>ลบ</button>
                       </div>
                     </li>
                   ))}

@@ -16,6 +16,8 @@ import './FilePicker.css';
 import { useDropzone } from 'react-dropzone';
 import storage from './Firebase/Storage';
 import Layout from './Layout';
+import { Label } from '@mui/icons-material';
+import MenuItem from '@mui/material/MenuItem';
 
 
 
@@ -25,9 +27,18 @@ function AnnouceAdd() {
   const [desc,setDesc] = useState('');
   const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
+  const [count,setCount] = useState(0);
+  const [type,setType] = useState('');
 
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
+
+  const types =[
+   
+    {label:'ประกาศฉุกเฉิน',value:1},
+    {label:'ข่าวสาร',value:2},
+    {label:'กฎระเบียบ',value:3}
+  ]
 
   const onDrop = useCallback((acceptedFiles) => {
     setFiles([...files, ...acceptedFiles]);
@@ -66,7 +77,8 @@ function AnnouceAdd() {
               detail:detail,
               date:date_str,
               file:downloadURL,
-              file_name:file.name
+              file_name:file.name,
+              count:count,
             }
             await firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)
             resolve(downloadURL);
@@ -141,6 +153,26 @@ function AnnouceAdd() {
                   />
                   
                    
+                  
+                </div>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                    <TextField
+                        label="ประเภทประกาศ"
+                        className="form-field"
+                        select
+                        variant="filled"
+                        style={{width:'100%'}}
+                        InputLabelProps={{ style: { color: '#000' } }}
+                        
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                    >{types.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                      </TextField>
+                    
                   
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
