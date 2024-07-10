@@ -22,7 +22,7 @@ function Annouce() {
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(10);
+  const [endIndex, setEndIndex] = useState(5);
 
   const getAllAnnouceSuc=(doc)=>{
     let annouces = []
@@ -62,13 +62,13 @@ function Annouce() {
   }, []);
 
   const onNext = () => {
-    setStartIndex(startIndex + 10); // Increment the start index by 5
-    setEndIndex(endIndex + 10); // Increment the end index by 5
+    setStartIndex(startIndex + 5); // Increment the start index by 5
+    setEndIndex(endIndex + 5); // Increment the end index by 5
   };
 
   const onPrevious = () => {
-    setStartIndex(Math.max(startIndex - 10, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
-    setEndIndex(Math.max(endIndex - 10, 10)); // Decrement the end index by 5, ensuring it doesn't go below 5
+    setStartIndex(Math.max(startIndex - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
   const handleSearch = (event) => {
@@ -133,10 +133,75 @@ function Annouce() {
                   ))}
                 </tbody>
               </TableBootstrap>
-              <div>
-              <button className='Previous-button' onClick={onPrevious}>Previous</button>
+              <div style={{width:'100%'}}>
+                  <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                  <button className='Next-button' onClick={onNext}>Next</button>
+                </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,marginTop:20}}>
+                <TableBootstrap striped bordered hover className='table'>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                      <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
+                      <th scope="col" style={{width:'15%'}}>วันที่</th>
+                      <th scope="col" style={{width:'35%'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {filteredAnnouces.slice(startIndex, endIndex).map((item, index) => (
+                      <tr key={item.id}> 
+                        <th scope="row">{startIndex + index + 1}</th>
+                        {/* <th scope="row">{index + 1}</th> */}
+                        <td>
+                          {item.title}
+                        </td>
+                        <td>{item.date}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </TableBootstrap>
+                <div style={{width:'100%'}}>
+                  <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                  <button className='Next-button' onClick={onNext}>Next</button>
+                </div>
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20}}>
+                <TableBootstrap striped bordered hover className='table'>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                      <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
+                      <th scope="col" style={{width:'15%'}}>วันที่</th>
+                      <th scope="col" style={{width:'35%'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {filteredAnnouces.slice(startIndex, endIndex).map((item, index) => (
+                      <tr key={item.id}> 
+                        <th scope="row">{startIndex + index + 1}</th>
+                        {/* <th scope="row">{index + 1}</th> */}
+                        <td>
+                          {item.title}
+                        </td>
+                        <td>{item.date}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </TableBootstrap>
+                <div style={{width:'100%'}}>
+                <button className='Previous-button' onClick={onPrevious}>Previous</button>
                 <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
+              </div>
+             
               </div>
 
             </div>
