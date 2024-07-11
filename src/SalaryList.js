@@ -128,7 +128,7 @@ function SalaryList() {
                   <tr>
                     <th scope="col">ลำดับ</th>
                     <th scope="col">เดือน</th>
-                    <th scope="col">actions</th>
+                    <th scope="col" style={{width:'35%'}}>actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -140,7 +140,7 @@ function SalaryList() {
                       <td>
                         {item.date}
                       </td>
-                      <td><button className='Edit-button' onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button>
+                      <td style={{textAlign:'center'}}><button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button>
                           <button className='Add-button' style={{height:'20%'}}>Submit</button>
                       </td>
                     </tr>
@@ -153,7 +153,7 @@ function SalaryList() {
                   <tr>
                     <th scope="col">ลำดับ</th>
                     <th scope="col">เดือน</th>
-                    <th scope="col">actions</th>
+                    <th scope="col" style={{width:'35%'}}>actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,7 +165,7 @@ function SalaryList() {
                       <td>
                         {item.date}
                       </td>
-                      <td><button className='Edit-button' onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button>
+                      <td style={{textAlign:'center'}}><button className='Edit-button' onClick={()=> toEdit(item.date)}>ตรวจสอบ</button>
                 
                       </td>
                     </tr>

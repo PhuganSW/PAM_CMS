@@ -1,3 +1,4 @@
+//Home.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css'; // Your custom CSS file
@@ -39,6 +40,7 @@ function Home() {
               width={400}
               height={200}
               labels={{ style: { fontFamily: 'THSarabunNew', fontSize: 16 } }}
+              responsive
             />
           </div>
           <div className="chart-container">
@@ -56,6 +58,7 @@ function Home() {
               width={400}
               height={200}
               labels={{ style: { fontFamily: 'THSarabunNew', fontSize: 16 } }}
+              responsive
             />
           </div>
         </div>
@@ -67,6 +70,7 @@ function Home() {
               width={500}
               height={300}
               style={{ fontFamily: 'THSarabunNew', fontSize: 16 }}
+              responsive
             />
           </div>
           <div className="chart-container">
@@ -76,6 +80,7 @@ function Home() {
               width={500}
               height={300}
               style={{ fontFamily: 'THSarabunNew', fontSize: 16 }}
+              responsive
             />
           </div>
         </div>

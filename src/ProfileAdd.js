@@ -22,67 +22,6 @@ import { Label } from '@mui/icons-material';
 //import { image } from 'html2canvas/dist/types/css/types/image';
 import html2canvas from 'html2canvas';
 
-// const positions = [
-//   {
-//     value: '',
-//     label: 'None',
-//   },
-//   {
-//     value: 'SW',
-//     label: 'Software Engineer',
-//   },
-//   {
-//     value: 'EE',
-//     label: 'Electical Engineer',
-//   },
-//   {
-//     value: 'MEC',
-//     label: 'Mechanical',
-//   },
-//   {
-//     value:'HR',
-//     label:'Human Resource'
-//   },
-// ];
-
-// const sexs = [
-//   {
-//     value: '',
-//     label: ' ',
-//   },
-//   {
-//     value: 'men',
-//     label: 'ชาย',
-//   },
-//   {
-//     value: 'lady',
-//     label: 'หญิง',
-//   },
-//   {
-//     value: 'other',
-//     label: 'อื่นๆ',
-//   },
-// ];
-
-// const Levels = [
-//   {
-//     value: '',
-//     label: ' ',
-//   },
-//   {
-//     value: 'employee',
-//     label: 'Employee',
-//   },
-//   {
-//     value: 'Lead',
-//     label: 'Leader'
-//   },
-//   {
-//     value: 'HR',
-//     label: 'HR',
-//   },
-// ];
-
 function ProfileAdd() {
   const navigate = useNavigate();
   const formRef = useRef(null);
@@ -134,29 +73,12 @@ function ProfileAdd() {
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
   const [levelOptions, setLevelOptions] = useState([]);
+  const [bankOptions, setBankOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
   const [positions, setPositions] = useState([]);
   const [levels, setLevels] = useState([]);
 
   const [showPassword, setShowPassword] = useState(false);
-
-  // const Levels = [
-  //   {
-  //     value: '',
-  //     label: ' ',
-  //   },
-  //   {
-  //     value: 'employee',
-  //     label: 'Employee',
-  //   },
-  //   {
-  //     value: 'Lead',
-  //     label: 'Leader'
-  //   },
-  //   {
-  //     value: 'HR',
-  //     label: 'HR',
-  //   },
-  // ];
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -247,26 +169,32 @@ function ProfileAdd() {
       level:level,
       quote:'',
       image:'https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/image-10.png?alt=media&token=db1833a9-afab-4b4f-808c-2fe62c29b4cc',
-      image_off:imageUrl
+      image_off:imageUrl,
+      
     }
     firestore.addUser(item,addUserSuccess,addUserUnsuccess)
-    //console.log(imageUrl)
+    //console.log(position)
   }
 
-  useEffect(() => {
-    const fetchDropdownOptions = async () => {
-      try {
-        const positions = await firestore.getDropdownOptions('position');
-        setPositionOptions(positions);
-        const sexOptions = await firestore.getDropdownOptions('categories');
-        setSexOptions(sexOptions);
-        const levels = await firestore.getDropdownOptions('levels');
-        setLevelOptions(levels);
-      } catch (error) {
-        console.error('Error fetching dropdown options:', error);
-      }
-    };
+  const fetchDropdownOptions = async () => {
+    try {
+      const sexOptions = await firestore.getDropdownOptions('sex');
+      setSexOptions(sexOptions.map(option => option.name));
+      const positionOptions = await firestore.getDropdownOptions('position');
+      console.log(positionOptions)
+      setPositionOptions(positionOptions.map(option => option.name));
+      const levelOptions = await firestore.getDropdownOptions('level');
+      setLevelOptions(levelOptions.map(option => option.name));
+      const bankOptions = await firestore.getDropdownOptions('bank')
+      setBankOptions(bankOptions.map(option => option.name));
+      const statusOptions = await firestore.getDropdownOptions('status_per')
+      setStatusOptions(statusOptions.map(option => option.name));
+    } catch (error) {
+      console.error('Error fetching dropdown options:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchDropdownOptions();
   }, []);
 
@@ -331,8 +259,8 @@ function ProfileAdd() {
                   value={sex}
                   onChange={(e) => setSex(e.target.value)}
                 >
-                  {sexOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
+                  {sexOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
                       {option}
                     </MenuItem>
                   ))}
@@ -358,9 +286,9 @@ function ProfileAdd() {
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                 >
-                  {positionOptions.map((option) => (
-                    <MenuItem key={option.id} value={option.name}>
-                      {option.name}
+                 {positionOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -430,7 +358,13 @@ function ProfileAdd() {
                   style={{ width: '35%', marginRight:'1%' }}
                   value={personal_status}
                   onChange={(e) => setPersonal_Status(e.target.value)}
-                />
+                >
+                  {statusOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                  </TextField>
                 <TextField
                   className="form-field"
                   label="จำนวนบุตร"
@@ -496,7 +430,13 @@ function ProfileAdd() {
                   style={{ width: '35%', marginRight: '1%' }}
                   value={bank}
                   onChange={(e) => setBank(e.target.value)}
-                />
+                >
+                  {bankOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                  </TextField>
                 <TextField
                   className="form-field"
                   label="ประเภทบัญชี"
@@ -756,9 +696,9 @@ function ProfileAdd() {
                   value={level}
                   onChange={(e) => setLevel(e.target.value)}
                 >
-                  {levelOptions.map((option) => (
-                    <MenuItem key={option.id} value={option.name}>
-                      {option.name}
+                  {levelOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
                     </MenuItem>
                   ))}
                 </TextField>

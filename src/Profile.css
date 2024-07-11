@@ -136,8 +136,15 @@ color: #FFF;
 .table tbody tr:hover {
   background-color: #e0e0e0 !important; /* Change to your desired hover color */
 }
+@media (min-width: 1024px){
+  .search-field {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+} 
+}
 
-@media (max-width: 767px) {
+@media (max-width: 1025px) {
     .main-content {
       /* padding: 10px; */
       padding-left: 40px;
@@ -168,6 +175,8 @@ color: #FFF;
       margin: 0px 0;
          
     }
+
+   
 
     .fillter-button{
       align-self: center;

@@ -108,13 +108,13 @@ function CheckHistory() {
             <div class="main-contain">
             <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
-                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22,alignSelf:'center',justifyContent:'center'}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              
+              <div style={{width:'95%',alignSelf:'center'}}>
               <div className="table-container">
                 
                 <div className="table-section">
@@ -174,7 +174,7 @@ function CheckHistory() {
                 </TableBootstrap>
                 </div>
               </div>
-
+              </div>
             </div>
           </div>
         </main>

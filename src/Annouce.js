@@ -97,7 +97,7 @@ function Annouce() {
             <div className="main-contain">
             <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
-                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22,alignSelf:'center',justifyContent:'center'}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
@@ -106,7 +106,10 @@ function Annouce() {
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
                 <button className='Add-button' onClick={()=> navigate('/annouce_add')}>เพิ่มประกาศ</button>
               </div>
-              <div style={{width:'95%',alignSelf:'center'}}>
+              <div style={{width:'95%',alignSelf:'center',justifyContent:'center'}}>
+              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                <p style={{fontSize:28,textAlign:'center'}}>ประกาศฉุกเฉิน</p>
+              </div>
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
@@ -137,7 +140,10 @@ function Annouce() {
                   <button className='Previous-button' onClick={onPrevious}>Previous</button>
                   <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
-              <div className="form-row" style={{ display: 'flex', marginBottom: 20,marginTop:20}}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,marginTop:20,alignItems:'center',justifyContent:'center'}}>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>ข่าวสาร</p>
+              </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
                     <tr>
@@ -169,7 +175,10 @@ function Annouce() {
                   <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
               </div>
-              <div className="form-row" style={{ display: 'flex', marginBottom: 20}}>
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center'}}>
+              <div className="form-row" style={{ display: 'flex'}}>
+                <p style={{fontSize:28}}>กฎระเบียบ</p>
+              </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
                     <tr>

@@ -55,6 +55,9 @@ function ManageIndex() {
       (itemsData) => setItems(itemsData),
       (error) => console.error("Error fetching items: ", error)
     );
+
+    handleAddCategory()
+
     return unsubscribe; // Cleanup listener on category change
   };
 
@@ -63,7 +66,8 @@ function ManageIndex() {
     firestore.addCategory(
       newCategory,
       (categoryId) => {
-        setCategories([...categories, { id: categoryId, name: newCategory }]);
+        // setCategories([...categories, { id: categoryId, name: newCategory }]);
+        setCategories([...categories, { id: categoryId, name: selectedCategory }]);
         setNewCategory('');
       },
       (error) => console.error("Error adding category: ", error)
@@ -127,8 +131,8 @@ function ManageIndex() {
                 {/* Add component for manage data of dropdown*/}
                 <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%',marginTop:30}}>
                 <FormControl fullWidth style={{ marginBottom: 20 }}>
-              <InputLabel>เลือกหมวดหมู่</InputLabel>
-              <Select value={selectedCategory} onChange={handleCategoryChange}>
+              <InputLabel id="category-select-label">เลือกหมวดหมู่</InputLabel>
+              <Select labelId="category-select-label" value={selectedCategory} onChange={handleCategoryChange}  label="เลือกหมวดหมู่">
                 {/* {categories.map(category => (
                   <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
                 ))} */}

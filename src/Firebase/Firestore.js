@@ -417,7 +417,8 @@ class FireStore{
     const unsubscribe = onSnapshot(collection(this.db, "categories"), (querySnapshot) => {
       const categories = [];
       querySnapshot.forEach((doc) => {
-        categories.push({ id: doc.id, ...doc.data() });
+        // categories.push({ id: doc.id, ...doc.data() });
+        categories.push({ id: doc.id, name: doc.data().name });
       });
       success(categories);
     }, (error) => {
@@ -446,6 +447,7 @@ class FireStore{
         items.push({ id: doc.id, ...doc.data() });
       });
       success(items);
+      console.log(items)
     }, (error) => {
       unsuccess(error);
     });
@@ -475,21 +477,16 @@ class FireStore{
     await deleteDoc(doc(this.db, "categories", categoryId));
   };
 
-  getDropdownOptions = async (collectionName) => {
-    try {
-      const querySnapshot = await getDocs(collection(this.db, collectionName));
-      const options = [];
-      querySnapshot.forEach((doc) => {
-        options.push(doc.data().value);
-        console.log(`${collectionName} options:`, doc.data().value);
-      });
-      console.log(`${collectionName} options:`, options.items);
-      return options;
-    } catch (e) {
-      console.error(`Error getting documents from ${collectionName}: `, e);
-      throw new Error(e);
-    }
-  }
+  getDropdownOptions = async (category) => {
+    const items = [];
+    const q = query(collection(this.db, "categories", category, "items"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      items.push({ id: doc.id, ...doc.data() });
+    });
+    // console.log(items)
+    return items;
+  };
 
 }
 

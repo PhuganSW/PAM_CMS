@@ -78,7 +78,7 @@ function Salary() {
             <div class="main-contain">
             <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
-                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
+                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22,alignSelf:'center',justifyContent:'center'}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
