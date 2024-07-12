@@ -32,13 +32,8 @@ function ManagePeople() {
   const [selectFillter,setSelectFillter] = useState('');
   const [workplace,setWorkplace] =useState('');
 
-  const workplaces = [
-    { id: '1', name: 'กทม.' },
-    { id: '2', name: 'ระยอง' },
-    { id: '3', name: 'หนองใหญ่' },
-    
-    // Add more positions as needed
-  ];
+  const [workplaces,setWorkplaces] = useState([]);
+
 
   const handleClose = () => setShow(false);
   const handleShow = () =>{
@@ -63,8 +58,20 @@ function ManagePeople() {
     console.log("getAllUsers: "+error)
   }
 
+  const fetchDropdownOptions = async () => {
+    try {
+      const workplaces = await firestore.getDropdownOptions('workplace');
+      setWorkplaces(workplaces.map(option => option.name));
+      
+    } catch (error) {
+      console.error('Error fetching dropdown options:', error);
+    }
+  };
+
+
   useEffect(() => {
-    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
+    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess);
+    fetchDropdownOptions();
   }, []);
 
   const onNext = () => {
@@ -105,7 +112,7 @@ function ManagePeople() {
                 <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%',marginTop:30}}>
                 <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
-                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
+                <input style={{width:'100%',height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
@@ -116,7 +123,7 @@ function ManagePeople() {
                 <button className='Add-button' >เพิ่มพนักงาน</button>
               </div> */}
               
-              <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
+              <div style={{width:'100%',alignSelf:'center',marginTop:20}}>
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
@@ -158,11 +165,11 @@ function ManagePeople() {
                     value={workplace}
                     onChange={(e) => setWorkplace(e.target.value)}
                   >
-                    {workplaces.map((option) => (
-                    <MenuItem key={option.id} value={option.name}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
+                    {workplaces.map((option,index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
                   </TextField>
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px',}}>
@@ -208,12 +215,12 @@ function ManagePeople() {
           <FormControl variant="filled" fullWidth>
               <InputLabel>พื้นที่ทำงาน</InputLabel>
               <Select
-                value={selectFillter}
-                onChange={(e) => setSelectFillter(e.target.value)}
+                value={workplace}
+                onChange={(e) => setWorkplace(e.target.value)}
               >
-                {workplaces.map((option) => (
-                  <MenuItem key={option.id} value={option.name}>
-                    {option.name}
+                {workplaces.map((option,index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
                   </MenuItem>
                 ))}
               </Select>

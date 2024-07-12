@@ -15,25 +15,6 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Layout from './Layout';
 
-const positions = [
-  {
-    value: '',
-    label: 'None',
-  },
-  {
-    value: 'SW',
-    label: 'Software Engineer',
-  },
-  {
-    value: 'EE',
-    label: 'Electical Engineer',
-  },
-  {
-    value: 'MEC',
-    label: 'Mechanical',
-  },
-];
-
 function ProfileManage() {
   const navigate = useNavigate();
   const [allUser,setAllUser] = useState([]);
@@ -47,6 +28,8 @@ function ProfileManage() {
   const [showFillter,setShowFillter] = useState(false);
   const [selectFillter,setSelectFillter] = useState('');
   const [position,setPosition] = useState('');
+
+  const [positionOptions, setPositionOptions] = useState([]);
   
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -90,8 +73,21 @@ function ProfileManage() {
     navigate('/profile_edit',{state:{uid:id}})
   }
 
+  const fetchDropdownOptions = async () => {
+    try {
+      
+      const positionOptions = await firestore.getDropdownOptions('position');
+      setPositionOptions(positionOptions.map(option => option.name));
+      //console.log(positionOptions)
+      
+    } catch (error) {
+      console.error('Error fetching dropdown options:', error);
+    }
+  };
+
   useEffect(() => {
     firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
+    fetchDropdownOptions();
   }, []);
 
   const onNext = () => {
@@ -219,11 +215,11 @@ function ProfileManage() {
                     value={position}
                     onChange={(e) => setPosition(e.target.value)}
                   >
-                    {positions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
+                    {positionOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
                   </TextField>
         </Modal.Body>
         <Modal.Footer>

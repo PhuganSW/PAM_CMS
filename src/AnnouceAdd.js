@@ -57,58 +57,67 @@ function AnnouceAdd() {
     
   };
 
-  const onSave=async()=>{
-    //let date_str = `${("0"+(date.get('date'))).slice(-2)}/${("0"+(date.month()+1)).slice(-2)}/${date.get('year')}`
+  const onSave = async () => {
     let date_str = date.format('DD/MM/YYYY');
-    const uploadPromises = files.map((file) => {
-      return new Promise((resolve, reject) => {
-        storage.uploadFile(
-          file,
-          (progress) => {
-            setUploadProgress((prevProgress) => ({
-              ...prevProgress,
-              [file.name]: progress,
-            }));
-          },
-          async (downloadURL) => {
-            let item={
-              title:title,
-              desc:desc,
-              detail:detail,
-              date:date_str,
-              file:downloadURL,
-              file_name:file.name,
-              count:count,
+  
+    const uploadFiles = async () => {
+      const uploadPromises = files.map((file) => {
+        return new Promise((resolve, reject) => {
+          storage.uploadFile(
+            file,
+            (progress) => {
+              setUploadProgress((prevProgress) => ({
+                ...prevProgress,
+                [file.name]: progress,
+              }));
+            },
+            async (downloadURL) => {
+              resolve(downloadURL);
+            },
+            (error) => {
+              console.error('Upload failed:', error);
+              reject(error);
             }
-            await firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)
-            resolve(downloadURL);
-          },
-          (error) => {
-            console.error('Upload failed:', error);
-            reject(error);
-          }
-        );
+          );
+        });
       });
-    });
-
+  
+      try {
+        const downloadURLs = await Promise.all(uploadPromises);
+        return downloadURLs;
+      } catch (error) {
+        console.error('Error uploading files: ', error);
+        alert('Error uploading files');
+        throw error;
+      }
+    };
+  
     try {
-      await Promise.all(uploadPromises);
-      alert('Files uploaded and URLs saved to Firestore');
-      setFiles([]);
-      setUploadProgress({});
+      let fileURLs = [];
+      if (files.length !== 0) {
+        fileURLs = await uploadFiles();
+        alert('Files uploaded and URLs saved to Firestore');
+        setFiles([]);
+        setUploadProgress({});
+      }
+  
+      let item = {
+        title: title,
+        desc: desc,
+        detail: detail,
+        date: date_str,
+        file: fileURLs.length ? fileURLs[0] : "",
+        file_name: files.length ? files[0].name : "",
+        count: count,
+        type: type
+      };
+  
+      await firestore.addAnnouce(item, addAnnouceSuc, addAnnouceUnsuc);
     } catch (error) {
-      console.error('Error uploading files: ', error);
-      alert('Error uploading files');
+      console.error('Error saving announcement: ', error);
     }
-    /*let item={
-      title:title,
-      desc:desc,
-      detail:detail,
-      date:date_str,
-      file:""
-    }
-    firestore.addAnnouce(item,addAnnouceSuc,addAnnouceUnsuc)*/
   }
+  
 
   const removeFile = (file) => () => {
     setFiles(files.filter((f) => f !== file));

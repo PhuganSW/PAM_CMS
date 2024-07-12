@@ -32,18 +32,16 @@ function CheckHistory() {
   const [show, setShow] = useState(false);
   const [workplace,setWorkplace] =useState('');
   const [selectFillter,setSelectFillter] = useState('');
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
+  const [outStartIndex, setOutStartIndex] = useState(0);
+  const [outEndIndex, setOutEndIndex] = useState(10);
 
-  const workplaces = [
-    { id: '1', name: 'กทม.' },
-    { id: '2', name: 'ระยอง' },
-    { id: '3', name: 'หนองใหญ่' },
-    
-    // Add more positions as needed
-  ];
+  const [workplaces,setWorkplaces] = useState([]);
 
   const handleClose = () => setShow(false);
-  const handleShow = () =>{
-
+  const handleShow = (item) =>{
+    setWorkplace(item)
     setShow(true);
   } 
 
@@ -76,6 +74,26 @@ function CheckHistory() {
   const getInUnsuc=(e)=> console.log(e)
   const getOutUnsuc=(e)=> console.log(e)
 
+  const onNextIn = () => {
+    setStartIndex(startIndex + 10);
+    setEndIndex(endIndex + 10);
+  };
+
+  const onPreviousIn = () => {
+    setStartIndex(Math.max(startIndex - 10, 0));
+    setEndIndex(Math.max(endIndex - 10, 10));
+  };
+
+  const onNextOut = () => {
+    setOutStartIndex(outStartIndex + 10);
+    setOutEndIndex(outEndIndex + 10);
+  };
+
+  const onPreviousOut = () => {
+    setOutStartIndex(Math.max(outStartIndex - 10, 0));
+    setOutEndIndex(Math.max(outEndIndex - 10, 10));
+  };
+
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
@@ -86,9 +104,20 @@ function CheckHistory() {
     setFilteredOut(filtered1);
   };
 
+  const fetchDropdownOptions = async () => {
+    try {
+      const workplaces = await firestore.getDropdownOptions('workplace');
+      setWorkplaces(workplaces.map(option => option.name));
+      
+    } catch (error) {
+      console.error('Error fetching dropdown options:', error);
+    }
+  };
+
   useEffect(() => {
     firestore.getAllCheckin(getInSuc,getInUnsuc)
     firestore.getAllCheckout(getOutSuc,getOutUnsuc)
+    fetchDropdownOptions();
   }, []);
 
   return (
@@ -114,12 +143,12 @@ function CheckHistory() {
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              <div style={{width:'95%',alignSelf:'center'}}>
+              <div style={{width:'100%',alignSelf:'center'}}>
               <div className="table-container">
                 
                 <div className="table-section">
                 <p className="table-title">เวลาเข้างาน</p>
-                <TableBootstrap striped bordered hover className='table' style={{marginTop:10}}>
+                <TableBootstrap striped bordered hover className='table' style={{marginTop:10,width:'100%'}}>
                   <thead>
                     <tr>
                       <th scope="col">วันที่</th>
@@ -131,7 +160,7 @@ function CheckHistory() {
                   </thead>
                   <tbody>
                   {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => ( */}
-                  {filteredUsers.map((item, index) => (
+                  {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                       <tr key={item.id}>
                         <th scope="row">{item.date}</th>
                         <td>
@@ -139,11 +168,15 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={()=>handleShow()}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.workplace)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
                 </TableBootstrap>
+                <div>
+                  <button className='Previous-button' style={{width:'20%'}} onClick={onPreviousIn}>Previous</button>
+                  <button className='Next-button' style={{width:'20%'}} onClick={onNextIn}>Next</button>
+                </div>
                 </div>
                 
                 <div className="table-section">
@@ -159,7 +192,7 @@ function CheckHistory() {
                     </tr>
                   </thead>
                   <tbody>
-                  {filteredOut.map((item, index) => (
+                  {filteredOut.slice(outStartIndex, outEndIndex).map((item, index) => (
                       <tr key={item.id}>
                         <th scope="row">{item.date}</th>
                         <td>
@@ -167,11 +200,15 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.workplace)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
                 </TableBootstrap>
+                <div>
+                  <button className='Previous-button' style={{width:'20%'}} onClick={onPreviousOut}>Previous</button>
+                  <button className='Next-button' style={{width:'20%'}} onClick={onNextOut}>Next</button>
+                </div>
                 </div>
               </div>
               </div>
@@ -187,12 +224,12 @@ function CheckHistory() {
           <FormControl variant="filled" fullWidth>
               <InputLabel>พื้นที่ทำงาน</InputLabel>
               <Select
-                value={selectFillter}
-                onChange={(e) => setSelectFillter(e.target.value)}
+                value={workplace}
+                onChange={(e) => setWorkplace(e.target.value)}
               >
-                {workplaces.map((option) => (
-                  <MenuItem key={option.id} value={option.name}>
-                    {option.name}
+                {workplaces.map((option,index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
                   </MenuItem>
                 ))}
               </Select>

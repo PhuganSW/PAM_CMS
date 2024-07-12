@@ -23,16 +23,44 @@ function Annouce() {
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(5);
+  const [startNews, setStartNews] = useState(0);
+  const [endNews, setEndNews] = useState(5);
+  const [startRule, setStartRule] = useState(0);
+  const [endRule, setEndRule] = useState(5);
+  const [newsAnnouce,setNewsAnnouce] = useState([]);
+  const [filterNews,setFilterNews] = useState([]);
+  const [ruleAnnouce,setRuleAnnouce] = useState([]);
+  const [filterRule,setFilterRule] = useState([]);
 
   const getAllAnnouceSuc=(doc)=>{
+    
     let annouces = []
+    let news = []
+    let rules = []
     if (allAnnouce.length === 0) {
-        
+      
       doc.forEach((item) => {
-        annouces.push({id: item.id,title:item.title,date:item.date});
+        //console.log(item.title+":"+item.type)
+        if(item.type == 1){
+          annouces.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        }
+        else if(item.type == 2){
+          news.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        }
+        else if(item.type == 3){
+          rules.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        }
+        else{
+          annouces.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        }
+        
       });
       setAllAnnouce(annouces);
+      setNewsAnnouce(news)
+      setRuleAnnouce(rules)
       setFilteredAnnouces(annouces);
+      setFilterNews(news)
+      setFilterRule(rules)
     }
   }
 
@@ -48,7 +76,7 @@ function Annouce() {
 
   const deleteAnnouce =()=>{
     firestore.deleteAnnouce(selectID)
-    //console.log('Del'+selectID)
+    console.log('Del'+selectID)
     handleClose()
   }
 
@@ -71,12 +99,36 @@ function Annouce() {
     setEndIndex(Math.max(endIndex - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
+  const NextNews = () => {
+    setStartNews(startNews + 5); // Increment the start index by 5
+    setEndNews(endNews + 5); // Increment the end index by 5
+  };
+
+  const PreviousNews = () => {
+    setStartNews(Math.max(startNews - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndNews(Math.max(endNews - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
+
+  const NextRule = () => {
+    setStartRule(startRule + 5); // Increment the start index by 5
+    setEndRule(endRule + 5); // Increment the end index by 5
+  };
+
+  const PreviousRule = () => {
+    setStartRule(Math.max(startRule - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndRule(Math.max(endRule - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
+
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
     setSearchQuery(query);
     const filtered = allAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
+    const filteredNews = newsAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
+    const filteredRule = ruleAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
     setFilteredAnnouces(filtered);
+    setFilterNews(filteredNews);
+    setFilterRule(filteredRule);
   };
 
 
@@ -108,7 +160,9 @@ function Annouce() {
               </div>
               <div style={{width:'95%',alignSelf:'center',justifyContent:'center'}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
-                <p style={{fontSize:28,textAlign:'center'}}>ประกาศฉุกเฉิน</p>
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ประกาศฉุกเฉิน</p>
+                {/* <p style={{fontSize:28,textAlign:'center',width:'100%',alignSelf:'center',marginLeft:0,paddingLeft:0}}>ประกาศฉุกเฉิน</p> */}
               </div>
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
@@ -154,9 +208,9 @@ function Annouce() {
                     </tr>
                   </thead>
                   <tbody>
-                  {filteredAnnouces.slice(startIndex, endIndex).map((item, index) => (
+                  {filterNews.slice(startNews, endNews).map((item, index) => (
                       <tr key={item.id}> 
-                        <th scope="row">{startIndex + index + 1}</th>
+                        <th scope="row">{startNews + index + 1}</th>
                         {/* <th scope="row">{index + 1}</th> */}
                         <td>
                           {item.title}
@@ -171,8 +225,8 @@ function Annouce() {
                   </tbody>
                 </TableBootstrap>
                 <div style={{width:'100%'}}>
-                  <button className='Previous-button' onClick={onPrevious}>Previous</button>
-                  <button className='Next-button' onClick={onNext}>Next</button>
+                  <button className='Previous-button' onClick={PreviousNews}>Previous</button>
+                  <button className='Next-button' onClick={NextNews}>Next</button>
                 </div>
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center'}}>
@@ -189,7 +243,7 @@ function Annouce() {
                     </tr>
                   </thead>
                   <tbody>
-                  {filteredAnnouces.slice(startIndex, endIndex).map((item, index) => (
+                  {filterRule.slice(startRule, endRule).map((item, index) => (
                       <tr key={item.id}> 
                         <th scope="row">{startIndex + index + 1}</th>
                         {/* <th scope="row">{index + 1}</th> */}
@@ -206,8 +260,8 @@ function Annouce() {
                   </tbody>
                 </TableBootstrap>
                 <div style={{width:'100%'}}>
-                <button className='Previous-button' onClick={onPrevious}>Previous</button>
-                <button className='Next-button' onClick={onNext}>Next</button>
+                <button className='Previous-button' onClick={PreviousRule}>Previous</button>
+                <button className='Next-button' onClick={NextRule}>Next</button>
                 </div>
               </div>
              

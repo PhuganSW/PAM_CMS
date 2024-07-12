@@ -387,6 +387,7 @@ class FireStore{
           id:doc.id,
           title:data.title,
           date: data.date,
+          type:data.type
         });
       });
       success(allAnnouce);
