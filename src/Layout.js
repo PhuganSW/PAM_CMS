@@ -72,6 +72,7 @@ const Layout = ({ children }) => {
               <li className={isActive("/salary") ? "active" : ""}><Link to="/salary">ทำเรื่องเงินเดือน</Link></li>
               <li className={isActive("/annouce") ? "active" : ""}><Link to="/annouce">ลงประกาศ</Link></li>
               <li className={isActive("/manage_account") ? "active" : ""}><Link to="/manage_account">จัดการผู้ใช้</Link></li>
+              <li className={isActive("/contact") ? "active" : ""}><Link to="/contact">ติดต่อผู้พัฒนา</Link></li>
             </ul>
           </nav>
           <div className='logout-button'> 

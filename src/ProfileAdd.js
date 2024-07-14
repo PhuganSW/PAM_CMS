@@ -25,7 +25,10 @@ import html2canvas from 'html2canvas';
 function ProfileAdd() {
   const navigate = useNavigate();
   const formRef = useRef(null);
-
+  
+  const [prefixth,setPrefixTh] = useState('');
+  const [prefixEn,setPrefixEn] = useState('');
+  const [emID,setEmID] = useState('');
   const [name,setName] = useState('');
   const [nameEng,setNameEng] = useState('');
   const [position,setPosition] = useState('');
@@ -70,6 +73,8 @@ function ProfileAdd() {
   const [borrow,setBorrow] = useState(0); //เงินกู้ยืม
   const [withdraw,setWithdraw] = useState(0); //เงินเบิกล่วงหน้า
 
+  const [prefixThOptions, setPrefixThOptions] = useState([]);
+  const [prefixEnOptions, setPrefixEnOptions] = useState([]);
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
   const [levelOptions, setLevelOptions] = useState([]);
@@ -156,6 +161,9 @@ function ProfileAdd() {
     var nameth = name.split(" ")
     var nameEn = nameEng.split(" ")
     let item ={
+      prefixth:prefixth,
+      prefixEn:prefixEn,
+      emID:emID,
       name:nameth[0],
       lastname:nameth[1],
       FName:nameEn[0],
@@ -206,6 +214,10 @@ function ProfileAdd() {
 
   const fetchDropdownOptions = async () => {
     try {
+      const prefixThOptions = await firestore.getDropdownOptions('prefixTh');
+      setPrefixThOptions(prefixThOptions.map(option => option.name));
+      const prefixEnOptions = await firestore.getDropdownOptions('prefixEn');
+      setPrefixEnOptions(prefixEnOptions.map(option => option.name));
       const sexOptions = await firestore.getDropdownOptions('sex');
       setSexOptions(sexOptions.map(option => option.name));
       const positionOptions = await firestore.getDropdownOptions('position');
@@ -255,7 +267,47 @@ function ProfileAdd() {
                 </label>
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
-    
+
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                <TextField
+                  className="form-field"
+                  select
+                  label="คำนำหน้าชื่อ"
+                  variant="filled"
+                  style={{ width: '35%',marginRight:'1%'}}
+                  value={prefixth}
+                  onChange={(e) => setPrefixTh(e.target.value)}
+                >{prefixThOptions.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+                </TextField>
+                <TextField
+                  className="form-field"
+                  select
+                  label="คำนำหน้าชื่อภาษาอังกฤษ"
+                  variant="filled"
+                  style={{ width: '35%',marginRight:'1%'}}
+                  value={prefixEn}
+                  onChange={(e) => setPrefixEn(e.target.value)}
+                >{prefixEnOptions.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+                </TextField>
+                <TextField
+                  className="form-field"
+                  label="รหัสพนักงาน"
+                  variant="filled"
+                  style={{ width: '28%',}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={emID}
+                  onChange={(e) => setEmID(e.target.value)}
+                />
+              </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
                   className="form-field"

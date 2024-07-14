@@ -23,6 +23,7 @@ import SalaryList from './SalaryList';
 import ManageIndex from './ManageIndex';
 import ManagePeople from './Managepeople';
 import Network from './Network';
+import Contact from './Contact';
 import { auth } from './Firebase/Config';
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
         <Route path='/manageIndex' element={currentUser ? <ManageIndex /> : <Navigate to="/" />} />
         <Route path='/managment' element={currentUser ? <ManagePeople /> : <Navigate to="/" />} />
         <Route path='/network' element={currentUser ? <Network /> : <Navigate to="/" />} />
+        <Route path='/contact' element={currentUser ? <Contact /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );

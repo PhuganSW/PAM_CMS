@@ -28,6 +28,8 @@ function ManageIndex() {
   const [editingItem, setEditingItem] = useState(null);
 
   const cate =[
+    {label:'คำนำหน้าชื่อ',value:'prefixTh'},
+    {label:'คำนำหน้าภาษาอังกฤษ',value:'prefixEn'},
     {label:'เพศ',value:'sex'},
     {label:'ตำแหน่ง',value:'position'},
     {label:'ระดับ',value:'level'},
