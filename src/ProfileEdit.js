@@ -60,9 +60,14 @@ function ProfileEdit() {
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
-  const [levelOptions, setLevelOptions] = useState([]);
+  // const [levelOptions, setLevelOptions] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+
+  const levelOptions = [
+    {label:'Employee',value:'employee'},
+    {label:'HR',value:'HR'}
+  ]
 
   const getUserSuccess = (data) => {
     setPrefixTh(data.prefixth);
@@ -205,8 +210,8 @@ function ProfileEdit() {
       const positionOptions = await firestore.getDropdownOptions('position');
       console.log(positionOptions);
       setPositionOptions(positionOptions.map(option => option.name));
-      const levelOptions = await firestore.getDropdownOptions('level');
-      setLevelOptions(levelOptions.map(option => option.name));
+      // const levelOptions = await firestore.getDropdownOptions('level');
+      // setLevelOptions(levelOptions.map(option => option.name));
       const bankOptions = await firestore.getDropdownOptions('bank');
       setBankOptions(bankOptions.map(option => option.name));
       const statusOptions = await firestore.getDropdownOptions('status_per');
@@ -729,9 +734,9 @@ function ProfileEdit() {
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
               >
-                {levelOptions.map((option, index) => (
-                  <MenuItem key={index} value={option}>
-                    {option}
+                {levelOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
                   </MenuItem>
                 ))}
               </TextField>

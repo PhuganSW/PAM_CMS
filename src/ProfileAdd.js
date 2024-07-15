@@ -4,7 +4,7 @@ import Sidebar from './sidebar';
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import './addProfile.css'
-import { TextField } from '@mui/material';
+import { Alert, TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
 import storage from './Firebase/Storage';
@@ -77,13 +77,18 @@ function ProfileAdd() {
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
-  const [levelOptions, setLevelOptions] = useState([]);
+  // const [levelOptions, setLevelOptions] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [positions, setPositions] = useState([]);
   const [levels, setLevels] = useState([]);
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const levelOptions = [
+    {label:'Employee',value:'employee'},
+    {label:'HR',value:'HR'}
+  ]
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -145,11 +150,11 @@ function ProfileAdd() {
       state:false
     }
     firestore.addUsername(id,user,addUsernameSuc,addUsernameUnsuc)
-
   }
 
   const addUserUnsuccess=(e)=>{
     console.log(e)
+    alert('กรอกชื่อกับนามสกุลให้ครบถ้วน')
   }
 
   const onSave= async()=>{
@@ -208,6 +213,12 @@ function ProfileAdd() {
       borrow:borrow,
       withdraw:withdraw,
     }
+    // if(password != ''){
+    //   firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+    // }
+    // else{
+    //   alert('กรุณาระบุรหัสผ่าน')
+    // }
     firestore.addUser(item,addUserSuccess,addUserUnsuccess)
     //console.log(position)
   }
@@ -223,8 +234,8 @@ function ProfileAdd() {
       const positionOptions = await firestore.getDropdownOptions('position');
       console.log(positionOptions)
       setPositionOptions(positionOptions.map(option => option.name));
-      const levelOptions = await firestore.getDropdownOptions('level');
-      setLevelOptions(levelOptions.map(option => option.name));
+      // const levelOptions = await firestore.getDropdownOptions('level');
+      // setLevelOptions(levelOptions.map(option => option.name));
       const bankOptions = await firestore.getDropdownOptions('bank')
       setBankOptions(bankOptions.map(option => option.name));
       const statusOptions = await firestore.getDropdownOptions('status_per')
@@ -776,9 +787,9 @@ function ProfileAdd() {
                   value={level}
                   onChange={(e) => setLevel(e.target.value)}
                 >
-                  {levelOptions.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
+                  {levelOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
                     </MenuItem>
                   ))}
                 </TextField>

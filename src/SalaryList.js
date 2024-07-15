@@ -157,19 +157,7 @@ function SalaryList() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {allBill.map((item, index) => (
-                    <tr key={item.id}>
-                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
-                      <th scope="row">{index + 1}</th>
-                      <td>
-                        {item.date}
-                      </td>
-                      <td style={{textAlign:'center'}}><button className='Edit-button' onClick={()=> toEdit(item.date)}>ตรวจสอบ</button>
-                
-                      </td>
-                    </tr>
-                  ))}
+                  
                 </tbody>
               </TableBootstrap>
               {/*<div>

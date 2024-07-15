@@ -183,20 +183,7 @@ function ManagePeople() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
-                  {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
-                    <tr key={item.id}>
-                      <th scope="row">{startIndex + index + 1}</th>
-                      {/* <th scope="row" style={{width:80}}>{index + 1}</th> */}
-                      <td>
-                        {item.name}
-                      </td>
-                      <td>{item.position}</td>
-                      <td style={{width:'30%',textAlign:'center'}}>
-                        <button className='Edit-button' onClick={()=>handleShow()} >มอบหมาย</button>
-                      </td>
-                    </tr>
-                  ))}
+                  
                 </tbody>
               </TableBootstrap>
                 </div>
