@@ -285,6 +285,31 @@ class FireStore{
     }
   }
 
+  getWelth=async(id,success,unsuccess)=>{
+    try {
+      const q = query(
+        collection(this.db, "wealthfare"),
+        where('id', '==', id)
+      );
+  
+      const querySnapshot = await getDocs(q);
+      const data = [];
+      querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+      });
+  
+      if (data.length > 0) {
+        success(data);
+      } else {
+        console.log("No such document!");
+        success([]);
+      }
+    } catch (e) {
+      unsuccess(e);
+    }
+  }
+
+
   addBill=async(item,success,unsuccess)=>{
     try{
       const docRef = await addDoc(collection(this.db, "Salary"), item);

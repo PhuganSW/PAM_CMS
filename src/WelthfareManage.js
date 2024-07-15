@@ -44,6 +44,24 @@ function WelthfareManage() {
 
   }
 
+  const getWelSuc=(data)=>{
+    let item = data[0]
+    setAbsence(item.absence)
+    setAbsenceR(item.absenceR)
+    setSick(item.sick)
+    setSickR(item.sickR)
+    setHoliday(item.holiday)
+    setHolidayR(item.holidayR)
+    setMaternity(item.maternity)
+    setMaternityR(item.maternityR)
+    setOther(item.other)
+    setOtherR(item.otherR)
+  }
+  
+  const getWelunsuc=(err)=>{
+    console.log(err)
+  }
+
 
   const onSave=()=>{
     let item ={
@@ -69,6 +87,7 @@ function WelthfareManage() {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
       firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getWelth(location.state.uid,getWelSuc,getWelunsuc)
     } else {
       console.warn('No ID found in location state');
     }
