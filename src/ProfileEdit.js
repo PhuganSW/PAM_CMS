@@ -6,6 +6,14 @@ import storage from './Firebase/Storage';
 import Layout from './Layout';
 import './Home.css';
 import './addProfile.css';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import FilledInput from '@mui/material/FilledInput';
+import InputLabel from '@mui/material/InputLabel';
+import { sha256 } from 'crypto-hash';
 
 function ProfileEdit() {
   const navigate = useNavigate();
@@ -23,6 +31,8 @@ function ProfileEdit() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [sex, setSex] = useState('');
+  const [username,setUsername] = useState('');
+  const [password,setPassword] = useState('');
   const [level, setLevel] = useState('');
   const [image_off, setImage_Off] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -64,10 +74,24 @@ function ProfileEdit() {
   const [bankOptions, setBankOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const levelOptions = [
     {label:'Employee',value:'employee'},
     {label:'HR',value:'HR'}
   ]
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const getUsernameSuc=(data)=>{
+    setUsername(data.username)
+    setLevel(data.level)
+  }
+
+  const getUsernameUnsuc =(err) => console.log(err);
 
   const getUserSuccess = (data) => {
     setPrefixTh(data.prefixth);
@@ -121,6 +145,9 @@ function ProfileEdit() {
     console.log(error);
   };
 
+  const updateUsernameS =()=>{}
+  const updateUsernameUn =(e)=> console.log(e)
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -132,6 +159,17 @@ function ProfileEdit() {
       reader.readAsDataURL(file);
     }
   };
+
+  const hashPass=async(password)=>{
+    try {
+      const hashedPassword = await sha256(password);
+      console.log("Encrypt pass: " + hashedPassword)
+      return hashedPassword;
+    } catch (error) {
+      console.error('Error hashing password:', error);
+      throw new Error('Hashing failed');
+    }
+  }
 
   const validateNumberInput = (input) => {
     const number = Number(input);
@@ -197,6 +235,22 @@ function ProfileEdit() {
     };
     console.log('save');
     firestore.updateUser(uid, item, updateSuccess, updateUnsuccess);
+    if(password != ''){
+      let pass = await hashPass(password);
+      setPassword(pass)
+      let item1 = {
+        username:username,
+        password:pass,
+        level:level,
+      } 
+      firestore.updateUsername(uid,item1,updateUsernameS,updateUsernameUn)
+    }else{
+      let item1 = {
+        username:username,
+        level:level,
+      } 
+      firestore.updateUsername(uid,item1,updateUsernameS,updateUsernameUn)
+    }
   };
 
   const fetchDropdownOptions = async () => {
@@ -225,6 +279,7 @@ function ProfileEdit() {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       firestore.getUser(location.state.uid, getUserSuccess, getUserUnsuccess);
+      firestore.getUsername(location.state.uid, getUsernameSuc, getUsernameUnsuc)
     } else {
       console.warn('No ID found in location state');
     }
@@ -724,22 +779,53 @@ function ProfileEdit() {
               <p style={{fontSize:28}}>สิทธิ์การใช้งานแอปฯ :</p>
             </div>
             <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-              <TextField
-                className="form-field"
-                id="filled-select"
-                select
-                label="ระดับ"
-                variant="filled"
-                style={{ width: '35%'}}
-                value={level}
-                onChange={(e) => setLevel(e.target.value)}
-              >
-                {levelOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+            <TextField
+                  className="form-field"
+                  label="Username"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <FormControl className="form-field" sx={{ width: '35%', backgroundColor: '#fff',marginRight:'1%' }} variant="filled">
+                  <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+                  <FilledInput
+                    id="filled-adornment-password"
+                    type={showPassword ? 'text' : 'password'}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FormControl>
+                <TextField
+                  className="form-field"
+                  id="filled-select"
+                  select
+                  label="ระดับ"
+                  variant="filled"
+                  style={{ width: '28%'}}
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                >
+                  {levelOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
             </div>
           
             </div>

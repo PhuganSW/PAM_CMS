@@ -39,3 +39,25 @@ exports.deleteUser = functions.https.onCall((data, context) => {
       throw new functions.https.HttpsError('unknown', `Error deleting user: ${error.message}`);
     });
 });
+
+exports.resetUserPassword = functions.https.onCall(async (data, context) => {
+  const { uid, newPassword } = data;
+
+  try {
+      // Ensure the request is authenticated
+      if (!context.auth) {
+          throw new functions.https.HttpsError(
+              'failed-precondition',
+              'The function must be called while authenticated.'
+          );
+      }
+
+      // Update the user's password
+      await admin.auth().updateUser(uid, { password: newPassword });
+
+      return { message: 'Password reset successful' };
+  } catch (error) {
+      console.error('Error resetting user password:', error);
+      throw new functions.https.HttpsError('unknown', error.message, error);
+  }
+});

@@ -80,6 +80,23 @@ class FireStore{
     }
   }
 
+  getUsername=async(id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "username", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
   updateUser=async(id,data,success,unsuccess)=>{
     try{
       const docRef = doc(this.db, "users", id);
@@ -276,9 +293,9 @@ class FireStore{
     return unsubscribe;
   };
 
-  addWelth=async(item,success,unsuccess)=>{
+  addWelth=async(id,item,success,unsuccess)=>{
     try{
-      const docRef = await addDoc(collection(this.db, "wealthfare"), item);
+      const docRef = await setDoc(doc(this.db, "wealthfare",id), item);
       success();
     }catch(e){
       unsuccess(e);
@@ -286,26 +303,19 @@ class FireStore{
   }
 
   getWelth=async(id,success,unsuccess)=>{
-    try {
-      const q = query(
-        collection(this.db, "wealthfare"),
-        where('id', '==', id)
-      );
-  
-      const querySnapshot = await getDocs(q);
-      const data = [];
-      querySnapshot.forEach((doc) => {
-        data.push(doc.data());
-      });
-  
-      if (data.length > 0) {
-        success(data);
+    try{
+      const docRef = doc(this.db, "wealthfare", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
       } else {
+        // docSnap.data() will be undefined in this case
         console.log("No such document!");
-        success([]);
       }
-    } catch (e) {
-      unsuccess(e);
+    }catch(e){
+      unsuccess(e)
     }
   }
 

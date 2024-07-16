@@ -18,7 +18,8 @@ const Login = () => {
   }
 
   const loginUnsuc=(err1,err2)=>{
-    alert(err1+": "+err2);
+    console.log(err1+": "+err2);
+    alert("email or password is wrong!!")
   }
 
   const onLogin = async (e) => {

@@ -63,18 +63,18 @@ class Auth {
         });
       }
 
-      resetPassword=(email)=>{
-        sendPasswordResetEmail(this.auth, email)
-        .then(() => {
-          // Password reset email sent!
-          // ..
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // ..
-        });
-      }
+      resetPassword = (uid, newPassword, success, unsuccess) => {
+        const resetPasswordFunction = httpsCallable(this.functions, 'resetUserPassword');
+        resetPasswordFunction({ uid, newPassword })
+            .then((result) => {
+                console.log(result.data.message);
+                success();
+            })
+            .catch((error) => {
+                console.error('Error resetting password:', error);
+                unsuccess(error);
+            });
+    }
 
       deleteUser = (uid, success, unsuccess) => {
         const deleteUserFunction = httpsCallable(this.functions, 'deleteUser');

@@ -45,7 +45,7 @@ function WelthfareManage() {
   }
 
   const getWelSuc=(data)=>{
-    let item = data[0]
+    let item = data
     setAbsence(item.absence)
     setAbsenceR(item.absenceR)
     setSick(item.sick)
@@ -54,6 +54,8 @@ function WelthfareManage() {
     setHolidayR(item.holidayR)
     setMaternity(item.maternity)
     setMaternityR(item.maternityR)
+    setKama(item.kama)
+    setKamaR(item.kamaR)
     setOther(item.other)
     setOtherR(item.otherR)
   }
@@ -65,21 +67,22 @@ function WelthfareManage() {
 
   const onSave=()=>{
     let item ={
-      id:uid,
       name:name,
       absence:absence,
       sick:sick,
       holiday:holiday,
       maternity:maternity,
+      kama:kama,
       other:otherR,
       absenceR:absenceR,
       sickR:sickR,
       holidayR:holidayR,
       maternityR:maternityR,
+      kamaR:kamaR,
       otherR:otherR
     }
     //console.log('save')
-    firestore.addWelth(item,addWelthSuc,addWelthUnsuc)
+    firestore.addWelth(uid,item,addWelthSuc,addWelthUnsuc)
   }
 
   useEffect(() => {

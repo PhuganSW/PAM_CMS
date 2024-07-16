@@ -168,8 +168,8 @@ function ProfileManage() {
                       </td>
                       <td>{item.position}</td>
                       <td style={{width:'30%',textAlign:'center'}}>
-                        <button className='Edit-button' onClick={()=>onEdit(item.id)}>แก้ไขประวัติ</button>
-                        <button className='Delete-button' onClick={()=>handleDelShow(item.id)}>ลบประวัติ</button>
+                        <button className='Edit-button' onClick={()=>onEdit(item.id)}>แก้ไข</button>
+                        <button className='Delete-button' onClick={()=>handleDelShow(item.id)}>ลบ</button>
                       </td>
                     </tr>
                   ))}
