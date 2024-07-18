@@ -182,9 +182,11 @@ function ProfileEdit() {
 
   const onSave = async () => {
     let imageUrl = '';
-    if (image_off) {
-      imageUrl = await storage.uploadImage(image_off);
-    }
+  if (image_off instanceof File) {
+    imageUrl = await storage.uploadImage(image_off);
+  } else {
+    imageUrl = image_off; // Keep the existing URL if no new image is uploaded
+  }
 
     var nameth = name.split(" ");
     var nameEn = nameEng.split(" ");

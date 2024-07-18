@@ -31,11 +31,12 @@ function LeaveRequest() {
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
+  const [imageURLs, setImageURLs] = useState([]);
 
   const getAllLeaveSuccess=(doc)=>{
     let leaves = []
     if (allLeave.length === 0) {
-        
+      console.log(doc)
       doc.forEach((item) => {
         leaves.push({id: item.id,date:item.date, name: item.name, state:item.state});
       });
@@ -64,6 +65,7 @@ function LeaveRequest() {
     setAmount(data.amount)
     setState(data.state)
     setState1(data.state1)
+    setImageURLs(data.fileURLs || []);
     handleShow()
   }
 
@@ -85,9 +87,9 @@ function LeaveRequest() {
   }
 
   const onAllow=()=>{
-    setState1(true)
+    setState(true)
     let item={
-      state1:true
+      state:true
     }
     firestore.updateLeave(selectID,item,allowSuc,allowUnsuc)
   }
@@ -248,13 +250,23 @@ function LeaveRequest() {
                 value={amount}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            {/* <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>สถานะ(หัวหน้างาน)</Form.Label>
               <Form.Control
                 type="name"
                 autoFocus
                 value={state}
               />
+            </Form.Group> */}
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>เอกสารแนบ</Form.Label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                {imageURLs.map((url, index) => (
+                  <a key={index} href={url} target="_blank" rel="noopener noreferrer">
+                    <img src={url} alt={`attachment-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', borderRadius: '10px', objectFit: 'contain' }} />
+                  </a>
+                ))}
+              </div>
             </Form.Group>
           </Form>
           

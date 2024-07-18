@@ -238,7 +238,7 @@ class FireStore{
           id:doc.id,
           date: data.dateStart,
           name: data.name,
-          state: data.state1,
+          state: data.state,
         });
       });
       success(allLeave);
