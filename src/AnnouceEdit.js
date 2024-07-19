@@ -57,6 +57,7 @@ function AnnouceEdit() {
     setFileName(data.file_name)
     setFileURL(data.file)
     setType(data.type)
+    setCount(data.count)
   }
 
   const getAnnouceUnsuc=(e)=>{
@@ -85,6 +86,7 @@ function AnnouceEdit() {
     date: date_str,
     file: fileURL,
     file_name: fileName,
+    count:count,
     type:type,
   };
 
