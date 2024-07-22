@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Contact.css';
 import Layout from './Layout';
-//import emailjs from 'emailjs-com';
+// import emailjs from 'emailjs-com';
 import { IoAttach } from "react-icons/io5";
 
 function Contact() {
@@ -41,13 +41,8 @@ function Contact() {
     <div className="dashboard">
       <Layout />
       <main className="main-content">
-        <div className="main">
-          <div className="header-page">
-            <header>
-              <h1>ติดต่อผู้พัฒนา</h1>
-            </header>
-          </div>
-          <div className="main-contain">
+        <div className="contact-page">
+          <div className="contact-container">
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">ชื่อ</label>

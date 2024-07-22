@@ -18,6 +18,24 @@ class FireStore{
     }
   }
 
+  getAccount=async(id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "account_cms", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        //console.log("No such document!");
+        unsuccess()
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
   deleteAccount= async (id)=>{
     await deleteDoc(doc(this.db, "account_cms", id));
   }

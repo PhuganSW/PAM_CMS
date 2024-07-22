@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 //import { auth } from './Firebase/Config';
 import { useNavigate } from 'react-router-dom';
 import auth from './Firebase/Auth';
+import firestore from './Firebase/Firestore';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,10 +12,22 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [currentUser,setCurrentUser] = useState(null)
 
-  const loginSuc=(user)=>{
-    console.log(user)
-    setCurrentUser(user)
+  const getAccountS=(data)=>{
     navigate("/home");
+  }
+
+  const getAccountUn=(e)=> alert("Not Found user!!");
+
+  const loginSuc=(user)=>{
+    //console.log(user.uid)
+    if(user){
+      setCurrentUser(user)
+      firestore.getAccount(user.uid,getAccountS,getAccountUn)
+      //navigate("/home");
+    }
+    else{
+      alert("Not Found user!!")
+    }
   }
 
   const loginUnsuc=(err1,err2)=>{
@@ -35,8 +48,8 @@ const Login = () => {
   const suc=(user)=>{
     if (user) {
       setCurrentUser(user)
-      navigate("/home")
-      console.log(user)
+      firestore.getAccount(user.uid,getAccountS,getAccountUn)
+      //console.log(user.uid)
     }
   }
 
