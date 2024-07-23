@@ -195,8 +195,9 @@ function Annouce() {
                   <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,marginTop:20,alignItems:'center',justifyContent:'center'}}>
-              <div className="form-row" style={{ display: 'flex'}}>
-                <p style={{fontSize:28}}>ข่าวสาร</p>
+              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ข่าวสาร</p>
               </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
@@ -229,9 +230,10 @@ function Annouce() {
                   <button className='Next-button' onClick={NextNews}>Next</button>
                 </div>
               </div>
-              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center'}}>
-              <div className="form-row" style={{ display: 'flex'}}>
-                <p style={{fontSize:28}}>กฎระเบียบ</p>
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
+              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>กฎระเบียบ</p>
               </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>

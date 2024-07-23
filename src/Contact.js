@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Contact.css';
 import Layout from './Layout';
-// import emailjs from 'emailjs-com';
+import emailjs from 'emailjs-com';
 import { IoAttach } from "react-icons/io5";
 
 function Contact() {
@@ -21,12 +21,12 @@ function Contact() {
       formData.append(`attachment${index}`, file);
     });
 
-    // emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData, 'YOUR_USER_ID')
-    //   .then((result) => {
-    //     alert('Email successfully sent!');
-    //   }, (error) => {
-    //     alert('Failed to send email. Please try again.');
-    //   });
+    emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData, 'YOUR_USER_ID')
+      .then((result) => {
+        alert('Email successfully sent!');
+      }, (error) => {
+        alert('Failed to send email. Please try again.');
+      });
   };
 
   const handleFileChange = (e) => {

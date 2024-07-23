@@ -26,6 +26,7 @@ import Network from './Network';
 import Contact from './Contact';
 import { auth } from './Firebase/Config';
 import firestore from './Firebase/Firestore';
+import CalendarPage from './Calendar';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -95,6 +96,7 @@ function App() {
         <Route path='/managment' element={currentUser && checkUser ? <ManagePeople /> : <Navigate to="/" />} />
         <Route path='/network' element={currentUser && checkUser ? <Network /> : <Navigate to="/" />} />
         <Route path='/contact' element={currentUser && checkUser ? <Contact /> : <Navigate to="/" />} />
+        <Route path='/calendar' element={currentUser && checkUser ? <CalendarPage /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );
