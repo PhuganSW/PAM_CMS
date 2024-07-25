@@ -63,14 +63,23 @@ class FireStore{
     return unsubscribe;
   };
 
-  addUser= async (item,success,unsuccess)=>{
-    try{
-      const docRef = await addDoc(collection(this.db, "users"), item);
+  // addUser= async (item,success,unsuccess)=>{
+  //   try{
+  //     const docRef = await addDoc(collection(this.db, "users"), item);
+  //     success(docRef.id);
+  //   }catch(e){
+  //     unsuccess(e);
+  //   }
+  // }
+
+  addUser = async (companyId, item, success, unsuccess) => {
+    try {
+      const docRef = await addDoc(collection(this.db, "companies", companyId, "users"), item);
       success(docRef.id);
-    }catch(e){
+    } catch (e) {
       unsuccess(e);
     }
-  }
+  };
 
   addUsername= async (id,item,success,unsuccess)=>{
     try{

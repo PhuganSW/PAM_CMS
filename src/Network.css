@@ -1,7 +1,10 @@
 .user-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px;
 }
 
 .user-card {
@@ -12,6 +15,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .user-card img {
@@ -30,4 +34,42 @@
 .user-card p {
   margin: 0;
   color: #777;
+}
+
+/* For screens 576px and above */
+@media (min-width: 576px) {
+  .user-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .user-card img {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+/* For screens 768px and above */
+@media (min-width: 768px) {
+  .user-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* For screens 1024px and above */
+@media (min-width: 1024px) {
+  .user-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .user-card img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* For screens 1200px and above */
+@media (min-width: 1200px) {
+  .user-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }

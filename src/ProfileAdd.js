@@ -219,7 +219,8 @@ function ProfileAdd() {
     // else{
     //   alert('กรุณาระบุรหัสผ่าน')
     // }
-    firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+    //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+    firestore.addUser("redAI",item,addUserSuccess,addUserUnsuccess)
     //console.log(position)
   }
 
