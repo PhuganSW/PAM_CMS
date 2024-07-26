@@ -90,22 +90,36 @@ class FireStore{
     }
   }
 
-  getUser=async(id,success,unsuccess)=>{
-    try{
-      const docRef = doc(this.db, "users", id);
-      const docSnap = await getDoc(docRef);
+  // getUser=async(id,success,unsuccess)=>{
+  //   try{
+  //     const docRef = doc(this.db, "users", id);
+  //     const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        //console.log("Document data:", docSnap.data());
-        success(docSnap.data())
-      } else {
-        // docSnap.data() will be undefined in this case
-        console.log("No such document!");
-      }
-    }catch(e){
-      unsuccess(e)
-    }
-  }
+  //     if (docSnap.exists()) {
+  //       //console.log("Document data:", docSnap.data());
+  //       success(docSnap.data())
+  //     } else {
+  //       // docSnap.data() will be undefined in this case
+  //       console.log("No such document!");
+  //     }
+  //   }catch(e){
+  //     unsuccess(e)
+  //   }
+  // }
+
+  getUser = (companyId, userId, success, unsuccess) => {
+    getDoc(doc(this.db, "companies", companyId, "users", userId))
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          success({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          unsuccess("No such document!");
+        }
+      })
+      .catch((error) => {
+        unsuccess(error);
+      });
+  };
 
   getUsername=async(id,success,unsuccess)=>{
     try{
@@ -124,17 +138,27 @@ class FireStore{
     }
   }
 
-  updateUser=async(id,data,success,unsuccess)=>{
-    try{
-      const docRef = doc(this.db, "users", id);
+  // updateUser=async(id,data,success,unsuccess)=>{
+  //   try{
+  //     const docRef = doc(this.db, "users", id);
 
       
-      await updateDoc(docRef,data);
+  //     await updateDoc(docRef,data);
+  //     success();
+  //   }catch(e){
+  //     unsuccess(e);
+  //   }
+  // }
+
+  updateUser = async (companyId, userId, newData, success, unsuccess) => {
+    try {
+      const userRef = doc(this.db, "companies", companyId, "users", userId);
+      await updateDoc(userRef, newData);
       success();
-    }catch(e){
+    } catch (e) {
       unsuccess(e);
     }
-  }
+  };
 
   updateUsername=async(id,data,success,unsuccess)=>{
     try{
@@ -156,26 +180,51 @@ class FireStore{
     await deleteDoc(doc(this.db, "username", id));
   }
 
-  getAllUser = (success, unsuccess) => {
-    //const unsubscribe = onSnapshot(collection(this.db, "users"),orderBy("name","desc"), (querySnapshot) => {
-      const q = query(collection(this.db, "users"), orderBy('name',"asc"));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const allaccount = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        allaccount.push({
-          id: doc.id,
-          name: data.name+" "+data.lastname,
-          position: data.position,
-          image_off:data.image_off,
-        });
-      });
-      success(allaccount);
-    }, (error) => {
-      console.error("Error getting documents: ", error);
-      unsuccess(error);
-    });
+  // getAllUser = (success, unsuccess) => {
+  //   //const unsubscribe = onSnapshot(collection(this.db, "users"),orderBy("name","desc"), (querySnapshot) => {
+  //     const q = query(collection(this.db, "users"), orderBy('name',"asc"));
+  //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     const allaccount = [];
+  //     querySnapshot.forEach((doc) => {
+  //       const data = doc.data();
+  //       allaccount.push({
+  //         id: doc.id,
+  //         name: data.name+" "+data.lastname,
+  //         position: data.position,
+  //         image_off:data.image_off,
+  //       });
+  //     });
+  //     success(allaccount);
+  //   }, (error) => {
+  //     console.error("Error getting documents: ", error);
+  //     unsuccess(error);
+  //   });
     
+  //   // Return unsubscribe function to stop listening for updates
+  //   return unsubscribe;
+  // };
+
+  getAllUser = (companyId, success, unsuccess) => {
+    const unsubscribe = onSnapshot(
+      collection(this.db, "companies", companyId, "users"),
+      (querySnapshot) => {
+        const users = [];
+        querySnapshot.forEach((doc) => {
+          users.push({
+                    id: doc.id,
+                    name: doc.data().name+" "+doc.data().lastname,
+                    position: doc.data().position,
+                    image_off:doc.data().image_off,
+                  });
+          // users.push({ id: doc.id, ...doc.data() });
+        });
+        success(users);
+      },
+      (error) => {
+        unsuccess(error);
+      }
+    );
+
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
   };

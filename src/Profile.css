@@ -103,6 +103,8 @@ color: #FFF;
   height: 50px;
   border-radius: 25px;
   margin-right: 10px;
+  align-items: center;
+  justify-content: center;
 }
 
 .Previous-button{

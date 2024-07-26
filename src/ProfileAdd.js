@@ -220,7 +220,7 @@ function ProfileAdd() {
     //   alert('กรุณาระบุรหัสผ่าน')
     // }
     //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
-    firestore.addUser("redAI",item,addUserSuccess,addUserUnsuccess)
+    firestore.addUser("miscible",item,addUserSuccess,addUserUnsuccess)
     //console.log(position)
   }
 

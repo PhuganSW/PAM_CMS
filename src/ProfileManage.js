@@ -86,7 +86,7 @@ function ProfileManage() {
   };
 
   useEffect(() => {
-    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
+    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess)
     fetchDropdownOptions();
   }, []);
 

@@ -236,7 +236,7 @@ function ProfileEdit() {
       withdraw: withdraw,
     };
     console.log('save');
-    firestore.updateUser(uid, item, updateSuccess, updateUnsuccess);
+    firestore.updateUser("miscible",uid, item, updateSuccess, updateUnsuccess);
     if(password != ''){
       let pass = await hashPass(password);
       setPassword(pass)
@@ -280,7 +280,7 @@ function ProfileEdit() {
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
-      firestore.getUser(location.state.uid, getUserSuccess, getUserUnsuccess);
+      firestore.getUser("miscible",location.state.uid, getUserSuccess, getUserUnsuccess);
       firestore.getUsername(location.state.uid, getUsernameSuc, getUsernameUnsuc)
     } else {
       console.warn('No ID found in location state');
