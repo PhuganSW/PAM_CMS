@@ -42,7 +42,7 @@ function Welthfare() {
   }
 
   useEffect(() => {
-    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess)
+    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess)
   }, []);
 
   const onNext = () => {

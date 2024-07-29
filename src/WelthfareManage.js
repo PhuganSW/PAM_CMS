@@ -82,15 +82,15 @@ function WelthfareManage() {
       otherR:otherR
     }
     //console.log('save')
-    firestore.addWelth(uid,item,addWelthSuc,addWelthUnsuc)
+    firestore.addWelth("miscible",uid,item,addWelthSuc,addWelthUnsuc)
   }
 
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
-      firestore.getWelth(location.state.uid,getWelSuc,getWelunsuc)
+      firestore.getUser("miscible",location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getWelth("miscible",location.state.uid,getWelSuc,getWelunsuc)
     } else {
       console.warn('No ID found in location state');
     }

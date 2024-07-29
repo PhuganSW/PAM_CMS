@@ -105,14 +105,14 @@ function AnnouceEdit() {
       async (downloadURL) => {
         item.file = downloadURL;
         item.file_name = file.name;
-        await firestore.updateAnnouce(selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+        await firestore.updateAnnouce("miscible",selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
       },
       (error) => {
         console.error('Upload failed:', error);
       }
     );
   } else {
-    firestore.updateAnnouce(selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+    firestore.updateAnnouce("miscible",selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
   }
   }
 
@@ -127,7 +127,7 @@ function AnnouceEdit() {
     if (location.state && location.state.id) {
       setSelectID(location.state.id);
       //console.log('from eff'+uid)
-      firestore.getAnnouce(location.state.id,getAnnouceSuc,getAnnouceUnsuc)
+      firestore.getAnnouce("miscible",location.state.id,getAnnouceSuc,getAnnouceUnsuc)
     } else {
       console.warn('No ID found in location state');
     }

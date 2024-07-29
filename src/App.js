@@ -45,7 +45,7 @@ function App() {
       setCurrentUser(user);
       if(user){
         console.log(user.uid)
-        firestore.getAccount(user.uid,getAccountS,getAccountUn)
+        firestore.getAccount("miscible",user.uid,getAccountS,getAccountUn)
       }
       //console.log(user.uid)
       

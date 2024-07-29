@@ -149,7 +149,7 @@ function ProfileAdd() {
       email:email,
       state:false
     }
-    firestore.addUsername(id,user,addUsernameSuc,addUsernameUnsuc)
+    firestore.addUsername("miscible",id,user,addUsernameSuc,addUsernameUnsuc)
   }
 
   const addUserUnsuccess=(e)=>{
@@ -176,12 +176,12 @@ function ProfileAdd() {
       position:position,
       workstart:firstDay,
       address:address,
-      tel:phone,
+      phone:phone,
       email:email,
       sex:sex,
       level:level,
       quote:'',
-      image:'https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/image-10.png?alt=media&token=db1833a9-afab-4b4f-808c-2fe62c29b4cc',
+      // image:'https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/image-10.png?alt=media&token=db1833a9-afab-4b4f-808c-2fe62c29b4cc',
       image_off:imageUrl,
       
       nat_id:nat_id,

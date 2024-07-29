@@ -77,11 +77,11 @@ function OTRequest() {
 
   const getOT=(id)=>{
     setSelectID(id)
-    firestore.getOT(id,getOTSuc,getOTUnsuc)
+    firestore.getOT("miscible",id,getOTSuc,getOTUnsuc)
   }
 
   useEffect(() => {
-    firestore.getAllOT(getAllOTSuccess,getAllOTUnsuccess)
+    firestore.getAllOT("miscible",getAllOTSuccess,getAllOTUnsuccess)
   }, []);
 
   const onNext = () => {

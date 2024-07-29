@@ -17,7 +17,7 @@ function Network() {
 
   useEffect(() => {
     // Fetch all users from Firestore
-    const unsubscribe = firestore.getAllUser(
+    const unsubscribe = firestore.getAllUser("miscible",
       (usersData) => {
         console.log("Fetched users:", usersData); // Log fetched users
         setUsers(usersData);

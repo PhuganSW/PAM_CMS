@@ -19,15 +19,15 @@ const Login = () => {
   const getAccountUn=(e)=> alert("Not Found user!!");
 
   const loginSuc=(user)=>{
-    //console.log(user.uid)
-    if(user){
-      setCurrentUser(user)
-      firestore.getAccount(user.uid,getAccountS,getAccountUn)
-      //navigate("/home");
-    }
-    else{
-      alert("Not Found user!!")
-    }
+    navigate("/home");
+    // if(user){
+    //   setCurrentUser(user)
+    //   firestore.getAccount("miscible",user.uid,getAccountS,getAccountUn)
+    //   //navigate("/home");
+    // }
+    // else{
+    //   alert("Not Found user!!")
+    // }
   }
 
   const loginUnsuc=(err1,err2)=>{
@@ -46,15 +46,15 @@ const Login = () => {
   };
 
   const suc=(user)=>{
-    if (user) {
-      setCurrentUser(user)
-      firestore.getAccount(user.uid,getAccountS,getAccountUn)
-      //console.log(user.uid)
-    }
+    // if (user) {
+    //   setCurrentUser(user)
+    //   firestore.getAccount("miscible",user.uid,getAccountS,getAccountUn)
+      
+    // }
   }
 
   useEffect(() => {
-    auth.checksignin(suc);
+    //auth.checksignin(suc);
   }, []);
 
 

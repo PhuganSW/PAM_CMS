@@ -70,7 +70,7 @@ function ManagePeople() {
 
 
   useEffect(() => {
-    firestore.getAllUser(getAllUsersSuccess,getAllUsersUnsuccess);
+    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess);
     fetchDropdownOptions();
   }, []);
 

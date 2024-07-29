@@ -86,17 +86,17 @@ function SalaryCal() {
       amount:amount,
     }
     console.log('save')
-    firestore.addBill(item,saveSuc,saveUnsuc)
+    firestore.addBill("miscible",item,saveSuc,saveUnsuc)
   }
 
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getUser("miscible",location.state.uid,getUserSuccess,getUserUnsuccess)
       if(location.state.act=="edit"){
         //console.log("edit "+ location.state.date)
-        firestore.getBill(location.state.uid,location.state.date,getBillSuc,getBillUnsuc)
+        firestore.getBill("miscible",location.state.uid,location.state.date,getBillSuc,getBillUnsuc)
       }
     } else {
       console.warn('No ID found in location state');

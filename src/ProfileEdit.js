@@ -104,7 +104,7 @@ function ProfileEdit() {
     setFirstDay(data.workstart);
     setAddress(data.address);
     setEmail(data.email);
-    setPhone(data.tel);
+    setPhone(data.phone);
     setLevel(data.level);
     setImage_Off(data.image_off);
     setNat_ID(data.nat_id);

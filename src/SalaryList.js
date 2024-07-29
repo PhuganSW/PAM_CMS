@@ -65,8 +65,8 @@ function SalaryList() {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser(location.state.uid,getUserSuccess,getUserUnsuccess)
-      firestore.getAllBill(location.state.uid,getAllBillSuc,getAllBillUnsuc)
+      firestore.getUser("miscible",location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getAllBill("miscible",location.state.uid,getAllBillSuc,getAllBillUnsuc)
     } else {
       console.warn('No ID found in location state');
     }

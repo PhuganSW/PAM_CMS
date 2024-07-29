@@ -115,8 +115,8 @@ function CheckHistory() {
   };
 
   useEffect(() => {
-    firestore.getAllCheckin(getInSuc,getInUnsuc)
-    firestore.getAllCheckout(getOutSuc,getOutUnsuc)
+    firestore.getAllCheckin("miscible",getInSuc,getInUnsuc)
+    firestore.getAllCheckout("miscible",getOutSuc,getOutUnsuc)
     fetchDropdownOptions();
   }, []);
 

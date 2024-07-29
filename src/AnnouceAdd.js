@@ -112,7 +112,7 @@ function AnnouceAdd() {
         type: type
       };
   
-      await firestore.addAnnouce(item, addAnnouceSuc, addAnnouceUnsuc);
+      await firestore.addAnnouce("miscible",item, addAnnouceSuc, addAnnouceUnsuc);
     } catch (error) {
       console.error('Error saving announcement: ', error);
     }

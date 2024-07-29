@@ -46,7 +46,7 @@ function ManageAccount() {
     }
 
     useEffect(() => {
-      firestore.getAllAccount(getallAccountSuccess,getallAccountUnsuccess)
+      firestore.getAllAccount("miscible",getallAccountSuccess,getallAccountUnsuccess)
     }, []);
   
 
@@ -66,7 +66,7 @@ function ManageAccount() {
         level:level
       }
       //console.log(item)
-      firestore.addAccount(user.uid,item)
+      firestore.addAccount("miscible",user.uid,item)
       handleClose()
     }
 
@@ -89,7 +89,7 @@ function ManageAccount() {
     }
     
     const Delete =()=>{
-      firestore.deleteAccount(selectID)
+      firestore.deleteAccount("miscible",selectID)
       //auth.deleteUser(selectID,delSuc,delUnsuc)
       console.log('Del'+selectID)
       console.log(auth.currentUser)

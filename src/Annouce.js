@@ -86,7 +86,7 @@ function Annouce() {
 
 
   useEffect(() => {
-    firestore.getAllAnnouce(getAllAnnouceSuc,getAllAnnouceUnsuc)
+    firestore.getAllAnnouce("miscible",getAllAnnouceSuc,getAllAnnouceUnsuc)
   }, []);
 
   const onNext = () => {

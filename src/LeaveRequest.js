@@ -75,7 +75,7 @@ function LeaveRequest() {
 
   const getLeave=(id)=>{
     setSelectID(id)
-    firestore.getLeave(id,getLeaveSuc,getLeaveUnsuc)
+    firestore.getLeave("miscible",id,getLeaveSuc,getLeaveUnsuc)
   }
 
   const allowSuc =()=>{
@@ -91,11 +91,11 @@ function LeaveRequest() {
     let item={
       state:true
     }
-    firestore.updateLeave(selectID,item,allowSuc,allowUnsuc)
+    firestore.updateLeave("miscible",selectID,item,allowSuc,allowUnsuc)
   }
 
   useEffect(() => {
-    firestore.getAllLeave(getAllLeaveSuccess,getAllLeaveUnsuccess)
+    firestore.getAllLeave("miscible",getAllLeaveSuccess,getAllLeaveUnsuccess)
   }, []);
 
   const onNext = () => {
