@@ -106,7 +106,7 @@ function CheckHistory() {
 
   const fetchDropdownOptions = async () => {
     try {
-      const workplaces = await firestore.getDropdownOptions('workplace');
+      const workplaces = await firestore.getDropdownOptions("miscible",'workplace');
       setWorkplaces(workplaces.map(option => option.name));
       
     } catch (error) {

@@ -32,6 +32,7 @@ function ProfileEdit() {
   const [phone, setPhone] = useState('');
   const [sex, setSex] = useState('');
   const [username,setUsername] = useState('');
+  const [originalUsername, setOriginalUsername] = useState('');
   const [password,setPassword] = useState('');
   const [level, setLevel] = useState('');
   const [image_off, setImage_Off] = useState(null);
@@ -48,7 +49,7 @@ function ProfileEdit() {
   const [address_off, setAddress_Off] = useState(''); // ที่อยู่ตามบัตรประชาชน
   const [disease, setDisease] = useState('');
   const [blood_type, setBlood_type] = useState('');
-  const [Ldrug, setLdrug] = useState('');
+  const [Ldrug, setLdrug] = useState(''); //แพ้ยา
   const [wealthHos, setWealthHos] = useState('');
 
   const [costL, setCostL] = useState(0); // ค่าครองชีพ
@@ -75,6 +76,8 @@ function ProfileEdit() {
   const [statusOptions, setStatusOptions] = useState([]);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isUsernameTaken, setIsUsernameTaken] = useState(false);
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -88,6 +91,7 @@ function ProfileEdit() {
 
   const getUsernameSuc=(data)=>{
     setUsername(data.username)
+    setOriginalUsername(data.username); 
     setLevel(data.level)
   }
 
@@ -181,6 +185,14 @@ function ProfileEdit() {
   };
 
   const onSave = async () => {
+    if (username !== originalUsername) {
+      const isTaken = await firestore.verifyUsername("miscible", username);
+      console.log(isTaken)
+      if (!isTaken) {
+        alert("This username is already taken.");
+        return;
+      }
+    }
     let imageUrl = '';
   if (image_off instanceof File) {
     imageUrl = await storage.uploadImage(image_off);
@@ -235,7 +247,7 @@ function ProfileEdit() {
       borrow: borrow,
       withdraw: withdraw,
     };
-    console.log('save');
+
     firestore.updateUser("miscible",uid, item, updateSuccess, updateUnsuccess);
     if(password != ''){
       let pass = await hashPass(password);
@@ -245,32 +257,32 @@ function ProfileEdit() {
         password:pass,
         level:level,
       } 
-      firestore.updateUsername(uid,item1,updateUsernameS,updateUsernameUn)
+      firestore.updateUsername("miscible",uid,item1,updateUsernameS,updateUsernameUn)
     }else{
       let item1 = {
         username:username,
         level:level,
       } 
-      firestore.updateUsername(uid,item1,updateUsernameS,updateUsernameUn)
+      firestore.updateUsername("miscible",uid,item1,updateUsernameS,updateUsernameUn)
     }
   };
 
   const fetchDropdownOptions = async () => {
     try {
-      const prefixThOptions = await firestore.getDropdownOptions('prefixTh');
+      const prefixThOptions = await firestore.getDropdownOptions("miscible",'prefixTh');
       setPrefixThOptions(prefixThOptions.map(option => option.name));
-      const prefixEnOptions = await firestore.getDropdownOptions('prefixEn');
+      const prefixEnOptions = await firestore.getDropdownOptions("miscible",'prefixEn');
       setPrefixEnOptions(prefixEnOptions.map(option => option.name));
-      const sexOptions = await firestore.getDropdownOptions('sex');
+      const sexOptions = await firestore.getDropdownOptions("miscible",'sex');
       setSexOptions(sexOptions.map(option => option.name));
-      const positionOptions = await firestore.getDropdownOptions('position');
+      const positionOptions = await firestore.getDropdownOptions("miscible",'position');
       console.log(positionOptions);
       setPositionOptions(positionOptions.map(option => option.name));
       // const levelOptions = await firestore.getDropdownOptions('level');
       // setLevelOptions(levelOptions.map(option => option.name));
-      const bankOptions = await firestore.getDropdownOptions('bank');
+      const bankOptions = await firestore.getDropdownOptions("miscible",'bank');
       setBankOptions(bankOptions.map(option => option.name));
-      const statusOptions = await firestore.getDropdownOptions('status_per');
+      const statusOptions = await firestore.getDropdownOptions("miscible",'status_per');
       setStatusOptions(statusOptions.map(option => option.name));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);
@@ -281,7 +293,7 @@ function ProfileEdit() {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       firestore.getUser("miscible",location.state.uid, getUserSuccess, getUserUnsuccess);
-      firestore.getUsername(location.state.uid, getUsernameSuc, getUsernameUnsuc)
+      firestore.getUsername("miscible",location.state.uid, getUsernameSuc, getUsernameUnsuc)
     } else {
       console.warn('No ID found in location state');
     }

@@ -59,8 +59,8 @@ function ProfileManage() {
   }
 
   const Delete =()=>{
-    firestore.deleteUser(selectID)
-    firestore.deleteUsername(selectID)
+    firestore.deleteUser("miscible",selectID)
+    firestore.deleteUsername("miscible",selectID)
     //console.log('Del'+selectID)
     handleDelClose()
   }
@@ -76,7 +76,7 @@ function ProfileManage() {
   const fetchDropdownOptions = async () => {
     try {
       
-      const positionOptions = await firestore.getDropdownOptions('position');
+      const positionOptions = await firestore.getDropdownOptions("miscible",'position');
       setPositionOptions(positionOptions.map(option => option.name));
       //console.log(positionOptions)
       

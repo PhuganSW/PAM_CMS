@@ -37,7 +37,7 @@ function ProfileAdd() {
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
   const [sex,setSex] = useState('');
-  const [level,setLevel] = useState('');
+  const [level,setLevel] = useState('employee');
   const [username,setUsername] = useState('');
   const [password,setPassword] = useState('');
   const [image_off,setImage_Off] = useState(null);
@@ -102,6 +102,7 @@ function ProfileAdd() {
 
   const addUsernameUnsuc=(e)=>{
     console.log(e)
+    
   }
 
   const hashPass=async(password)=>{
@@ -220,26 +221,36 @@ function ProfileAdd() {
     //   alert('กรุณาระบุรหัสผ่าน')
     // }
     //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
-    firestore.addUser("miscible",item,addUserSuccess,addUserUnsuccess)
+    try {
+      const isUsernameAvailable = await firestore.verifyUsername("miscible", username);
+      if (isUsernameAvailable) {
+        firestore.addUser("miscible", item, addUserSuccess, addUserUnsuccess);
+      } else {
+        alert("The username is already taken. Please choose another one.");
+      }
+    } catch (error) {
+      console.error("Error verifying username:", error);
+      alert("An error occurred while verifying the username. Please try again.");
+    }
     //console.log(position)
   }
 
   const fetchDropdownOptions = async () => {
     try {
-      const prefixThOptions = await firestore.getDropdownOptions('prefixTh');
+      const prefixThOptions = await firestore.getDropdownOptions("miscible",'prefixTh');
       setPrefixThOptions(prefixThOptions.map(option => option.name));
-      const prefixEnOptions = await firestore.getDropdownOptions('prefixEn');
+      const prefixEnOptions = await firestore.getDropdownOptions("miscible",'prefixEn');
       setPrefixEnOptions(prefixEnOptions.map(option => option.name));
-      const sexOptions = await firestore.getDropdownOptions('sex');
+      const sexOptions = await firestore.getDropdownOptions("miscible",'sex');
       setSexOptions(sexOptions.map(option => option.name));
-      const positionOptions = await firestore.getDropdownOptions('position');
+      const positionOptions = await firestore.getDropdownOptions("miscible",'position');
       console.log(positionOptions)
       setPositionOptions(positionOptions.map(option => option.name));
       // const levelOptions = await firestore.getDropdownOptions('level');
       // setLevelOptions(levelOptions.map(option => option.name));
-      const bankOptions = await firestore.getDropdownOptions('bank')
+      const bankOptions = await firestore.getDropdownOptions("miscible",'bank')
       setBankOptions(bankOptions.map(option => option.name));
-      const statusOptions = await firestore.getDropdownOptions('status_per')
+      const statusOptions = await firestore.getDropdownOptions("miscible",'status_per')
       setStatusOptions(statusOptions.map(option => option.name));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);
@@ -761,6 +772,7 @@ function ProfileAdd() {
                   <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
                   <FilledInput
                     id="filled-adornment-password"
+                    required
                     type={showPassword ? 'text' : 'password'}
                     endAdornment={
                       <InputAdornment position="end">

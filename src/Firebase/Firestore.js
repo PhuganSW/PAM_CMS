@@ -72,6 +72,20 @@ class FireStore{
   //   }
   // }
 
+  verifyUsername = async (companyId, username)=>{
+    try {
+      const q = query(
+        collection(this.db, "companies", companyId, "username"),
+        where('username', '==', username)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.empty; // Returns true if username is available
+    } catch (e) {
+      console.error("Error verifying username:", e);
+      return false; // Return false on error, assuming username might be taken or some error occurred
+    }
+  }
+
   addUser = async (companyId, item, success, unsuccess) => {
     try {
       const docRef = await addDoc(collection(this.db, "companies", companyId, "users"), item);
@@ -82,9 +96,14 @@ class FireStore{
   };
 
   addUsername= async (companyId,id,item,success,unsuccess)=>{
+    
     try{
-      const docRef =  await setDoc(doc(this.db, "companies", companyId, "username", id), item);
-      success();
+      
+      
+        const docRef =  await setDoc(doc(this.db, "companies", companyId, "username", id), item);
+        success();
+      
+      
     }catch(e){
       unsuccess(e);
     }
@@ -275,6 +294,31 @@ class FireStore{
     
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
+  };
+
+  assignWork=async(companyId,workPlaceId,userId,item,success,unsuccess)=>{
+    console.log(workPlaceId)
+    try {
+      const userRef = doc(this.db, "companies", companyId, "workplaces", workPlaceId, "users", userId);
+      await setDoc(userRef, item);
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  }
+
+  getUsersByWorkplace = async (companyId, workPlaceId, success, unsuccess) => {
+    try {
+      const workplaceRef = collection(this.db, "companies", companyId, "workplaces", workPlaceId, "users");
+      const querySnapshot = await getDocs(workplaceRef);
+      let users = [];
+      querySnapshot.forEach((doc) => {
+        users.push({ id: doc.id, ...doc.data() });
+      });
+      success(users);
+    } catch (e) {
+      unsuccess(e);
+    }
   };
 
   getLeave=async(companyId,id,success,unsuccess)=>{
@@ -515,9 +559,9 @@ class FireStore{
     await deleteDoc(doc(this.db, "companies", companyId, "annouce", id));
   }
 
-  addCategory = async (category, success, unsuccess) => {
+  addCategory = async (companyId,category, success, unsuccess) => {
     try {
-      const docRef = await addDoc(collection(this.db, "categories"), { name: category });
+      const docRef = await addDoc(collection(this.db, "companies", companyId, "categories"), { name: category });
       success(docRef.id);
     } catch (e) {
       unsuccess(e);
@@ -525,8 +569,8 @@ class FireStore{
   };
 
   // Get all categories
-  getAllCategories = (success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "categories"), (querySnapshot) => {
+  getAllCategories = (companyId,success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "categories"), (querySnapshot) => {
       const categories = [];
       querySnapshot.forEach((doc) => {
         // categories.push({ id: doc.id, ...doc.data() });
@@ -542,9 +586,9 @@ class FireStore{
   };
 
   // Add item to a category
-  addItemToCategory = async (categoryId, item, success, unsuccess) => {
+  addItemToCategory = async (companyId,categoryId, item, success, unsuccess) => {
     try {
-      const docRef = await addDoc(collection(this.db, "categories", categoryId, "items"), { name: item });
+      const docRef = await addDoc(collection(this.db, "companies", companyId, "categories", categoryId, "items"), { name: item });
       success(docRef.id);
     } catch (e) {
       unsuccess(e);
@@ -552,8 +596,8 @@ class FireStore{
   };
 
   // Get items of a category
-  getItemsOfCategory = (categoryId, success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "categories", categoryId, "items"), (querySnapshot) => {
+  getItemsOfCategory = (companyId,categoryId, success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "categories", categoryId, "items"), (querySnapshot) => {
       const items = [];
       querySnapshot.forEach((doc) => {
         items.push({ id: doc.id, ...doc.data() });
@@ -569,14 +613,14 @@ class FireStore{
   };
 
   // Delete item from category
-  deleteItemFromCategory = async (categoryId, itemId) => {
-    await deleteDoc(doc(this.db, "categories", categoryId, "items", itemId));
+  deleteItemFromCategory = async (companyId,categoryId, itemId) => {
+    await deleteDoc(doc(this.db, "companies", companyId, "categories", categoryId, "items", itemId));
   };
 
   // Update item in category
-  updateItemInCategory = async (categoryId, itemId, newData, success, unsuccess) => {
+  updateItemInCategory = async (companyId,categoryId, itemId, newData, success, unsuccess) => {
     try {
-      const docRef = doc(this.db, "categories", categoryId, "items", itemId);
+      const docRef = doc(this.db, "companies", companyId, "categories", categoryId, "items", itemId);
       await updateDoc(docRef, newData);
       success();
     } catch (e) {
@@ -585,13 +629,13 @@ class FireStore{
   };
 
   // Delete category
-  deleteCategory = async (categoryId) => {
-    await deleteDoc(doc(this.db, "categories", categoryId));
+  deleteCategory = async (companyId,categoryId) => {
+    await deleteDoc(doc(this.db, "companies", companyId, "categories", categoryId));
   };
 
-  getDropdownOptions = async (category) => {
+  getDropdownOptions = async (companyId,category) => {
     const items = [];
-    const q = query(collection(this.db, "categories", category, "items"));
+    const q = query(collection(this.db, "companies", companyId, "categories", category, "items"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       items.push({ id: doc.id, ...doc.data() });

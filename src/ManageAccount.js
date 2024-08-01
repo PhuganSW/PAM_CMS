@@ -29,6 +29,16 @@ function ManageAccount() {
     const [selectID, setSelectID] = useState();
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(10);
+
+    const levels =[
+   
+      {label:'ประกาศฉุกเฉิน',value:1},
+      {label:'ข่าวสารภายใน',value:2},
+      {label:'กฎระเบียบ',value:3},
+      {label:'ข่าวสารทั่วไป',value:4},
+      {label:'รณรงค์ลดโลกร้อน',value:5},
+      {label:'ปฏิทินวันหยุด',value:6}
+    ]
     
     const getallAccountSuccess=(doc)=>{
       let accounts = [];

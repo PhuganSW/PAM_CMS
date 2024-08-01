@@ -28,7 +28,7 @@ function AnnouceAdd() {
   const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
   const [count,setCount] = useState(0);
-  const [type,setType] = useState('');
+  const [type,setType] = useState(1);
 
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
@@ -36,8 +36,11 @@ function AnnouceAdd() {
   const types =[
    
     {label:'ประกาศฉุกเฉิน',value:1},
-    {label:'ข่าวสาร',value:2},
-    {label:'กฎระเบียบ',value:3}
+    {label:'ข่าวสารภายใน',value:2},
+    {label:'กฎระเบียบ',value:3},
+    {label:'ข่าวสารทั่วไป',value:4},
+    {label:'รณรงค์ลดโลกร้อน',value:5},
+    {label:'ปฏิทินวันหยุด',value:6}
   ]
 
   const onDrop = useCallback((acceptedFiles) => {

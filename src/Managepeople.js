@@ -26,20 +26,39 @@ function ManagePeople() {
   const [endIndex, setEndIndex] = useState(5);
   const [show, setShow] = useState(false);
   const [selectID, setSelectID] = useState();
+  const [selectedUser, setSelectedUser] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [workplaceUsers, setWorkplaceUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [selectFillter,setSelectFillter] = useState('');
   const [workplace,setWorkplace] =useState('');
-
+  const [showWorkPlace,setShowWorkPlace] = useState('');
   const [workplaces,setWorkplaces] = useState([]);
 
 
   const handleClose = () => setShow(false);
-  const handleShow = () =>{
-
+  const handleShow = (user) =>{
+    setSelectedUser(user);
     setShow(true);
   } 
+
+  const onAssign=()=>{
+    console.log(showWorkPlace,selectedUser.id)
+    if (selectedUser && workplace) {
+      firestore.assignWork("miscible", showWorkPlace, selectedUser.id, {
+        username: selectedUser.name,
+        position: selectedUser.position
+      }, () => {
+        alert("Workplace assigned successfully!");
+        handleClose();
+      }, (error) => {
+        alert("Error assigning workplace: " + error);
+      });
+    } else {
+      alert("Please select a workplace.");
+    }
+  }
 
 
   const getAllUsersSuccess=(doc)=>{
@@ -58,9 +77,17 @@ function ManagePeople() {
     console.log("getAllUsers: "+error)
   }
 
+  const getUsersByWorkplaceSuccess = (users) => {
+    setWorkplaceUsers(users);
+  };
+
+  const getUsersByWorkplaceUnsuccess = (error) => {
+    console.error("Error fetching workplace users:", error);
+  };
+
   const fetchDropdownOptions = async () => {
     try {
-      const workplaces = await firestore.getDropdownOptions('workplace');
+      const workplaces = await firestore.getDropdownOptions("miscible",'workplace');
       setWorkplaces(workplaces.map(option => option.name));
       
     } catch (error) {
@@ -91,6 +118,12 @@ function ManagePeople() {
     const filtered = allUser.filter(user => user.name.toLowerCase().includes(query) || 
       user.position.toLowerCase().includes(query));
     setFilteredUsers(filtered);
+  };
+
+  const handleWorkplaceChange = (event) => {
+    const selectedWorkplace = event.target.value;
+    setWorkplace(selectedWorkplace);
+    firestore.getUsersByWorkplace("miscible", selectedWorkplace, getUsersByWorkplaceSuccess, getUsersByWorkplaceUnsuccess);
   };
 
   return (
@@ -144,7 +177,7 @@ function ManagePeople() {
                       </td>
                       <td>{item.position}</td>
                       <td style={{width:'30%',textAlign:'center'}}>
-                        <button className='Edit-button' onClick={()=>handleShow()} >มอบหมาย</button>
+                        <button className='Edit-button' onClick={()=>handleShow(item)} >มอบหมาย</button>
                       </td>
                     </tr>
                   ))}
@@ -163,7 +196,7 @@ function ManagePeople() {
                     variant="filled"
                     style={{ width: '100%' }}
                     value={workplace}
-                    onChange={(e) => setWorkplace(e.target.value)}
+                    onChange={handleWorkplaceChange}
                   >
                     {workplaces.map((option,index) => (
                   <MenuItem key={index} value={option}>
@@ -183,7 +216,16 @@ function ManagePeople() {
                   </tr>
                 </thead>
                 <tbody>
-                  
+                {workplaceUsers.map((user, index) => (
+                      <tr key={user.id}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{user.username}</td>
+                        <td>{user.position}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          {/* Additional actions can go here */}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </TableBootstrap>
                 </div>
@@ -202,8 +244,8 @@ function ManagePeople() {
           <FormControl variant="filled" fullWidth>
               <InputLabel>พื้นที่ทำงาน</InputLabel>
               <Select
-                value={workplace}
-                onChange={(e) => setWorkplace(e.target.value)}
+                value={showWorkPlace}
+                onChange={(e) => setShowWorkPlace(e.target.value)}
               >
                 {workplaces.map((option,index) => (
                   <MenuItem key={index} value={option}>
@@ -216,7 +258,7 @@ function ManagePeople() {
           
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} >
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={onAssign}>
             Allow
           </Button>
           <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>

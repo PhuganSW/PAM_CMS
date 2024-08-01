@@ -48,7 +48,8 @@ function Network() {
             <div className="main-contain">
             <div style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center', width: '95%', marginTop: 30 }}>
             <div className="form-row" style={{ display: 'flex',}}>
-                <p style={{fontSize:28}}>ตำแหน่งงาน :</p>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ตำแหน่งงาน :</p>
               </div>
               <div className="user-grid">
                 {users.map((user, index) => (
