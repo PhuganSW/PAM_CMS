@@ -40,8 +40,10 @@ function CheckHistory() {
   const [workplaces,setWorkplaces] = useState([]);
 
   const handleClose = () => setShow(false);
-  const handleShow = (item) =>{
-    setWorkplace(item)
+  const handleShow = (date,time,workplace) =>{
+    setDate(date)
+    setTime(time)
+    setWorkplace(workplace)
     setShow(true);
   } 
 
@@ -168,7 +170,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.workplace)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.date,item.time,item.workplace)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -221,6 +223,20 @@ function CheckHistory() {
         </Modal.Header>
         <Modal.Body>
           <Form>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>วันที่</Form.Label>
+              <Form.Control
+                autoFocus
+                value={date}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>เวลา</Form.Label>
+              <Form.Control
+                autoFocus
+                value={time}
+              />
+            </Form.Group>
           <FormControl variant="filled" fullWidth>
               <InputLabel>พื้นที่ทำงาน</InputLabel>
               <Select

@@ -51,7 +51,7 @@ function Annouce() {
           rules.push({id: item.id,title:item.title,date:item.date,type:item.type});
         }
         else{
-          annouces.push({id: item.id,title:item.title,date:item.date,type:item.type});
+          //annouces.push({id: item.id,title:item.title,date:item.date,type:item.type});
         }
         
       });

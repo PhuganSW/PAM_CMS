@@ -388,6 +388,18 @@ class FireStore{
     }
   }
 
+  updateOT=async(companyId,id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "otRequest", id);
+      // Set the "capital" field of the city 'DC'
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+
 
   getAllOT = (companyId,success, unsuccess) => {
     const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "otRequest"), (querySnapshot) => {

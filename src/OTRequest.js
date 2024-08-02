@@ -53,6 +53,9 @@ function OTRequest() {
     console.log("getOTLeave: "+error)
   }
 
+  const allowSuc=()=>setShow(false)
+  const allowUnsuc=(e)=> console.log(e)
+
   const getOTSuc=(data)=>{
     setName(data.name)
     setPosition(data.position)
@@ -69,6 +72,14 @@ function OTRequest() {
     }
 
     handleShow()
+  }
+
+  const onAllow=()=>{
+    setStatus(true)
+    let item={
+      status:true
+    }
+    firestore.updateOT("miscible",selectID,item,allowSuc,allowUnsuc)
   }
 
   const getOTUnsuc =(error)=>{
@@ -250,6 +261,9 @@ function OTRequest() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
+        <Button style={{backgroundColor:'#000000'}} onClick={onAllow}>
+           Allow
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

@@ -39,7 +39,10 @@ function AnnouceEdit() {
    
     {label:'ประกาศฉุกเฉิน',value:1},
     {label:'ข่าวสาร',value:2},
-    {label:'กฎระเบียบ',value:3}
+    {label:'กฎระเบียบ',value:3},
+    {label:'ข่าวสารทั่วไป',value:4},
+    {label:'รณรงค์ลดโลกร้อน',value:5},
+    {label:'ปฏิทินวันหยุด',value:6}
   ]
 
   
