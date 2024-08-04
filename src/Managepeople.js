@@ -35,6 +35,7 @@ function ManagePeople() {
   const [workplace,setWorkplace] =useState('');
   const [showWorkPlace,setShowWorkPlace] = useState('');
   const [workplaces,setWorkplaces] = useState([]);
+  const [unsubscribe, setUnsubscribe] = useState(null);
 
 
   const handleClose = () => setShow(false);
@@ -101,6 +102,15 @@ function ManagePeople() {
     fetchDropdownOptions();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (unsubscribe) {
+        console.log('Unsubscribing from previous listener');
+        unsubscribe();
+      }
+    };
+  }, [unsubscribe]);
+
   const onNext = () => {
     setStartIndex(startIndex + 5); // Increment the start index by 5
     setEndIndex(endIndex + 5); // Increment the end index by 5
@@ -123,7 +133,22 @@ function ManagePeople() {
   const handleWorkplaceChange = (event) => {
     const selectedWorkplace = event.target.value;
     setWorkplace(selectedWorkplace);
-    firestore.getUsersByWorkplace("miscible", selectedWorkplace, getUsersByWorkplaceSuccess, getUsersByWorkplaceUnsuccess);
+    try{
+    if (unsubscribe) {
+      unsubscribe(); // Unsubscribe from the previous listener
+    }
+
+    const unsubscribeFn = firestore.getUsersByWorkplace(
+      "miscible",
+      selectedWorkplace,
+      getUsersByWorkplaceSuccess,
+      getUsersByWorkplaceUnsuccess
+    );
+
+    setUnsubscribe(() => unsubscribeFn);
+  }catch{
+    console.log('error')
+  }
   };
 
   return (

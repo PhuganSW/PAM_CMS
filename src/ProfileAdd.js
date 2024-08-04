@@ -290,7 +290,8 @@ function ProfileAdd() {
                 </label>
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
-
+              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'101%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ข้อมูลส่วนบุคคล :</p>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
                   className="form-field"
@@ -522,7 +523,50 @@ function ProfileAdd() {
                   />
               </div>
               <div className="form-row" style={{ display: 'flex',}}>
-                <p style={{fontSize:28}}>บัญชีธนาคาร :</p>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ข้อมูลเพิ่มเติม :</p>
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  label="ชื่อธนาคาร"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={bank}
+                  onChange={(e) => setBank(e.target.value)}
+                >
+                  {bankOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                  </TextField>
+                <TextField
+                  className="form-field"
+                  label="ประเภทบัญชี"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={bank_type}
+                  onChange={(e) => setBank_type(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เลขที่บัญชี"
+                  variant="filled"
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={bank_id}
+                  onChange={(e) => setBank_ID(e.target.value)}
+                />
+              </div>
+              <div className="form-row" style={{ display: 'flex',}}>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
               <TextField
@@ -562,7 +606,8 @@ function ProfileAdd() {
                 />
               </div>
               <div className="form-row" style={{ display: 'flex'}}>
-                <p style={{fontSize:28}}>บุคคลติดต่อฉุกเฉิน :</p>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บุคคลติดต่อฉุกเฉิน :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
               <TextField
@@ -597,7 +642,8 @@ function ProfileAdd() {
                 />
               </div>
               <div className="form-row" style={{ display: 'flex'}}>
-                <p style={{fontSize:28}}>เงินเดือน :</p>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>เงินเดือน :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
               <TextField
@@ -686,7 +732,8 @@ function ProfileAdd() {
                   />
               </div>
               <div className="form-row" style={{ display: 'flex' }}>
-                <p style={{fontSize:28}}>รายการหัก :</p>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>รายการหัก :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
               <TextField
@@ -755,7 +802,8 @@ function ProfileAdd() {
                   />
                 </div>
               <div className="form-row" style={{ display: 'flex'}}>
-                <p style={{fontSize:28}}>สิทธิ์การใช้งานแอปฯ :</p>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>สิทธิ์การใช้งานแอปฯ :</p>
               </div>
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
                 <TextField

@@ -27,16 +27,31 @@ function Annouce() {
   const [endNews, setEndNews] = useState(5);
   const [startRule, setStartRule] = useState(0);
   const [endRule, setEndRule] = useState(5);
+  const [startGeneral, setStartGeneral] = useState(0);
+  const [endGeneral, setEndGeneral] = useState(5);
+  const [startCampaign, setStartCampaign] = useState(0);
+  const [endCampaign, setEndCampaign] = useState(5);
+  const [startHoliday, setStartHoliday] = useState(0);
+  const [endHoliday, setEndHoliday] = useState(5);
   const [newsAnnouce,setNewsAnnouce] = useState([]);
   const [filterNews,setFilterNews] = useState([]);
   const [ruleAnnouce,setRuleAnnouce] = useState([]);
   const [filterRule,setFilterRule] = useState([]);
+  const [generalAnnouce,setGeneralAnnouce] = useState([]);
+  const [filterGeneral,setFilterGeneral] = useState([]);
+  const [campaignAnnouce,setCampaignAnnouce] = useState([]);
+  const [filterCampaign,setFilterCampaign] = useState([]);
+  const [holidayAnnouce,setHolidayAnnouce] = useState([]);
+  const [filterHoliday,setFilterHoliday] = useState([]);
 
   const getAllAnnouceSuc=(doc)=>{
     
     let annouces = []
     let news = []
     let rules = []
+    let generals = []
+    let campaigns = []
+    let holidays = []
     if (allAnnouce.length === 0) {
       
       doc.forEach((item) => {
@@ -50,17 +65,29 @@ function Annouce() {
         else if(item.type == 3){
           rules.push({id: item.id,title:item.title,date:item.date,type:item.type});
         }
-        else{
-          //annouces.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        else if(item.type==4){
+          generals.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        }
+        else if(item.type==5){
+          campaigns.push({id: item.id,title:item.title,date:item.date,type:item.type});
+        }
+        else if(item.type==6){
+          holidays.push({id: item.id,title:item.title,date:item.date,type:item.type});
         }
         
       });
       setAllAnnouce(annouces);
       setNewsAnnouce(news)
       setRuleAnnouce(rules)
+      setGeneralAnnouce(generals);
+      setCampaignAnnouce(campaigns);
+      setHolidayAnnouce(holidays);
       setFilteredAnnouces(annouces);
       setFilterNews(news)
       setFilterRule(rules)
+      setFilterGeneral(generals)
+      setFilterCampaign(campaigns)
+      setFilterHoliday(holidays)
     }
   }
 
@@ -119,6 +146,36 @@ function Annouce() {
     setEndRule(Math.max(endRule - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
+  const NextGeneral = () => {
+    setStartGeneral(startGeneral + 5); // Increment the start index by 5
+    setEndGeneral(endGeneral + 5); // Increment the end index by 5
+  };
+
+  const PreviousGeneral = () => {
+    setStartGeneral(Math.max(startGeneral - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndGeneral(Math.max(endGeneral - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
+
+  const NextCampaign = () => {
+    setStartCampaign(startCampaign + 5); // Increment the start index by 5
+    setEndCampaign(endCampaign + 5); // Increment the end index by 5
+  };
+
+  const PreviousCampaign = () => {
+    setStartCampaign(Math.max(startCampaign - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndCampaign(Math.max(endCampaign - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
+
+  const NextHoliday = () => {
+    setStartHoliday(startHoliday + 5); // Increment the start index by 5
+    setEndHoliday(endHoliday + 5); // Increment the end index by 5
+  };
+
+  const PreviousHoliday = () => {
+    setStartHoliday(Math.max(startHoliday - 5, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
+    setEndHoliday(Math.max(endHoliday - 5, 5)); // Decrement the end index by 5, ensuring it doesn't go below 5
+  };
+
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
@@ -126,9 +183,15 @@ function Annouce() {
     const filtered = allAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
     const filteredNews = newsAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
     const filteredRule = ruleAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
+    const filteredGeneral = generalAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
+    const filteredCampaign = campaignAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
+    const filteredHoliday = holidayAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
     setFilteredAnnouces(filtered);
     setFilterNews(filteredNews);
     setFilterRule(filteredRule);
+    setFilterGeneral(filteredGeneral)
+    setFilterCampaign(filteredCampaign)
+    setFilterHoliday(filteredHoliday)
   };
 
 
@@ -264,6 +327,117 @@ function Annouce() {
                 <div style={{width:'100%'}}>
                 <button className='Previous-button' onClick={PreviousRule}>Previous</button>
                 <button className='Next-button' onClick={NextRule}>Next</button>
+                </div>
+              </div>
+
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
+              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ข่าวสารทั่วไป</p>
+              </div>
+                <TableBootstrap striped bordered hover className='table'>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                      <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
+                      <th scope="col" style={{width:'15%'}}>วันที่</th>
+                      <th scope="col" style={{width:'35%'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {filterGeneral.slice(startRule, endRule).map((item, index) => (
+                      <tr key={item.id}> 
+                        <th scope="row">{startIndex + index + 1}</th>
+                        {/* <th scope="row">{index + 1}</th> */}
+                        <td>
+                          {item.title}
+                        </td>
+                        <td>{item.date}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </TableBootstrap>
+                <div style={{width:'100%'}}>
+                <button className='Previous-button' onClick={PreviousGeneral}>Previous</button>
+                <button className='Next-button' onClick={NextGeneral}>Next</button>
+                </div>
+              </div>
+
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
+              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>รณรงค์ลดโลกร้อน</p>
+              </div>
+                <TableBootstrap striped bordered hover className='table'>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                      <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
+                      <th scope="col" style={{width:'15%'}}>วันที่</th>
+                      <th scope="col" style={{width:'35%'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {filterCampaign.slice(startRule, endRule).map((item, index) => (
+                      <tr key={item.id}> 
+                        <th scope="row">{startIndex + index + 1}</th>
+                        {/* <th scope="row">{index + 1}</th> */}
+                        <td>
+                          {item.title}
+                        </td>
+                        <td>{item.date}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </TableBootstrap>
+                <div style={{width:'100%'}}>
+                <button className='Previous-button' onClick={PreviousCampaign}>Previous</button>
+                <button className='Next-button' onClick={NextCampaign}>Next</button>
+                </div>
+              </div>
+
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
+              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ปฏิทินวันหยุด</p>
+              </div>
+                <TableBootstrap striped bordered hover className='table'>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                      <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
+                      <th scope="col" style={{width:'15%'}}>วันที่</th>
+                      <th scope="col" style={{width:'35%'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {filterHoliday.slice(startRule, endRule).map((item, index) => (
+                      <tr key={item.id}> 
+                        <th scope="row">{startIndex + index + 1}</th>
+                        {/* <th scope="row">{index + 1}</th> */}
+                        <td>
+                          {item.title}
+                        </td>
+                        <td>{item.date}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </TableBootstrap>
+                <div style={{width:'100%'}}>
+                <button className='Previous-button' onClick={PreviousHoliday}>Previous</button>
+                <button className='Next-button' onClick={NextHoliday}>Next</button>
                 </div>
               </div>
              

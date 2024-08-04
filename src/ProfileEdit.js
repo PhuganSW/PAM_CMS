@@ -557,7 +557,8 @@ function ProfileEdit() {
                 />
             </div>
             <div className="form-row" style={{ display: 'flex',}}>
-              <p style={{fontSize:28}}>บัญชีธนาคาร :</p>
+              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>
             </div>
             <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
             <TextField
@@ -597,7 +598,8 @@ function ProfileEdit() {
               />
             </div>
             <div className="form-row" style={{ display: 'flex'}}>
-              <p style={{fontSize:28}}>บุคคลติดต่อฉุกเฉิน :</p>
+              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บุคคลติดต่อฉุกเฉิน :</p>
             </div>
             <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
             <TextField
@@ -632,7 +634,8 @@ function ProfileEdit() {
               />
             </div>
             <div className="form-row" style={{ display: 'flex'}}>
-              <p style={{fontSize:28}}>เงินเดือน :</p>
+              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>เงินเดือน :</p>
             </div>
             <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
             <TextField
@@ -721,7 +724,8 @@ function ProfileEdit() {
                 />
             </div>
             <div className="form-row" style={{ display: 'flex' }}>
-              <p style={{fontSize:28}}>รายการหัก :</p>
+              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>รายการหัก :</p>
             </div>
             <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
             <TextField
@@ -790,7 +794,8 @@ function ProfileEdit() {
                 />
               </div>
             <div className="form-row" style={{ display: 'flex'}}>
-              <p style={{fontSize:28}}>สิทธิ์การใช้งานแอปฯ :</p>
+              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>สิทธิ์การใช้งานแอปฯ :</p>
             </div>
             <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
             <TextField

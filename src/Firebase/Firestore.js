@@ -310,12 +310,14 @@ class FireStore{
   getUsersByWorkplace = async (companyId, workPlaceId, success, unsuccess) => {
     try {
       const workplaceRef = collection(this.db, "companies", companyId, "workplaces", workPlaceId, "users");
-      const querySnapshot = await getDocs(workplaceRef);
-      let users = [];
-      querySnapshot.forEach((doc) => {
-        users.push({ id: doc.id, ...doc.data() });
-      });
-      success(users);
+      const unsubscribe = onSnapshot(workplaceRef, (querySnapshot) => {
+        let users = [];
+        querySnapshot.forEach((doc) => {
+          users.push({ id: doc.id, ...doc.data() });
+        });
+        success(users);
+      }, unsuccess);
+      return unsubscribe;
     } catch (e) {
       unsuccess(e);
     }
