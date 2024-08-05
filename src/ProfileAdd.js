@@ -56,6 +56,8 @@ function ProfileAdd() {
   const [blood_type,setBlood_type] = useState('');
   const [Ldrug,setLdrug] = useState('');
   const [wealthHos,setWealthHos] = useState('');
+  const [jobDesc,setJobDesc] = useState('');
+  const [duty,setDuty] = useState('');
 
  
   const [costL,setCostL] = useState(0); //ค่าครองชีพ
@@ -213,6 +215,8 @@ function ProfileAdd() {
       missing:missing,
       borrow:borrow,
       withdraw:withdraw,
+      jobDesc:jobDesc,
+      duty:duty,
     }
     // if(password != ''){
     //   firestore.addUser(item,addUserSuccess,addUserUnsuccess)
@@ -529,29 +533,24 @@ function ProfileAdd() {
               <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
               <TextField
                   className="form-field"
-                  label="ชื่อธนาคาร"
+                  label="คำอธิบายตำแหน่ง"
                   variant="filled"
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={bank}
-                  onChange={(e) => setBank(e.target.value)}
+                  value={jobDesc}
+                  onChange={(e) => setJobDesc(e.target.value)}
                 >
-                  {bankOptions.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
                   </TextField>
                 <TextField
                   className="form-field"
-                  label="ประเภทบัญชี"
+                  label="ขอบเขตงาน"
                   variant="filled"
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={bank_type}
-                  onChange={(e) => setBank_type(e.target.value)}
+                  value={duty}
+                  onChange={(e) => setDuty(e.target.value)}
                 />
                 <TextField
                   className="form-field"

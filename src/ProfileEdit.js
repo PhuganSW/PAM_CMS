@@ -51,6 +51,8 @@ function ProfileEdit() {
   const [blood_type, setBlood_type] = useState('');
   const [Ldrug, setLdrug] = useState(''); //แพ้ยา
   const [wealthHos, setWealthHos] = useState('');
+  const [jobDesc,setJobDesc] = useState('');
+  const [duty,setDuty] = useState('');
 
   const [costL, setCostL] = useState(0); // ค่าครองชีพ
   const [ot, setOT] = useState(0); // ค่าล่วงเวลา
@@ -135,6 +137,8 @@ function ProfileEdit() {
     setBorrow(data.borrow);
     setMissing(data.missing);
     setTax(data.tax);
+    setJobDesc(data.jobDesc);
+    setDuty(data.duty);
   };
 
   const getUserUnsuccess = (e) => {
@@ -246,6 +250,8 @@ function ProfileEdit() {
       missing: missing,
       borrow: borrow,
       withdraw: withdraw,
+      jobDesc: jobDesc,
+      duty:duty,
     };
 
     firestore.updateUser("miscible",uid, item, updateSuccess, updateUnsuccess);
@@ -556,6 +562,43 @@ function ProfileEdit() {
                   onChange={(e) => setLdrug(e.target.value)}
                 />
             </div>
+            <div className="form-row" style={{ display: 'flex',}}>
+                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ข้อมูลเพิ่มเติม :</p>
+              </div>
+              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
+              <TextField
+                  className="form-field"
+                  label="คำอธิบายตำแหน่ง"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={jobDesc}
+                  onChange={(e) => setJobDesc(e.target.value)}
+                >
+                  </TextField>
+                <TextField
+                  className="form-field"
+                  label="ขอบเขตงาน"
+                  variant="filled"
+                  style={{ width: '35%', marginRight: '1%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={duty}
+                  onChange={(e) => setDuty(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="เลขที่บัญชี"
+                  variant="filled"
+                  style={{ width: '28%' }}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={bank_id}
+                  onChange={(e) => setBank_ID(e.target.value)}
+                />
+              </div>
             <div className="form-row" style={{ display: 'flex',}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>

@@ -224,18 +224,20 @@ class FireStore{
   // };
 
   getAllUser = (companyId, success, unsuccess) => {
+    const usersCollection = collection(this.db, "companies", companyId, "users");
+    const usersQuery = query(usersCollection, orderBy("name", "asc"));
+  
     const unsubscribe = onSnapshot(
-      collection(this.db, "companies", companyId, "users"),
+      usersQuery,
       (querySnapshot) => {
         const users = [];
         querySnapshot.forEach((doc) => {
           users.push({
-                    id: doc.id,
-                    name: doc.data().name+" "+doc.data().lastname,
-                    position: doc.data().position,
-                    image_off:doc.data().image_off,
-                  });
-          // users.push({ id: doc.id, ...doc.data() });
+            id: doc.id,
+            name: doc.data().name + " " + doc.data().lastname,
+            position: doc.data().position,
+            image_off: doc.data().image_off,
+          });
         });
         success(users);
       },
@@ -243,8 +245,7 @@ class FireStore{
         unsuccess(error);
       }
     );
-
-    // Return unsubscribe function to stop listening for updates
+  
     return unsubscribe;
   };
 
