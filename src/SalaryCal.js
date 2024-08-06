@@ -51,6 +51,20 @@ function SalaryCal() {
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
+    setSalary(data.salary);
+    setSub(data.sub);
+    setOT(data.ot);
+    setAllowance(data.allowance);
+    setVenhicle(data.venhicle);
+    setWelth(data.welth);
+    setBonus(data.bonus);
+    setCostL(data.costL);
+    setInsurance(data.insurance);
+    setLate(data.late);
+    setWithdraw(data.withdraw);
+    setBorrow(data.borrow);
+    setMissing(data.missing);
+    setTax(data.tax);
   }
 
   const getUserUnsuccess=(e)=>{
@@ -61,7 +75,21 @@ function SalaryCal() {
     if (data.length > 0) {
       const billData = data[0]; // Assuming you want the first item
       setDate(dayjs(billData.date, 'DD-MM-YYYY'));
-      
+      setSalary(billData.salary);
+      setSub(billData.sub);
+      setOT(billData.ot);
+      setAllowance(billData.allowance);
+      setVenhicle(billData.venhicle);
+      setWelth(billData.welth);
+      setBonus(billData.bonus);
+      setCostL(billData.costL);
+      setInsurance(billData.insurance);
+      setLate(billData.late);
+      setWithdraw(billData.withdraw);
+      setBorrow(billData.borrow);
+      setMissing(billData.missing);
+      setTax(billData.tax);
+   
     }
   };
 
@@ -83,6 +111,24 @@ function SalaryCal() {
       id:uid,
       name:name,
       date:date_str,
+      costL:costL,
+      ot:ot,
+      allowance:allowance,
+      salary:salary,
+      venhicle:venhicle,
+      sub:sub,
+      welth:welth,
+      bonus:bonus,
+      tax:tax,
+      insurance:insurance,
+      late:late,
+      missing:missing,
+      borrow:borrow,
+      withdraw:withdraw,
+      deposit:deposit,
+      allDeposit:allDeposit,
+      allWithdraw:allWithdraw,
+      allInsurance:allInsurance,
       amount:amount,
     }
     console.log('save')
