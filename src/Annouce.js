@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function Annouce() {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ function Annouce() {
   const [filterCampaign,setFilterCampaign] = useState([]);
   const [holidayAnnouce,setHolidayAnnouce] = useState([]);
   const [filterHoliday,setFilterHoliday] = useState([]);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getAllAnnouceSuc=(doc)=>{
     
@@ -113,7 +115,7 @@ function Annouce() {
 
 
   useEffect(() => {
-    firestore.getAllAnnouce("miscible",getAllAnnouceSuc,getAllAnnouceUnsuc)
+    firestore.getAllAnnouce(companyId,getAllAnnouceSuc,getAllAnnouceUnsuc)
   }, []);
 
   const onNext = () => {

@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -7,6 +7,7 @@ import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function Salary() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function Salary() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -39,7 +41,7 @@ function Salary() {
   }
 
   useEffect(() => {
-    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess)
+    firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
   }, []);
 
   const onNext = () => {

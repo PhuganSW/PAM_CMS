@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -8,6 +8,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function WelthfareManage() {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ function WelthfareManage() {
   const [maternityR,setMaternityR] = useState(''); //ลาคลอด
   const [kamaR,setKamaR] = useState('') //ลาบวช
   const [otherR,setOtherR] = useState(''); //ลาสิทธิ์อื่น
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -82,15 +84,15 @@ function WelthfareManage() {
       otherR:otherR
     }
     //console.log('save')
-    firestore.addWelth("miscible",uid,item,addWelthSuc,addWelthUnsuc)
+    firestore.addWelth(companyId,uid,item,addWelthSuc,addWelthUnsuc)
   }
 
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser("miscible",location.state.uid,getUserSuccess,getUserUnsuccess)
-      firestore.getWelth("miscible",location.state.uid,getWelSuc,getWelunsuc)
+      firestore.getUser(companyId,location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getWelth(companyId,location.state.uid,getWelSuc,getWelunsuc)
     } else {
       console.warn('No ID found in location state');
     }

@@ -1,5 +1,5 @@
 //Home.js
-import React from 'react';
+import React,{useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css'; // Your custom CSS file
 import Sidebar from './sidebar';
@@ -10,8 +10,11 @@ import InterviewSchedule from './InterviewSchedule'; // Interview schedule compo
 import { PieChart } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function Home() {
+  const { setCurrentUser, companyId } = useContext(UserContext);
+
 
   return (
     

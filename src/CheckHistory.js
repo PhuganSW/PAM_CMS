@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -15,6 +15,7 @@ import Form from 'react-bootstrap/Form';
 import MenuItem from '@mui/material/MenuItem';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { UserContext } from './UserContext';
 
 function CheckHistory() {
 
@@ -38,6 +39,7 @@ function CheckHistory() {
   const [outEndIndex, setOutEndIndex] = useState(10);
 
   const [workplaces,setWorkplaces] = useState([]);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = (date,time,workplace) =>{
@@ -108,7 +110,7 @@ function CheckHistory() {
 
   const fetchDropdownOptions = async () => {
     try {
-      const workplaces = await firestore.getDropdownOptions("miscible",'workplace');
+      const workplaces = await firestore.getDropdownOptions(companyId,'workplace');
       setWorkplaces(workplaces.map(option => option.name));
       
     } catch (error) {
@@ -117,8 +119,8 @@ function CheckHistory() {
   };
 
   useEffect(() => {
-    firestore.getAllCheckin("miscible",getInSuc,getInUnsuc)
-    firestore.getAllCheckout("miscible",getOutSuc,getOutUnsuc)
+    firestore.getAllCheckin(companyId,getInSuc,getInUnsuc)
+    firestore.getAllCheckout(companyId,getOutSuc,getOutUnsuc)
     fetchDropdownOptions();
   }, []);
 

@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -8,6 +8,7 @@ import firestore from './Firebase/Firestore';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
 import './Profile.css'
+import { UserContext } from './UserContext';
 
 
 function Welthfare() {
@@ -20,6 +21,7 @@ function Welthfare() {
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [status,setStatus] = useState(false)
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -42,7 +44,7 @@ function Welthfare() {
   }
 
   useEffect(() => {
-    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess)
+    firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
   }, []);
 
   const onNext = () => {

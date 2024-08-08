@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -19,6 +19,7 @@ import THSarabunNew from './fonts/THSarabunNew-normal';
 import 'jspdf-autotable';
 import logo from './fonts/logo';
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function SalaryCal() {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ function SalaryCal() {
   const [allDeposit,setAllDeposit] = useState('');
   const [allWithdraw,setAllWithdraw] = useState('');
   const [allInsurance,setAllInsurance] = useState('');
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -132,17 +134,17 @@ function SalaryCal() {
       amount:amount,
     }
     console.log('save')
-    firestore.addBill("miscible",item,saveSuc,saveUnsuc)
+    firestore.addBill(companyId,item,saveSuc,saveUnsuc)
   }
 
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser("miscible",location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getUser(companyId,location.state.uid,getUserSuccess,getUserUnsuccess)
       if(location.state.act=="edit"){
         //console.log("edit "+ location.state.date)
-        firestore.getBill("miscible",location.state.uid,location.state.date,getBillSuc,getBillUnsuc)
+        firestore.getBill(companyId,location.state.uid,location.state.date,getBillSuc,getBillUnsuc)
       }
     } else {
       console.warn('No ID found in location state');

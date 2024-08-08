@@ -1,12 +1,14 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate, useLocation } from 'react-router-dom';
 import './Layout.css';
 import auth from './Firebase/Auth';
+import { UserContext } from './UserContext';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { companyId } = useContext(UserContext);
 
 
   useEffect(() => {

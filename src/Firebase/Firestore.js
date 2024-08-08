@@ -2,11 +2,26 @@
 //import { image } from "html2canvas/dist/types/css/types/image";
 import app from "./Config";
 import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, 
-        deleteDoc, updateDoc, orderBy, query, where, getDocs  } from "firebase/firestore";
+        deleteDoc, updateDoc, orderBy, query, where, getDocs,  } from "firebase/firestore";
 
 class FireStore{
   constructor(){
     this.db = getFirestore(app);
+  }
+
+  checkCompany=async(companyId,success,unsuccess)=>{
+    try {
+      const subCollectionRef = collection(this.db, `companies/${companyId}/account_cms`);
+      const subCollectionSnapshot = await getDocs(subCollectionRef);
+  
+      if (!subCollectionSnapshot.empty) {
+        success(true);
+      } else {
+        unsuccess(false);
+      }
+    } catch (error) {
+      unsuccess(false);
+    }
   }
 
   addAccount= async (companyId,id,item)=>{

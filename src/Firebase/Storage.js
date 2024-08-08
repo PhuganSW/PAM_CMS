@@ -5,8 +5,8 @@ class Storage{
     constructor(){
         this.storage = getStorage(app);
     }
-    uploadFile(file, onProgress, onComplete, onError) {
-        const storageRef = ref(this.storage, `miscible/annouces/${file.name}`);
+    uploadFile(companyId,file, onProgress, onComplete, onError) {
+        const storageRef = ref(this.storage, `${companyId}/annouces/${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
     
         uploadTask.on(
@@ -26,8 +26,8 @@ class Storage{
         );
       }
 
-      async uploadImage(file) {
-        const storageRef = ref(this.storage, `miscible/image/${file.name}`);
+      async uploadImage(companyId,file) {
+        const storageRef = ref(this.storage, `${companyId}/image/${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         return new Promise((resolve, reject) => {

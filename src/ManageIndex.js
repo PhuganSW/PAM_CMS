@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -15,6 +15,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Layout from './Layout';
 import {Select, FormControl, InputLabel } from '@mui/material';
+import { UserContext } from './UserContext';
 
 
 
@@ -26,6 +27,7 @@ function ManageIndex() {
   const [newItem, setNewItem] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [editingItem, setEditingItem] = useState(null);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const cate =[
     {label:'คำนำหน้าชื่อ',value:'prefixTh'},
@@ -40,7 +42,7 @@ function ManageIndex() {
 
   useEffect(() => {
     // Fetch categories from Firestore
-    const unsubscribe = firestore.getAllCategories("miscible",
+    const unsubscribe = firestore.getAllCategories(companyId,
       (categoriesData) => setCategories(categoriesData),
       (error) => console.error("Error fetching categories: ", error)
     );
@@ -51,7 +53,7 @@ function ManageIndex() {
     const category = event.target.value;
     setSelectedCategory(category);
     // Fetch items for the selected category
-    const unsubscribe = firestore.getItemsOfCategory("miscible",
+    const unsubscribe = firestore.getItemsOfCategory(companyId,
       category,
       (itemsData) => setItems(itemsData),
       (error) => console.error("Error fetching items: ", error)
@@ -64,7 +66,7 @@ function ManageIndex() {
 
   const handleAddCategory = async () => {
     if (newCategory.trim() === '') return;
-    firestore.addCategory("miscible",
+    firestore.addCategory(companyId,
       newCategory,
       (categoryId) => {
         // setCategories([...categories, { id: categoryId, name: newCategory }]);
@@ -77,7 +79,7 @@ function ManageIndex() {
 
   const handleAddItem = async () => {
     if (newItem.trim() === '') return;
-    firestore.addItemToCategory("miscible",
+    firestore.addItemToCategory(companyId,
       selectedCategory,
       newItem,
       (itemId) => {
@@ -94,7 +96,7 @@ function ManageIndex() {
   };
 
   const handleUpdateItem = async () => {
-    firestore.updateItemInCategory("miscible",
+    firestore.updateItemInCategory(companyId,
       selectedCategory,
       editingItem.id,
       { name: newItem },
@@ -108,7 +110,7 @@ function ManageIndex() {
   };
 
   const handleDeleteItem = async (itemId) => {
-    firestore.deleteItemFromCategory("miscible",selectedCategory, itemId)
+    firestore.deleteItemFromCategory(companyId,selectedCategory, itemId)
       .then(() => setItems(items.filter(item => item.id !== itemId)))
       .catch((error) => console.error("Error deleting item: ", error));
   };

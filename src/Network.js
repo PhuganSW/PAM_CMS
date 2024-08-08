@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { useEffect, useState } from 'react';
 import firestore from './Firebase/Firestore';
+import { UserContext } from './UserContext';
 
 import Layout from './Layout';
 import './Network.css'
@@ -14,10 +15,11 @@ function Network() {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   useEffect(() => {
     // Fetch all users from Firestore
-    const unsubscribe = firestore.getAllUser("miscible",
+    const unsubscribe = firestore.getAllUser(companyId,
       (usersData) => {
         console.log("Fetched users:", usersData); // Log fetched users
         setUsers(usersData);

@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate,useLocation } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
+import { UserContext } from './UserContext';
 
 
 
@@ -27,6 +28,7 @@ function SalaryList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [allBill,setAllBill] = useState([])
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -65,8 +67,8 @@ function SalaryList() {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser("miscible",location.state.uid,getUserSuccess,getUserUnsuccess)
-      firestore.getAllBill("miscible",location.state.uid,getAllBillSuc,getAllBillUnsuc)
+      firestore.getUser(companyId,location.state.uid,getUserSuccess,getUserUnsuccess)
+      firestore.getAllBill(companyId,location.state.uid,getAllBillSuc,getAllBillUnsuc)
     } else {
       console.warn('No ID found in location state');
     }

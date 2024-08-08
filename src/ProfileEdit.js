@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TextField, MenuItem } from '@mui/material';
 import firestore from './Firebase/Firestore';
@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import FilledInput from '@mui/material/FilledInput';
 import InputLabel from '@mui/material/InputLabel';
 import { sha256 } from 'crypto-hash';
+import { UserContext } from './UserContext';
 
 function ProfileEdit() {
   const navigate = useNavigate();
@@ -79,6 +80,7 @@ function ProfileEdit() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -190,7 +192,7 @@ function ProfileEdit() {
 
   const onSave = async () => {
     if (username !== originalUsername) {
-      const isTaken = await firestore.verifyUsername("miscible", username);
+      const isTaken = await firestore.verifyUsername(companyId, username);
       console.log(isTaken)
       if (!isTaken) {
         alert("This username is already taken.");
@@ -199,7 +201,7 @@ function ProfileEdit() {
     }
     let imageUrl = '';
   if (image_off instanceof File) {
-    imageUrl = await storage.uploadImage(image_off);
+    imageUrl = await storage.uploadImage(companyId,image_off);
   } else {
     imageUrl = image_off; // Keep the existing URL if no new image is uploaded
   }
@@ -254,7 +256,7 @@ function ProfileEdit() {
       duty:duty,
     };
 
-    firestore.updateUser("miscible",uid, item, updateSuccess, updateUnsuccess);
+    firestore.updateUser(companyId,uid, item, updateSuccess, updateUnsuccess);
     if(password != ''){
       let pass = await hashPass(password);
       setPassword(pass)
@@ -263,13 +265,13 @@ function ProfileEdit() {
         password:pass,
         level:level,
       } 
-      firestore.updateUsername("miscible",uid,item1,updateUsernameS,updateUsernameUn)
+      firestore.updateUsername(companyId,uid,item1,updateUsernameS,updateUsernameUn)
     }else{
       let item1 = {
         username:username,
         level:level,
       } 
-      firestore.updateUsername("miscible",uid,item1,updateUsernameS,updateUsernameUn)
+      firestore.updateUsername(companyId,uid,item1,updateUsernameS,updateUsernameUn)
     }
   };
 

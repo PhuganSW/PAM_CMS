@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -14,6 +14,7 @@ import { IoFilterOutline } from "react-icons/io5";
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function ProfileManage() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ function ProfileManage() {
   const [position,setPosition] = useState('');
 
   const [positionOptions, setPositionOptions] = useState([]);
+  const { account, companyId } = useContext(UserContext);
   
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -59,13 +61,14 @@ function ProfileManage() {
   }
 
   const Delete =()=>{
-    firestore.deleteUser("miscible",selectID)
-    firestore.deleteUsername("miscible",selectID)
+    firestore.deleteUser(companyId,selectID)
+    firestore.deleteUsername(companyId,selectID)
     //console.log('Del'+selectID)
     handleDelClose()
   }
 
   const onAdd =()=>{
+    console.log(account)
     navigate('/profile_add');
   }
 
@@ -76,7 +79,7 @@ function ProfileManage() {
   const fetchDropdownOptions = async () => {
     try {
       
-      const positionOptions = await firestore.getDropdownOptions("miscible",'position');
+      const positionOptions = await firestore.getDropdownOptions(companyId,'position');
       setPositionOptions(positionOptions.map(option => option.name));
       //console.log(positionOptions)
       
@@ -86,7 +89,7 @@ function ProfileManage() {
   };
 
   useEffect(() => {
-    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess)
+    firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
     fetchDropdownOptions();
   }, []);
 

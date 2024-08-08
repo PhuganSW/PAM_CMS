@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -13,6 +13,7 @@ import Modal from 'react-bootstrap/Modal';
 import auth from './Firebase/Auth';
 import firestore from './Firebase/Firestore';
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 
 
@@ -29,6 +30,7 @@ function ManageAccount() {
     const [selectID, setSelectID] = useState();
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(10);
+    const { setCurrentUser, companyId } = useContext(UserContext);
 
     const levels =[
    
@@ -56,7 +58,7 @@ function ManageAccount() {
     }
 
     useEffect(() => {
-      firestore.getAllAccount("miscible",getallAccountSuccess,getallAccountUnsuccess)
+      firestore.getAllAccount(companyId,getallAccountSuccess,getallAccountUnsuccess)
     }, []);
   
 
@@ -76,7 +78,7 @@ function ManageAccount() {
         level:level
       }
       //console.log(item)
-      firestore.addAccount("miscible",user.uid,item)
+      firestore.addAccount(companyId,user.uid,item)
       handleClose()
     }
 
@@ -99,7 +101,7 @@ function ManageAccount() {
     }
     
     const Delete =()=>{
-      firestore.deleteAccount("miscible",selectID)
+      firestore.deleteAccount(companyId,selectID)
       //auth.deleteUser(selectID,delSuc,delUnsuc)
       console.log('Del'+selectID)
       console.log(auth.currentUser)

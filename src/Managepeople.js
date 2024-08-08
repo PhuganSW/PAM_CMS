@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Layout from './Layout';
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
+import { UserContext } from './UserContext';
 
 
 function ManagePeople() {
@@ -36,6 +37,7 @@ function ManagePeople() {
   const [showWorkPlace,setShowWorkPlace] = useState('');
   const [workplaces,setWorkplaces] = useState([]);
   const [unsubscribe, setUnsubscribe] = useState(null);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
 
   const handleClose = () => setShow(false);
@@ -47,7 +49,7 @@ function ManagePeople() {
   const onAssign=()=>{
     console.log(showWorkPlace,selectedUser.id)
     if (selectedUser && workplace) {
-      firestore.assignWork("miscible", showWorkPlace, selectedUser.id, {
+      firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
         username: selectedUser.name,
         position: selectedUser.position
       }, () => {
@@ -88,7 +90,7 @@ function ManagePeople() {
 
   const fetchDropdownOptions = async () => {
     try {
-      const workplaces = await firestore.getDropdownOptions("miscible",'workplace');
+      const workplaces = await firestore.getDropdownOptions(companyId,'workplace');
       setWorkplaces(workplaces.map(option => option.name));
       
     } catch (error) {
@@ -98,7 +100,7 @@ function ManagePeople() {
 
 
   useEffect(() => {
-    firestore.getAllUser("miscible",getAllUsersSuccess,getAllUsersUnsuccess);
+    firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess);
     fetchDropdownOptions();
   }, []);
 
@@ -139,7 +141,7 @@ function ManagePeople() {
     }
 
     const unsubscribeFn = firestore.getUsersByWorkplace(
-      "miscible",
+      companyId,
       selectedWorkplace,
       getUsersByWorkplaceSuccess,
       getUsersByWorkplaceUnsuccess

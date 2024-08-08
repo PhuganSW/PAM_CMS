@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -11,6 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 
 function OTRequest() {
@@ -31,6 +32,7 @@ function OTRequest() {
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -79,7 +81,7 @@ function OTRequest() {
     let item={
       status:true
     }
-    firestore.updateOT("miscible",selectID,item,allowSuc,allowUnsuc)
+    firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
   }
 
   const getOTUnsuc =(error)=>{
@@ -88,11 +90,11 @@ function OTRequest() {
 
   const getOT=(id)=>{
     setSelectID(id)
-    firestore.getOT("miscible",id,getOTSuc,getOTUnsuc)
+    firestore.getOT(companyId,id,getOTSuc,getOTUnsuc)
   }
 
   useEffect(() => {
-    firestore.getAllOT("miscible",getAllOTSuccess,getAllOTUnsuccess)
+    firestore.getAllOT(companyId,getAllOTSuccess,getAllOTUnsuccess)
   }, []);
 
   const onNext = () => {

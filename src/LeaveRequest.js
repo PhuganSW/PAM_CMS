@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
@@ -11,6 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
+import { UserContext } from './UserContext';
 
 function LeaveRequest() {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ function LeaveRequest() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const [imageURLs, setImageURLs] = useState([]);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getAllLeaveSuccess=(doc)=>{
     let leaves = []
@@ -75,7 +77,7 @@ function LeaveRequest() {
 
   const getLeave=(id)=>{
     setSelectID(id)
-    firestore.getLeave("miscible",id,getLeaveSuc,getLeaveUnsuc)
+    firestore.getLeave(companyId,id,getLeaveSuc,getLeaveUnsuc)
   }
 
   const allowSuc =()=>{
@@ -91,11 +93,11 @@ function LeaveRequest() {
     let item={
       state:true
     }
-    firestore.updateLeave("miscible",selectID,item,allowSuc,allowUnsuc)
+    firestore.updateLeave(companyId,selectID,item,allowSuc,allowUnsuc)
   }
 
   useEffect(() => {
-    firestore.getAllLeave("miscible",getAllLeaveSuccess,getAllLeaveUnsuccess)
+    firestore.getAllLeave(companyId,getAllLeaveSuccess,getAllLeaveUnsuccess)
   }, []);
 
   const onNext = () => {

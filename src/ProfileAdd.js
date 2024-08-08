@@ -1,4 +1,4 @@
-import React, { useState,useRef,useEffect } from 'react';
+import React, { useState,useRef,useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -21,6 +21,7 @@ import { validateDate } from '@mui/x-date-pickers/internals';
 import { Label } from '@mui/icons-material';
 //import { image } from 'html2canvas/dist/types/css/types/image';
 import html2canvas from 'html2canvas';
+import { UserContext } from './UserContext';
 
 function ProfileAdd() {
   const navigate = useNavigate();
@@ -84,6 +85,7 @@ function ProfileAdd() {
   const [statusOptions, setStatusOptions] = useState([]);
   const [positions, setPositions] = useState([]);
   const [levels, setLevels] = useState([]);
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -152,7 +154,7 @@ function ProfileAdd() {
       email:email,
       state:false
     }
-    firestore.addUsername("miscible",id,user,addUsernameSuc,addUsernameUnsuc)
+    firestore.addUsername(companyId,id,user,addUsernameSuc,addUsernameUnsuc)
   }
 
   const addUserUnsuccess=(e)=>{
@@ -163,7 +165,7 @@ function ProfileAdd() {
   const onSave= async()=>{
     let imageUrl = '';
     if (image_off) {
-      imageUrl = await storage.uploadImage(image_off);
+      imageUrl = await storage.uploadImage(companyId,image_off);
     }
 
     var nameth = name.split(" ")
@@ -226,9 +228,9 @@ function ProfileAdd() {
     // }
     //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
     try {
-      const isUsernameAvailable = await firestore.verifyUsername("miscible", username);
+      const isUsernameAvailable = await firestore.verifyUsername(companyId, username);
       if (isUsernameAvailable) {
-        firestore.addUser("miscible", item, addUserSuccess, addUserUnsuccess);
+        firestore.addUser(companyId, item, addUserSuccess, addUserUnsuccess);
       } else {
         alert("The username is already taken. Please choose another one.");
       }
@@ -241,20 +243,20 @@ function ProfileAdd() {
 
   const fetchDropdownOptions = async () => {
     try {
-      const prefixThOptions = await firestore.getDropdownOptions("miscible",'prefixTh');
+      const prefixThOptions = await firestore.getDropdownOptions(companyId,'prefixTh');
       setPrefixThOptions(prefixThOptions.map(option => option.name));
-      const prefixEnOptions = await firestore.getDropdownOptions("miscible",'prefixEn');
+      const prefixEnOptions = await firestore.getDropdownOptions(companyId,'prefixEn');
       setPrefixEnOptions(prefixEnOptions.map(option => option.name));
-      const sexOptions = await firestore.getDropdownOptions("miscible",'sex');
+      const sexOptions = await firestore.getDropdownOptions(companyId,'sex');
       setSexOptions(sexOptions.map(option => option.name));
-      const positionOptions = await firestore.getDropdownOptions("miscible",'position');
+      const positionOptions = await firestore.getDropdownOptions(companyId,'position');
       console.log(positionOptions)
       setPositionOptions(positionOptions.map(option => option.name));
       // const levelOptions = await firestore.getDropdownOptions('level');
       // setLevelOptions(levelOptions.map(option => option.name));
-      const bankOptions = await firestore.getDropdownOptions("miscible",'bank')
+      const bankOptions = await firestore.getDropdownOptions(companyId,'bank')
       setBankOptions(bankOptions.map(option => option.name));
-      const statusOptions = await firestore.getDropdownOptions("miscible",'status_per')
+      const statusOptions = await firestore.getDropdownOptions(companyId,'status_per')
       setStatusOptions(statusOptions.map(option => option.name));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);

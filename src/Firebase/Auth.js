@@ -48,7 +48,7 @@ class Auth {
         //console.log(u)
         onAuthStateChanged(this.auth, (user) => {
           if(user){
-            console.log(user)
+            //console.log(user)
             suc(user)
           }
         })

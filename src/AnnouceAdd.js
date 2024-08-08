@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -18,6 +18,7 @@ import storage from './Firebase/Storage';
 import Layout from './Layout';
 import { Label } from '@mui/icons-material';
 import MenuItem from '@mui/material/MenuItem';
+import { UserContext } from './UserContext';
 
 
 
@@ -32,6 +33,7 @@ function AnnouceAdd() {
 
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const types =[
    
@@ -66,7 +68,7 @@ function AnnouceAdd() {
     const uploadFiles = async () => {
       const uploadPromises = files.map((file) => {
         return new Promise((resolve, reject) => {
-          storage.uploadFile(
+          storage.uploadFile(companyId,
             file,
             (progress) => {
               setUploadProgress((prevProgress) => ({
@@ -115,7 +117,7 @@ function AnnouceAdd() {
         type: type
       };
   
-      await firestore.addAnnouce("miscible",item, addAnnouceSuc, addAnnouceUnsuc);
+      await firestore.addAnnouce(companyId,item, addAnnouceSuc, addAnnouceUnsuc);
     } catch (error) {
       console.error('Error saving announcement: ', error);
     }

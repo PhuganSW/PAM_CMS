@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useCallback } from 'react';
+import React, { useState,useEffect,useCallback,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
@@ -17,6 +17,7 @@ import { useDropzone } from 'react-dropzone';
 import storage from './Firebase/Storage';
 import Layout from './Layout';
 import MenuItem from '@mui/material/MenuItem';
+import { UserContext } from './UserContext';
 
 
 function AnnouceEdit() {
@@ -34,6 +35,7 @@ function AnnouceEdit() {
 
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
+  const { setCurrentUser, companyId } = useContext(UserContext);
 
   const types =[
    
@@ -97,7 +99,7 @@ function AnnouceEdit() {
     const file = files[0];
     await deleteFile(fileURL); // Delete the existing file before uploading the new one
 
-    storage.uploadFile(
+    storage.uploadFile(companyId,
       file,
       (progress) => {
         setUploadProgress((prevProgress) => ({
@@ -108,14 +110,14 @@ function AnnouceEdit() {
       async (downloadURL) => {
         item.file = downloadURL;
         item.file_name = file.name;
-        await firestore.updateAnnouce("miscible",selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+        await firestore.updateAnnouce(companyId,selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
       },
       (error) => {
         console.error('Upload failed:', error);
       }
     );
   } else {
-    firestore.updateAnnouce("miscible",selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+    firestore.updateAnnouce(companyId,selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
   }
   }
 
@@ -130,7 +132,7 @@ function AnnouceEdit() {
     if (location.state && location.state.id) {
       setSelectID(location.state.id);
       //console.log('from eff'+uid)
-      firestore.getAnnouce("miscible",location.state.id,getAnnouceSuc,getAnnouceUnsuc)
+      firestore.getAnnouce(companyId,location.state.id,getAnnouceSuc,getAnnouceUnsuc)
     } else {
       console.warn('No ID found in location state');
     }
