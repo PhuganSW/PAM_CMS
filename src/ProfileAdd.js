@@ -75,6 +75,9 @@ function ProfileAdd() {
   const [missing,setMissing] = useState(0); //ขาดงาน
   const [borrow,setBorrow] = useState(0); //เงินกู้ยืม
   const [withdraw,setWithdraw] = useState(0); //เงินเบิกล่วงหน้า
+  const [allDeposit,setAllDeposit] = useState(0); //รายได้สะสม
+  const [allInsurance,setAllInsurance] = useState(0); //ประกันสังคมสะสม
+
 
   const [prefixThOptions, setPrefixThOptions] = useState([]);
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
@@ -211,12 +214,14 @@ function ProfileAdd() {
       sub:sub,
       welth:welth,
       bonus:bonus,
+      allDeposit:allDeposit,
       tax:tax,
       insurance:insurance,
       late:late,
       missing:missing,
       borrow:borrow,
       withdraw:withdraw,
+      allInsurance:allInsurance,
       jobDesc:jobDesc,
       duty:duty,
     }
@@ -540,6 +545,8 @@ function ProfileAdd() {
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  multiline
+                  rows={4}s
                   value={jobDesc}
                   onChange={(e) => setJobDesc(e.target.value)}
                 >
@@ -550,19 +557,11 @@ function ProfileAdd() {
                   variant="filled"
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
+                  multiline
+                  rows={4}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={duty}
                   onChange={(e) => setDuty(e.target.value)}
-                />
-                <TextField
-                  className="form-field"
-                  label="เลขที่บัญชี"
-                  variant="filled"
-                  style={{ width: '28%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={bank_id}
-                  onChange={(e) => setBank_ID(e.target.value)}
                 />
               </div>
               <div className="form-row" style={{ display: 'flex',}}>
@@ -731,6 +730,16 @@ function ProfileAdd() {
                     value={costL}
                     onChange={(e) => setCostL(validateNumberInput(e.target.value))}
                   />
+                  <TextField
+                    label="รายได้สะสม"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%',marginRight:'1.25%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={allDeposit}
+                    onChange={(e) => setAllDeposit(validateNumberInput(e.target.value))}
+                  />
               </div>
               <div className="form-row" style={{ display: 'flex' }}>
                 <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
@@ -795,11 +804,21 @@ function ProfileAdd() {
                     label="หักภาษีเงินได้"
                     className="form-field"
                     variant="filled"
-                    style={{width:'19%'}}
+                    style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={tax}
                     onChange={(e) => setTax(validateNumberInput(e.target.value))}
+                  />
+                  <TextField
+                    label="เงินประกันสังคมสะสม"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'19%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={allInsurance}
+                    onChange={(e) => setAllInsurance(validateNumberInput(e.target.value))}
                   />
                 </div>
               <div className="form-row" style={{ display: 'flex'}}>

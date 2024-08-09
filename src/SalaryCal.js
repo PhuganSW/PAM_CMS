@@ -46,9 +46,9 @@ function SalaryCal() {
   const [withdraw,setWithdraw] = useState(0); //เงินเบิกล่วงหน้า
   const [amount,setAmount] = useState('');
   const [deposit,setDeposit] = useState('');
-  const [allDeposit,setAllDeposit] = useState('');
+  const [allDeposit,setAllDeposit] = useState(0);
   const [allWithdraw,setAllWithdraw] = useState('');
-  const [allInsurance,setAllInsurance] = useState('');
+  const [allInsurance,setAllInsurance] = useState(0);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getUserSuccess=(data)=>{
@@ -91,7 +91,8 @@ function SalaryCal() {
       setBorrow(billData.borrow);
       setMissing(billData.missing);
       setTax(billData.tax);
-   
+      setAllDeposit(billData.allDeposit)
+      setAllInsurance(billData.allInsurance)
     }
   };
 
@@ -182,6 +183,9 @@ function SalaryCal() {
       Number(tax)
 
     setAllWithdraw(total1);
+
+    // const total3 = Number(allInsurance)+Number(insurance)
+    // setAllInsurance(total3)
   };
 
   const calculateTotalAmount = () => {
@@ -190,6 +194,8 @@ function SalaryCal() {
       Number(allWithdraw)
 
     setAmount(total1);
+    // const total2 = Number(allDeposit)+Number(total1)
+    // setAllDeposit(total2)
   };
 
   const validateNumberInput = (input) => {
