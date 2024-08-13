@@ -127,6 +127,10 @@ function ProfileEdit() {
     setEmer_Relate(data.emer_relate);
     setEmer_Phone(data.emer_phone);
     setAddress_Off(data.address_off);
+    setDisease(data.disease);
+    setBlood_type(data.blood_type);
+    setLdrug(data.Ldrug);
+    setWealthHos(data.wealthHos);
     setSalary(data.salary);
     setSub(data.sub);
     setOT(data.ot);
@@ -197,87 +201,87 @@ function ProfileEdit() {
   const onSave = async () => {
     if (username !== originalUsername) {
       const isTaken = await firestore.verifyUsername(companyId, username);
-      console.log(isTaken)
       if (!isTaken) {
         alert("This username is already taken.");
         return;
       }
     }
+  
     let imageUrl = '';
-  if (image_off instanceof File) {
-    imageUrl = await storage.uploadImage(companyId,image_off);
-  } else {
-    imageUrl = image_off; // Keep the existing URL if no new image is uploaded
-  }
-
+    if (image_off instanceof File) {
+      imageUrl = await storage.uploadImage(companyId, image_off);
+    } else {
+      imageUrl = image_off; // Keep the existing URL if no new image is uploaded
+    }
+  
     var nameth = name.split(" ");
     var nameEn = nameEng.split(" ");
     let item = {
-      prefixth:prefixth,
-      prefixEn:prefixEn,
-      emID:emID,
-      name: nameth[0],
-      lastname: nameth[1],
-      FName: nameEn[0],
-      LName: nameEn[1],
-      position: position,
-      workstart: firstDay,
-      address: address,
-      phone: phone,
-      email: email,
-      sex: sex,
-      level: level,
-      image_off: imageUrl,
-      nat_id: nat_id,
-      personal_status: personal_status,
-      child: child,
-      bank: bank,
-      bank_type: bank_type,
-      bank_id: bank_id,
-      emer_name: emer_name,
-      emer_relate: emer_relate,
-      emer_phone: emer_phone,
-      address_off: address_off,
-      disease: disease,
-      blood_type: blood_type,
-      Ldrug: Ldrug,
-      wealthHos: wealthHos,
-      costL: costL,
-      ot: ot,
-      allowance: allowance,
-      salary: salary,
-      venhicle: venhicle,
-      sub: sub,
-      welth: welth,
-      bonus: bonus,
-      allDeposit:allDeposit,
-      tax: tax,
-      insurance: insurance,
-      late: late,
-      missing: missing,
-      borrow: borrow,
-      withdraw: withdraw,
-      allInsurance:allInsurance,
-      jobDesc: jobDesc,
-      duty:duty,
+      prefixth: prefixth || '',
+      prefixEn: prefixEn || '',
+      emID: emID || '',
+      name: nameth[0] || '',
+      lastname: nameth[1] || '',
+      FName: nameEn[0] || '',
+      LName: nameEn[1] || '',
+      position: position || '',
+      workstart: firstDay || '',
+      address: address || '',
+      phone: phone || '',
+      email: email || '',
+      sex: sex || '',
+      level: level || '',
+      image_off: imageUrl || '',
+      nat_id: nat_id || '',
+      personal_status: personal_status || '',
+      child: child || '',
+      bank: bank || '',
+      bank_type: bank_type || '',
+      bank_id: bank_id || '',
+      emer_name: emer_name || '',
+      emer_relate: emer_relate || '',
+      emer_phone: emer_phone || '',
+      address_off: address_off || '',
+      disease: disease || '',
+      blood_type: blood_type || '',
+      Ldrug: Ldrug || '',
+      wealthHos: wealthHos || '',
+      costL: costL || 0,
+      ot: ot || 0,
+      allowance: allowance || 0,
+      salary: salary || 0,
+      venhicle: venhicle || 0,
+      sub: sub || 0,
+      welth: welth || 0,
+      bonus: bonus || 0,
+      allDeposit: allDeposit || 0,
+      tax: tax || 0,
+      insurance: insurance || 0,
+      late: late || 0,
+      missing: missing || 0,
+      borrow: borrow || 0,
+      withdraw: withdraw || 0,
+      allInsurance: allInsurance || 0,
+      jobDesc: jobDesc || '',
+      duty: duty || '',
     };
-
-    firestore.updateUser(companyId,uid, item, updateSuccess, updateUnsuccess);
-    if(password != ''){
+  
+    firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);
+  
+    if (password !== '') {
       let pass = await hashPass(password);
-      setPassword(pass)
       let item1 = {
-        username:username,
-        password:pass,
-        level:level,
-      } 
-      firestore.updateUsername(companyId,uid,item1,updateUsernameS,updateUsernameUn)
-    }else{
+        username: username || '',
+        password: pass,
+        level: level || '',
+      };
+      firestore.updateUsername(companyId, uid, item1, updateUsernameS, updateUsernameUn);
+    } else {
       let item1 = {
-        username:username,
-        level:level,
-      } 
-      firestore.updateUsername(companyId,uid,item1,updateUsernameS,updateUsernameUn)
+        username: username || '',
+        level: level || '',
+      };
+      firestore.updateUsername(companyId, uid, item1, updateUsernameS, updateUsernameUn);
     }
   };
 

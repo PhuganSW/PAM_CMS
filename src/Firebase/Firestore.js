@@ -111,14 +111,27 @@ class FireStore{
   };
 
   addUsername= async (companyId,id,item,success,unsuccess)=>{
-    
     try{
-      
-      
         const docRef =  await setDoc(doc(this.db, "companies", companyId, "username", id), item);
         success();
-      
-      
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  addNetwork= async (companyId,id,item,success,unsuccess)=>{
+    try{
+        const docRef =  await setDoc(doc(this.db, "companies", companyId, "network", id), item);
+        success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  addAction= async (companyId,id,item,success,unsuccess)=>{
+    try{
+        const docRef =  await setDoc(doc(this.db, "companies", companyId, "users", id,"network_action",id), item);
+        success();
     }catch(e){
       unsuccess(e);
     }

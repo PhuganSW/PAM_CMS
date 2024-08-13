@@ -22,6 +22,7 @@ import { Label } from '@mui/icons-material';
 //import { image } from 'html2canvas/dist/types/css/types/image';
 import html2canvas from 'html2canvas';
 import { UserContext } from './UserContext';
+import { count } from 'firebase/firestore';
 
 function ProfileAdd() {
   const navigate = useNavigate();
@@ -157,7 +158,14 @@ function ProfileAdd() {
       email:email,
       state:false
     }
+    let network={
+      count:0
+    }
+    let action ={
+      like:false
+    }
     firestore.addUsername(companyId,id,user,addUsernameSuc,addUsernameUnsuc)
+    // firestore.addNetwork(companyId,id,network,)
   }
 
   const addUserUnsuccess=(e)=>{
