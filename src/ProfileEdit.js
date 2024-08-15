@@ -586,6 +586,8 @@ function ProfileEdit() {
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  multiline
+                  rows={4}s
                   value={jobDesc}
                   onChange={(e) => setJobDesc(e.target.value)}
                 >
@@ -596,19 +598,11 @@ function ProfileEdit() {
                   variant="filled"
                   style={{ width: '35%', marginRight: '1%' }}
                   InputLabelProps={{ style: { color: '#000' } }}
+                  multiline
+                  rows={4}
                   InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                   value={duty}
                   onChange={(e) => setDuty(e.target.value)}
-                />
-                <TextField
-                  className="form-field"
-                  label="เลขที่บัญชี"
-                  variant="filled"
-                  style={{ width: '28%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={bank_id}
-                  onChange={(e) => setBank_ID(e.target.value)}
                 />
               </div>
             <div className="form-row" style={{ display: 'flex',}}>
