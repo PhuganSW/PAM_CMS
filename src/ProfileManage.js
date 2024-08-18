@@ -29,6 +29,7 @@ function ProfileManage() {
   const [showFillter,setShowFillter] = useState(false);
   const [selectFillter,setSelectFillter] = useState('');
   const [position,setPosition] = useState('');
+  const [name,setName] = useState('');
 
   const [positionOptions, setPositionOptions] = useState([]);
   const { account, companyId } = useContext(UserContext);
@@ -55,14 +56,20 @@ function ProfileManage() {
   }
 
   const handleDelClose = () => setShowDel(false);
-  const handleDelShow = (id) => {
+  const handleDelShow = (id,name) => {
     setSelectID(id)
+    setName(name)
     setShowDel(true);
   }
 
   const Delete =()=>{
-    firestore.deleteUser(companyId,selectID)
-    firestore.deleteUsername(companyId,selectID)
+    if(selectID != '8H1ETSH8pE0s7lvKeLzk'){
+      firestore.deleteUser(companyId,selectID)
+      firestore.deleteUsername(companyId,selectID)
+    }
+    else{
+      console.log('not Del!')
+    }
     //console.log('Del'+selectID)
     handleDelClose()
   }
@@ -172,7 +179,7 @@ function ProfileManage() {
                       <td>{item.position}</td>
                       <td style={{width:'30%',textAlign:'center'}}>
                         <button className='Edit-button' onClick={()=>onEdit(item.id)}>แก้ไข</button>
-                        <button className='Delete-button' onClick={()=>handleDelShow(item.id)}>ลบ</button>
+                        <button className='Delete-button' onClick={()=>handleDelShow(item.id,item.name)}>ลบ</button>
                       </td>
                     </tr>
                   ))}
@@ -192,7 +199,7 @@ function ProfileManage() {
           <Modal.Title>ลบข้อมูลพนักงาน</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h5>ยืนยันจะลบข้อมูลพนักงานหรือไม่</h5>
+          <h5>ยืนยันจะลบข้อมูลพนักงาน {name} หรือไม่</h5>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={Delete}>
