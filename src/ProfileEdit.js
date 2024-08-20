@@ -90,7 +90,7 @@ function ProfileEdit() {
 
   const levelOptions = [
     {label:'Employee',value:'employee'},
-    {label:'HR',value:'HR'}
+    {label:'Leader',value:'leader'}
   ]
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
