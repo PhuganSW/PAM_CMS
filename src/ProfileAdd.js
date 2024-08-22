@@ -240,6 +240,7 @@ function ProfileAdd() {
     //   alert('กรุณาระบุรหัสผ่าน')
     // }
     //firestore.addUser(item,addUserSuccess,addUserUnsuccess)
+
     try {
       const isUsernameAvailable = await firestore.verifyUsername(companyId, username);
       if (isUsernameAvailable) {
@@ -251,7 +252,6 @@ function ProfileAdd() {
       console.error("Error verifying username:", error);
       alert("An error occurred while verifying the username. Please try again.");
     }
-    //console.log(position)
   }
 
   const fetchDropdownOptions = async () => {
