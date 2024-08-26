@@ -262,7 +262,7 @@ function Annouce() {
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,marginTop:20,alignItems:'center',justifyContent:'center'}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ข่าวสาร</p>
+                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ข่าวสารภายใน</p>
               </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>

@@ -24,7 +24,7 @@ function AnnouceEdit() {
   const navigate = useNavigate();
   const location = useLocation();
   const [title,setTitle] = useState('');
-  const [desc,setDesc] = useState('');
+  const [link,setLink] = useState('');
   const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
   const [selectID,setSelectID] = useState('');
@@ -56,7 +56,7 @@ function AnnouceEdit() {
 
   const getAnnouceSuc=(data)=>{
     setTitle(data.title)
-    setDesc(data.desc)
+    setLink(data.link)
     setDate(dayjs(data.date,'DD-MM-YYYY'))
     setDetail(data.detail)
     setFileName(data.file_name)
@@ -86,7 +86,7 @@ function AnnouceEdit() {
    let date_str = date.format('DD/MM/YYYY');
    let item = {
     title: title,
-    desc: desc,
+    link: link,
     detail: detail,
     date: date_str,
     file: fileURL,
@@ -231,14 +231,14 @@ function AnnouceEdit() {
                     </LocalizationProvider>
 
                     <TextField
-                        label="คำอธิบาย"
+                        label="ลิงค์แนบ"
                         variant="filled"
                         className="form-field"
                         style={{width:'69%'}}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                        value={desc}
-                        onChange={(e) => setDesc(e.target.value)}
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
                     />
                
                     

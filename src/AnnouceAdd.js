@@ -25,7 +25,7 @@ import { UserContext } from './UserContext';
 function AnnouceAdd() {
   const navigate = useNavigate();
   const [title,setTitle] = useState('');
-  const [desc,setDesc] = useState('');
+  const [link,setLink] = useState('');
   const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
   const [count,setCount] = useState(0);
@@ -108,7 +108,7 @@ function AnnouceAdd() {
   
       let item = {
         title: title,
-        desc: desc,
+        link: link,
         detail: detail,
         date: date_str,
         file: fileURLs.length ? fileURLs[0] : "",
@@ -216,14 +216,14 @@ function AnnouceAdd() {
                     </LocalizationProvider>
 
                     <TextField
-                        label="คำอธิบาย"
+                        label="ลิงค์แนบ"
                         className="form-field"
                         variant="filled"
                         style={{width:'69%'}}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                        value={desc}
-                        onChange={(e) => setDesc(e.target.value)}
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
                     />
                
                     
