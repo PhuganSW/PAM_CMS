@@ -687,6 +687,114 @@ class FireStore{
     return items;
   };
 
+  getUserRole=async(companyId,id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "users", id,"extend","role");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
+  addUserRole= async (companyId,id,item,success,unsuccess)=>{
+    try{
+      const docRef = await setDoc(doc(this.db, "companies", companyId, "users", id,"extend","role"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  updateUserRole=async(companyId,id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "users", id,"extend","role");
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  getUpSkill=async(companyId,id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "users", id,"extend","upSkill");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
+  addUpSkill= async (companyId,id,item,success,unsuccess)=>{
+    try{
+      const docRef = await setDoc(doc(this.db, "companies", companyId, "users", id,"extend","upSkill"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  updateUpskill=async(companyId,id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "users", id,"extend","upSkill");
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  getNotice=async(companyId,id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "users", id,"extend","notice");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
+  addNotice= async (companyId,id,item,success,unsuccess)=>{
+    try{
+      const docRef = await setDoc(doc(this.db, "companies", companyId, "users", id,"extend","notice"), item);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
+  updateNotice=async(companyId,id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "users", id,"extend","notice");
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
+  }
+
 }
 
 const firestore = new FireStore();

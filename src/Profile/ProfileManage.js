@@ -1,20 +1,20 @@
 import React, { useState, useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import './Home.css';
-import Sidebar from './sidebar';
-import './Profile.css';
+import '../Home.css';
+import Sidebar from '../sidebar';
+import '../Profile.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { useNavigate } from 'react-router-dom';
-import firestore from './Firebase/Firestore';
+import firestore from '../Firebase/Firestore';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline, IoPencil, IoTrash, IoPerson, IoBarChart, IoNotifications } from "react-icons/io5";
 import { IoFilterOutline } from "react-icons/io5";
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import Layout from './Layout';
-import { UserContext } from './UserContext';
+import Layout from '../Layout';
+import { UserContext } from '../UserContext';
 
 function ProfileManage() {
   const navigate = useNavigate();
@@ -81,6 +81,18 @@ function ProfileManage() {
 
   const onEdit =(id)=>{
     navigate('/profile_edit',{state:{uid:id}})
+  }
+
+  const onRole =(id)=>{
+    navigate('/profile_role',{state:{uid:id}})
+  }
+
+  const onUpSkill =(id)=>{
+    navigate('/profile_upskill',{state:{uid:id}})
+  }
+
+  const onNotice =(id)=>{
+    navigate('/profile_notice',{state:{uid:id}})
   }
 
   const fetchDropdownOptions = async () => {
@@ -177,9 +189,12 @@ function ProfileManage() {
                         {item.name}
                       </td>
                       <td>{item.position}</td>
-                      <td style={{width:'30%',textAlign:'center'}}>
-                        <button className='Edit-button' onClick={()=>onEdit(item.id)}>แก้ไข</button>
-                        <button className='Delete-button' onClick={()=>handleDelShow(item.id,item.name)}>ลบ</button>
+                      <td style={{width:'50%',textAlign:'center'}}>
+                        <button className='Edit-button' onClick={()=>onEdit(item.id)} title="แก้ไข"><IoPencil size={20} /></button>
+                        <button className='Delete-button' onClick={()=>handleDelShow(item.id,item.name)} title="ลบ"><IoTrash size={20} /></button>
+                        <button className='Role-button' onClick={()=>onRole(item.id)} title="Role"><IoPerson size={20} /></button>
+                        <button className='UpSkill-button' onClick={()=>onUpSkill(item.id)} title="Up Skill"><IoBarChart size={20} /></button>
+                        <button className='Notice-button' onClick={()=>onNotice(item.id)} title="My Notice"><IoNotifications size={20} /></button>
                       </td>
                     </tr>
                   ))}

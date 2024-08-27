@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TextField, MenuItem } from '@mui/material';
-import firestore from './Firebase/Firestore';
-import storage from './Firebase/Storage';
-import Layout from './Layout';
-import './Home.css';
-import './addProfile.css';
+import firestore from '../Firebase/Firestore';
+import storage from '../Firebase/Storage';
+import Layout from '../Layout';
+import '../Home.css';
+import '../addProfile.css';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import FilledInput from '@mui/material/FilledInput';
 import InputLabel from '@mui/material/InputLabel';
 import { sha256 } from 'crypto-hash';
-import { UserContext } from './UserContext';
+import { UserContext } from '../UserContext';
 
 function ProfileEdit() {
   const navigate = useNavigate();
@@ -310,8 +310,8 @@ function ProfileEdit() {
   useEffect(() => {
     if (location.state && location.state.uid) {
       setUid(location.state.uid);
-      firestore.getUser("miscible",location.state.uid, getUserSuccess, getUserUnsuccess);
-      firestore.getUsername("miscible",location.state.uid, getUsernameSuc, getUsernameUnsuc)
+      firestore.getUser(companyId,location.state.uid, getUserSuccess, getUserUnsuccess);
+      firestore.getUsername(companyId,location.state.uid, getUsernameSuc, getUsernameUnsuc)
     } else {
       console.warn('No ID found in location state');
     }
@@ -574,37 +574,6 @@ function ProfileEdit() {
                   onChange={(e) => setLdrug(e.target.value)}
                 />
             </div>
-            <div className="form-row" style={{ display: 'flex',}}>
-                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ข้อมูลเพิ่มเติม :</p>
-              </div>
-              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-              <TextField
-                  className="form-field"
-                  label="คำอธิบายตำแหน่ง"
-                  variant="filled"
-                  style={{ width: '35%', marginRight: '1%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  multiline
-                  rows={4}s
-                  value={jobDesc}
-                  onChange={(e) => setJobDesc(e.target.value)}
-                >
-                  </TextField>
-                <TextField
-                  className="form-field"
-                  label="ขอบเขตงาน"
-                  variant="filled"
-                  style={{ width: '35%', marginRight: '1%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  multiline
-                  rows={4}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={duty}
-                  onChange={(e) => setDuty(e.target.value)}
-                />
-              </div>
             <div className="form-row" style={{ display: 'flex',}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>

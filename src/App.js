@@ -5,16 +5,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { UserProvider, UserContext } from './UserContext';
 import Login from './Login';
 import Home from './Home';
-import ProfileManage from './ProfileManage';
+import ProfileManage from './Profile/ProfileManage';
 import CheckHistory from './CheckHistory';
 import LeaveRequest from './LeaveRequest';
 import OTRequest from './OTRequest';
 import Welthfare from './Welthfare';
 import Salary from './Salary';
 import Annouce from './Annouce';
-import ProfileAdd from './ProfileAdd';
+import ProfileAdd from './Profile/ProfileAdd';
 import ManageAccount from './ManageAccount';
-import ProfileEdit from './ProfileEdit';
+import ProfileEdit from './Profile/ProfileEdit';
 import AnnouceAdd from './AnnouceAdd';
 import AnnouceEdit from './AnnouceEdit';
 import SalaryCal from './SalaryCal';
@@ -27,6 +27,9 @@ import Network from './Network';
 import Contact from './Contact';
 import CalendarPage from './Calendar';
 import LoginCompany from './LoginCompany';
+import ProfileRole from './Profile/ProfileRole';
+import ProfileUpSk from './Profile/ProfileUpSk';
+import ProfileNotice from './Profile/ProfileNotice';
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
           <Route path="/annouce_edit" element={<ProtectedRoute><AnnouceEdit /></ProtectedRoute>} />
           <Route path="/profile_add" element={<ProtectedRoute><ProfileAdd /></ProtectedRoute>} />
           <Route path="/profile_edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
+          <Route path="/profile_role" element={<ProtectedRoute><ProfileRole /></ProtectedRoute>} />
+          <Route path="/profile_upskill" element={<ProtectedRoute><ProfileUpSk /></ProtectedRoute>} />
+          <Route path="/profile_notice" element={<ProtectedRoute><ProfileNotice /></ProtectedRoute>} />
           <Route path="/manage_account" element={<ProtectedRoute><ManageAccount /></ProtectedRoute>} />
           <Route path="/salary_cal" element={<ProtectedRoute><SalaryCal /></ProtectedRoute>} />
           <Route path="/salary_list" element={<ProtectedRoute><SalaryList /></ProtectedRoute>} />

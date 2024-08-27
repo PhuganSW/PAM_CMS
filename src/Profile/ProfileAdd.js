@@ -1,13 +1,13 @@
 import React, { useState,useRef,useEffect,useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
-import Sidebar from './sidebar';
-import './Home.css';
+import Sidebar from '../sidebar';
+import '../Home.css';
 import { useNavigate } from 'react-router-dom';
-import './addProfile.css'
+import '../addProfile.css'
 import { Alert, TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import firestore from './Firebase/Firestore';
-import storage from './Firebase/Storage';
+import firestore from '../Firebase/Firestore';
+import storage from '../Firebase/Storage';
 import IconButton from '@mui/material/IconButton';
 import FilledInput from '@mui/material/FilledInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -15,13 +15,13 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Layout from './Layout';
+import Layout from '../Layout';
 import { sha256 } from 'crypto-hash';
 import { validateDate } from '@mui/x-date-pickers/internals';
 import { Label } from '@mui/icons-material';
 //import { image } from 'html2canvas/dist/types/css/types/image';
 import html2canvas from 'html2canvas';
-import { UserContext } from './UserContext';
+import { UserContext } from '../UserContext';
 import { count } from 'firebase/firestore';
 
 function ProfileAdd() {
@@ -540,37 +540,6 @@ function ProfileAdd() {
                     value={Ldrug}
                     onChange={(e) => setLdrug(e.target.value)}
                   />
-              </div>
-              <div className="form-row" style={{ display: 'flex',}}>
-                <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ข้อมูลเพิ่มเติม :</p>
-              </div>
-              <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-              <TextField
-                  className="form-field"
-                  label="คำอธิบายตำแหน่ง"
-                  variant="filled"
-                  style={{ width: '35%', marginRight: '1%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  multiline
-                  rows={4}s
-                  value={jobDesc}
-                  onChange={(e) => setJobDesc(e.target.value)}
-                >
-                  </TextField>
-                <TextField
-                  className="form-field"
-                  label="ขอบเขตงาน"
-                  variant="filled"
-                  style={{ width: '35%', marginRight: '1%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  multiline
-                  rows={4}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={duty}
-                  onChange={(e) => setDuty(e.target.value)}
-                />
               </div>
               <div className="form-row" style={{ display: 'flex',}}>
                 <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
