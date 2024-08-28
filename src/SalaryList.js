@@ -19,7 +19,7 @@ import { UserContext } from './UserContext';
 function SalaryList() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [uid,setUid] = useState('')
+  const [uid,setUid] = useState('') // user id
   const [name,setName] = useState('');
   const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
   const [startIndex, setStartIndex] = useState(0);
@@ -28,6 +28,7 @@ function SalaryList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [allBill,setAllBill] = useState([])
+  const [allBillCF,setAllBillCF] = useState([])
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getUserSuccess=(data)=>{
@@ -40,12 +41,26 @@ function SalaryList() {
 
   const getAllBillSuc=(doc)=>{
     let bills = []
+    let billsCF = []
     if (allBill.length === 0) {
         
       doc.forEach((item) => {
-        bills.push({id: item.id, uid: item.uid, date: item.date});
+        if(item.confirm == false){
+          bills.push({id: item.id, uid: item.uid, date: item.date});
+        }
+        
       });
       setAllBill(bills);
+    }
+    if (allBillCF.length === 0) {
+        
+      doc.forEach((item) => {
+        if(item.confirm == true){
+          billsCF.push({id: item.id, uid: item.uid, date: item.date});
+        }
+        
+      });
+      setAllBillCF(billsCF);
       
     }
   }
@@ -55,12 +70,23 @@ function SalaryList() {
   }
 
   const calSalary=(id)=>{
-    navigate('/salary_cal',{state:{uid:id}})
+    let act = "cal";
+    navigate('/salary_cal',{state:{uid,act:id,act}})
   }
 
-  const toEdit=(date)=>{
+  const toEdit=(date,id)=>{
     let act = "edit";
-    navigate('/salary_cal',{state:{uid,date,act:uid,date,act}})
+    navigate('/salary_cal',{state:{uid,date,act,id:uid,date,act,id}})
+  }
+
+  const saveSuc=()=>{}
+  const saveUnsuc=(e)=>console.log(e)
+
+  const onConfirm=(id)=>{
+    let item={
+      confirm:true
+    }
+    firestore.updateBill(companyId, id, item, saveSuc, saveUnsuc);
   }
 
   useEffect(() => {
@@ -142,8 +168,8 @@ function SalaryList() {
                       <td>
                         {item.date}
                       </td>
-                      <td style={{textAlign:'center'}}><button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date)}>ดูและแก้ไข</button>
-                          <button className='Add-button' style={{height:'20%'}}>Submit</button>
+                      <td style={{textAlign:'center'}}><button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date,item.id)}>ดูและแก้ไข</button>
+                          <button className='Add-button' style={{height:'20%'}} onClick={()=>onConfirm(item.id)}>Submit</button>
                       </td>
                     </tr>
                   ))}
@@ -159,7 +185,18 @@ function SalaryList() {
                   </tr>
                 </thead>
                 <tbody>
-                  
+                {allBillCF.map((item, index) => (
+                    <tr key={item.id}>
+                      {/*<th scope="row">{startIndex + index + 1}</th>*/}
+                      <th scope="row">{index + 1}</th>
+                      <td>
+                        {item.date}
+                      </td>
+                      <td style={{textAlign:'center'}}>
+                        <button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date,item.id)}>ดูและแก้ไข</button>  
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </TableBootstrap>
               {/*<div>

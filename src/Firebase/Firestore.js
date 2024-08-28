@@ -422,7 +422,7 @@ class FireStore{
   updateOT=async(companyId,id,data,success,unsuccess)=>{
     try{
       const docRef = doc(this.db, "companies", companyId, "otRequest", id);
-      // Set the "capital" field of the city 'DC'
+      
       await updateDoc(docRef,data);
       success();
     }catch(e){
@@ -492,28 +492,32 @@ class FireStore{
     }
   }
 
-  getBill=async(companyId,id,date,success,unsuccess)=>{
-    try {
-      const q = query(
-        collection(this.db, "companies", companyId, "Salary"),
-        where('id', '==', id),
-        where('date', '==', date)
-      );
-  
-      const querySnapshot = await getDocs(q);
-      const bills = [];
-      querySnapshot.forEach((doc) => {
-        bills.push(doc.data());
-      });
-  
-      if (bills.length > 0) {
-        success(bills);
-      } else {
-        console.log("No such document!");
-        success([]);
-      }
-    } catch (e) {
+  updateBill=async(companyId,id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "Salary", id);
+      // Set the "capital" field of the city 'DC'
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
       unsuccess(e);
+    }
+  }
+
+  getBill=async(companyId,id,date,success,unsuccess)=>{
+    
+    try{
+      const docRef = doc(this.db, "companies", companyId, "Salary", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success({uid:docSnap.id,...docSnap.data()})
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
     }
   }
 
@@ -527,6 +531,7 @@ class FireStore{
         id: doc.id,
         uid: data.id,
         date: data.date,
+        confirm: data.confirm,
       });
     });
     success(allBill);

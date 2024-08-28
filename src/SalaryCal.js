@@ -13,6 +13,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 import { jsPDF } from 'jspdf';
+import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import './fonts/THSarabunNew-normal'
 import THSarabunNew from './fonts/THSarabunNew-normal';
@@ -24,8 +25,9 @@ import { UserContext } from './UserContext';
 function SalaryCal() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [id_file,setID_File] = useState('');
-  const [uid,setUid] = useState('');
+  const [status,setStatus] = useState(''); //new or edit
+  const [id,setId] = useState(''); // user id
+  const [uid,setUid] = useState(''); //id doc
   const [name,setName] = useState('');
   const [date,setDate] = useState(dayjs(new Date()));
   const [valuePos,setValuePos] = useState(0); //ค่าประจำตำแน่ง
@@ -47,9 +49,11 @@ function SalaryCal() {
   const [amount,setAmount] = useState('');
   const [deposit,setDeposit] = useState('');
   const [allDeposit,setAllDeposit] = useState(0);
-  const [allWithdraw,setAllWithdraw] = useState('');
+  const [allWithdraw,setAllWithdraw] = useState(0);
   const [allInsurance,setAllInsurance] = useState(0);
+  const [confirm,setConfirm] = useState(null);
   const { setCurrentUser, companyId } = useContext(UserContext);
+
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -67,6 +71,9 @@ function SalaryCal() {
     setBorrow(data.borrow);
     setMissing(data.missing);
     setTax(data.tax);
+    setAllDeposit(data.allDeposit)
+    setAllInsurance(data.allInsurance)
+    setConfirm(false)
   }
 
   const getUserUnsuccess=(e)=>{
@@ -74,26 +81,28 @@ function SalaryCal() {
   }
 
   const getBillSuc = (data) => {
-    if (data.length > 0) {
-      const billData = data[0]; // Assuming you want the first item
-      setDate(dayjs(billData.date, 'DD-MM-YYYY'));
-      setSalary(billData.salary);
-      setSub(billData.sub);
-      setOT(billData.ot);
-      setAllowance(billData.allowance);
-      setVenhicle(billData.venhicle);
-      setWelth(billData.welth);
-      setBonus(billData.bonus);
-      setCostL(billData.costL);
-      setInsurance(billData.insurance);
-      setLate(billData.late);
-      setWithdraw(billData.withdraw);
-      setBorrow(billData.borrow);
-      setMissing(billData.missing);
-      setTax(billData.tax);
-      setAllDeposit(billData.allDeposit)
-      setAllInsurance(billData.allInsurance)
-    }
+    //console.log("bill S",data.length)
+
+    const billData = data; // Assuming you want the first item
+    setDate(dayjs(billData.date, 'DD-MM-YYYY'));
+    setName(billData.name)
+    setSalary(billData.salary);
+    setSub(billData.sub);
+    setOT(billData.ot);
+    setAllowance(billData.allowance);
+    setVenhicle(billData.venhicle);
+    setWelth(billData.welth);
+    setBonus(billData.bonus);
+    setCostL(billData.costL);
+    setInsurance(billData.insurance);
+    setLate(billData.late);
+    setWithdraw(billData.withdraw);
+    setBorrow(billData.borrow);
+    setMissing(billData.missing);
+    setTax(billData.tax);
+    setAllDeposit(billData.allDeposit)
+    setAllInsurance(billData.allInsurance)
+    setConfirm(billData.confirm)
   };
 
   const getBillUnsuc=()=>{
@@ -101,7 +110,7 @@ function SalaryCal() {
   }
 
   const saveSuc=()=>{
-    navigate('/salary_list',{state:{uid:uid}})
+    navigate('/salary_list',{state:{uid:id}})
   }
 
   const saveUnsuc=(e)=>{
@@ -111,7 +120,7 @@ function SalaryCal() {
   const onSave=()=>{
     let date_str = date.format('DD/MM/YYYY');
     let item ={
-      id:uid,
+      id:id,
       name:name,
       date:date_str,
       costL:costL,
@@ -133,19 +142,28 @@ function SalaryCal() {
       allWithdraw:allWithdraw,
       allInsurance:allInsurance,
       amount:amount,
+      confirm:false,
     }
     console.log('save')
-    firestore.addBill(companyId,item,saveSuc,saveUnsuc)
+    if(status == "edit"){
+      firestore.updateBill(companyId, uid, item, saveSuc, saveUnsuc);
+    }else{
+      firestore.addBill(companyId,item,saveSuc,saveUnsuc)
+    }
   }
 
   useEffect(() => {
     if (location.state && location.state.uid) {
-      setUid(location.state.uid);
+      setId(location.state.uid);
       //console.log('from eff'+uid)
-      firestore.getUser(companyId,location.state.uid,getUserSuccess,getUserUnsuccess)
+      if(location.state.act == "cal"){
+        firestore.getUser(companyId,location.state.uid,getUserSuccess,getUserUnsuccess)
+      }
       if(location.state.act=="edit"){
-        //console.log("edit "+ location.state.date)
-        firestore.getBill(companyId,location.state.uid,location.state.date,getBillSuc,getBillUnsuc)
+        console.log("edit "+ location.state.id)
+        setStatus(location.state.act)
+        setUid(location.state.id)
+        firestore.getBill(companyId,location.state.id,location.state.date,getBillSuc,getBillUnsuc)
       }
     } else {
       console.warn('No ID found in location state');
@@ -208,85 +226,117 @@ function SalaryCal() {
   }
 
   const exportToPDF = () => {
-    const doc = new jsPDF();
+  const doc = new jsPDF();
+  
+  doc.addFileToVFS("THSarabunNew.ttf", THSarabunNew.base64);
+  doc.addFont("THSarabunNew.ttf", "THSarabunNew", "normal");
+  doc.setFont("THSarabunNew");
+  
+  // Add title and company information
+  doc.setFontSize(24);
+  doc.text("บริษัท มิสซิเบิล เทคโนโลยี จำกัด", 14, 22);
+  doc.setFontSize(20);
+  doc.text("ใบแจ้งเงินเดือน (PAY SLIP)", 14, 30);
+  doc.text(`ชื่อ: ${name}`, 14, 38);
+  doc.text(`แผนก: `, 14, 46);  // You can add the department dynamically if available
+  doc.text(`วันที่จ่าย (DATE): ${date.format('DD/MM/YYYY')}`, 14, 54);
+  
+  // Define columns and rows for the table
+  const tableColumn = [
+    [{ content: "รวมรายได้", colSpan: 2, styles: { halign: 'center' } }, { content: "รวมเงินหัก", colSpan: 2, styles: { halign: 'center' } }]
+  ];
+  
+  const tableRows = [
+    ["เงินเดือน", salary.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "ประกันสังคม", insurance.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["ค่าจ้าง", sub.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "ภาษีหัก ณ ที่จ่าย", late.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["ค่าพาหนะ", venhicle.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "เงินเบิกล่วงหน้า", withdraw.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["ค่าเบี้ยเลี้ยง", allowance.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "สินเชื่อพนักงาน", borrow.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["ค่าล่วงเวลา", ot.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "ขาดงาน", missing.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["ค่าสวัสดิการ", welth.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "ภาษีเงินได้", tax.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["เงินโบนัส", bonus.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "-", "-"],
+    ["เงินพิเศษ", costL.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "-", "-"],
+    ["เงินได้สะสม", allDeposit.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "ประกันสังคมสะสม", allInsurance.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    ["รวมเงินได้", deposit.toLocaleString('th-TH', { minimumFractionDigits: 2 }), "รวมเงินหัก", allWithdraw.toLocaleString('th-TH', { minimumFractionDigits: 2 })],
+    // [{ content: "เงินได้สุทธิ", colSpan: 4, styles: { halign: 'center' } }]
+  ];
+  
+  // Add the table with custom rendering for description and value
+  doc.autoTable({
+    head: tableColumn,
+    body: tableRows,
+    startY: 60,
+    styles: {
+      font: 'THSarabunNew',
+      fontSize: 18,
+      cellPadding: 3,
+      overflow: 'linebreak',
+      halign: 'right', // Align numbers to the right
+      valign: 'middle',
+      lineWidth: 0.5,
+      lineColor: [0, 0, 0],
+    },
+    headStyles: {
+      fillColor: [191, 228, 255], // Light blue background for header
+      textColor: [0, 0, 0], // Black text color for header
+      halign: 'center', // Center-align header
+    },
+    columnStyles: {
+      0: { halign: 'left' }, // Left align for the first column (descriptions)
+      1: { halign: 'right',cellWidth: 30 ,}, // Right align for the second column (values)
+      2: { halign: 'left' }, // Left align for the third column (descriptions)
+      3: { halign: 'right',cellWidth: 30 }, // Right align for the fourth column (values)
+    },
+    tableLineColor: [0, 0, 0], // Color of table borders
+    tableLineWidth: 0.75,
+    didDrawCell: (data) => {
+      // Remove border between column 1 and 2
+      if (data.column.index === 1) {
+        doc.setDrawColor(255, 255, 255); // Set the draw color to white to "erase" the border
+        doc.line(data.cell.x - 0.5, data.cell.y, data.cell.x - 0.5, data.cell.y + data.cell.height);
+      }
+      // Remove border between column 3 and 4
+      if (data.column.index === 3) {
+        doc.setDrawColor(255, 255, 255); // Set the draw color to white to "erase" the border
+        doc.line(data.cell.x - 0.5, data.cell.y, data.cell.x - 0.5, data.cell.y + data.cell.height);
+      }
+    },
+  });
+  
+  // Calculate the final line (Net Salary)
+  const netSalary = amount;
+  doc.setFontSize(20);
+  doc.setTextColor(0, 0, 0);
+  doc.setFillColor(191, 228, 255); // Light blue background color
+  doc.rect(14, doc.lastAutoTable.finalY + 10, 182, 10, 'F'); // Draw a filled rectangle
+  doc.text(`เงินได้สุทธิ: ${netSalary.toLocaleString('th-TH', { minimumFractionDigits: 2 })}`, 18, doc.lastAutoTable.finalY + 17);
+  
+  // Save or open the PDF
+  const pdfDataUri = doc.output('dataurlstring');
+  const newWindow = window.open();
+  newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
 
-    doc.addFileToVFS("THSarabunNew.ttf",THSarabunNew.base64);
-    doc.addFont("THSarabunNew.ttf", "THSarabunNew", "normal");
-    doc.setFont("THSarabunNew");
-
-    // Add title
-    doc.setFontSize(24);
-    doc.text("รายละเอียดเงินเดือน", 14, 22);
-
-    // Add user name and date
-    doc.setFontSize(22);
-    doc.text(`ชื่อ: ${name}`, 14, 30);
-    doc.text(`วันที่: ${date.format('DD/MM/YYYY')}`, 14, 36);
-
-    // Add table headers
-   /* doc.setFontSize(20);
-    doc.text('รายละเอียด', 14, 50);
-    doc.text('จำนวนเงิน', 90, 50);*/
-
-
-    // Add table
-    const tableColumn = ["รายละเอียด", "จำนวนเงิน"];
-    const tableRows = [
-      ["ค่าครองชีพ", costL],
-      ["ค่าประจำตำแหน่ง", valuePos],
-      ["ค่าอาหาร", food],
-      ["ค่าล่วงเวลา", ot],
-      ["ค่าเบี้ยเลี้ยง", allowance],
-      ["ค่าเงินเดือน", salary],
-      ["ค่ายานพาหนะ", venhicle],
-      ["เงินอุดหนุน", sub],
-      ["ค่าสวัสดิการ", welth],
-      ["เงินโบนัส", bonus],
-      ["หักภาษี", tax],
-      ["ประกันสังคม", insurance],
-      ["เข้างานสาย", late],
-      ["ขาดงาน", missing],
-      ["เงินกู้ยืม", borrow],
-      ["เงินเบิกล่วงหน้า", withdraw]
-    ];
-
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 40,
-      styles: { 
-        font: 'THSarabunNew',
-        fontSize: 18,
-        cellPadding: 3,
-        overflow: 'linebreak',
-        halign: 'left',
-        valign: 'middle',
-        lineWidth: 0.5,
-        lineColor: [0, 0, 0],
-        fillColor: [240, 240, 240], // Light gray background color for the cells
-      },
-      headStyles: {
-        fillColor: [0, 57, 107], // Dark blue background for header
-        textColor: [255, 255, 255], // White text color for header
-        fontSize: 20,
-      },
-      alternateRowStyles: {
-        fillColor: [250, 250, 250] // Alternate row color (lighter gray)
-      },
-      tableLineColor: [0, 0, 0], // Color of table borders
-      tableLineWidth: 0.75,
-    });
-
-    //doc.addImage(logo.base64, 'PNG', 14, 100, 50, 50);
-
-
-    //doc.save(`${name}_salary_details.pdf`);
-    const pdfDataUri = doc.output('dataurlstring');
-
-    // Open the PDF in a new tab
-    const newWindow = window.open();
-    newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
-  }
+   // Save the PDF to the user's device
+   const pdfBlob = doc.output('blob');
+   const pdfFileName = `${name}_salary_${date}.pdf`;
+   saveAs(pdfBlob, pdfFileName);
+ 
+   // Upload the PDF to Firebase Storage
+  //  try {
+  //    const uploadTaskSnapshot = await storage.uploadFile(companyId, pdfFileName, pdfBlob);
+ 
+  //    // Get the download URL
+  //    const downloadURL = await uploadTaskSnapshot.ref.getDownloadURL();
+ 
+  //    // Store the download URL in Firestore
+  //    await firestore.addFileLinkToFirestore(companyId, uid, downloadURL);
+     
+  //    alert('PDF uploaded and link saved successfully!');
+  //  } catch (error) {
+  //    console.error('Error uploading PDF: ', error);
+  //    alert('Error uploading PDF.');
+  //  }
+};
+  
 
 
   return (
@@ -450,7 +500,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allDeposit}
-                    onChange={(e) => setAllDeposit(e.target.value)}
+                    onChange={(e) => setAllDeposit(validateNumberInput(e.target.value))}
                   />
                 </div>
                 <div className="form-row" style={{ display: 'flex',}} >
@@ -547,7 +597,7 @@ function SalaryCal() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allInsurance}
-                    onChange={(e) => setAllWithdraw(e.target.value)}
+                    onChange={(e) => setAllInsurance(validateNumberInput(e.target.value))}
                   />
                 </div>
                 <div className="form-row" style={{ display: 'flex'}}>
@@ -566,8 +616,8 @@ function SalaryCal() {
                 </div>
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/salary_list',{state:{uid:uid}})}>ยกเลิก</button>
+                {confirm == false && <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>}
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/salary_list',{state:{uid:id}})}>ยกเลิก</button>
                 <button style={{ width: 100, height: 50, borderRadius: 5, backgroundColor: '#026440', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>
               </div>
 

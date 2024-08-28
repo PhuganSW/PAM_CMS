@@ -98,6 +98,29 @@ background-color: rgb(29, 27, 27);
 color: #FFF;
 }
 
+.Role-button, .UpSkill-button, .Notice-button {
+  background-color: transparent;
+  border: none;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.Role-button:hover, .UpSkill-button:hover, .Notice-button:hover {
+  color: #000; /* Change this to your preferred hover color */
+}
+
+.Role-button {
+  color: #007bff; /* blue */
+}
+
+.UpSkill-button {
+  color: #28a745; /* green */
+}
+
+.Notice-button {
+  color: #ffc107; /* yellow */
+}
+
 .fillter-button{
   width: 50px;
   height: 50px;
