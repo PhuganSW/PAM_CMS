@@ -49,17 +49,45 @@ class Storage{
         });
     }
 
-      deleteFile = async (url) => {
-        if (url) {
-          const storageRef = ref(this.storage, url);
-          try {
-            await deleteObject(storageRef);
-            console.log('File deleted successfully');
-          } catch (error) {
-            console.error('Error deleting file:', error);
-          }
+    uploadBill = (companyId, fileName, file) => {
+      return new Promise((resolve, reject) => {
+          const storageRef = ref(this.storage, `${companyId}/salarySlips/${fileName}`);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+
+          uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  console.log(`Upload is ${progress}% done`);
+              },
+              (error) => {
+                  reject(error);
+              },
+              async () => {
+                  try {
+                      // Get the download URL after upload is complete
+                      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                      resolve(downloadURL);
+                  } catch (error) {
+                      reject(error);
+                  }
+              }
+          );
+      });
+    };
+
+    deleteFile = async (url) => {
+      if (url) {
+        const storageRef = ref(this.storage, url);
+        try {
+          await deleteObject(storageRef);
+          console.log('File deleted successfully');
+        } catch (error) {
+          console.error('Error deleting file:', error);
         }
-      };
+      }
+    };
+
 
 }
 

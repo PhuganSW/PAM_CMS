@@ -39,31 +39,32 @@ function SalaryList() {
     console.log(e)
   }
 
-  const getAllBillSuc=(doc)=>{
-    let bills = []
-    let billsCF = []
-    if (allBill.length === 0) {
-        
-      doc.forEach((item) => {
-        if(item.confirm == false){
-          bills.push({id: item.id, uid: item.uid, date: item.date});
-        }
-        
-      });
-      setAllBill(bills);
-    }
-    if (allBillCF.length === 0) {
-        
-      doc.forEach((item) => {
-        if(item.confirm == true){
-          billsCF.push({id: item.id, uid: item.uid, date: item.date});
-        }
-        
-      });
-      setAllBillCF(billsCF);
-      
-    }
-  }
+  const getAllBillSuc = (doc) => {
+    let bills = [];
+    let billsCF = [];
+  
+    doc.forEach((item) => {
+      const billData = {
+        id: item.id,
+        uid: item.uid,
+        date: item.date,
+        dateObj: dayjs(item.date, 'DD/MM/YYYY'), // Convert date to dayjs object for sorting
+      };
+  
+      if (item.confirm === false) {
+        bills.push(billData);
+      } else {
+        billsCF.push(billData);
+      }
+    });
+  
+    // Sort the bills array by date in descending order
+    bills.sort((a, b) => b.dateObj - a.dateObj);
+    billsCF.sort((a, b) => b.dateObj - a.dateObj);
+  
+    setAllBill(bills);
+    setAllBillCF(billsCF);
+  };
 
   const getAllBillUnsuc=(error)=>{
     console.log(error)

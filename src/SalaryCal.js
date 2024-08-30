@@ -7,6 +7,7 @@ import './addProfile.css'
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
+import storage from './Firebase/Storage';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -29,6 +30,8 @@ function SalaryCal() {
   const [id,setId] = useState(''); // user id
   const [uid,setUid] = useState(''); //id doc
   const [name,setName] = useState('');
+  const [position,setPosition] = useState('');
+  const [editable,setEditable] = useState(true)
   const [date,setDate] = useState(dayjs(new Date()));
   const [valuePos,setValuePos] = useState(0); //ค่าประจำตำแน่ง
   const [costL,setCostL] = useState(0); //ค่าครองชีพ
@@ -52,11 +55,13 @@ function SalaryCal() {
   const [allWithdraw,setAllWithdraw] = useState(0);
   const [allInsurance,setAllInsurance] = useState(0);
   const [confirm,setConfirm] = useState(null);
+  const [urlPDF,setURLpdf] = useState('');
   const { setCurrentUser, companyId } = useContext(UserContext);
 
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
+    setPosition(data.position)
     setSalary(data.salary);
     setSub(data.sub);
     setOT(data.ot);
@@ -85,7 +90,8 @@ function SalaryCal() {
 
     const billData = data; // Assuming you want the first item
     setDate(dayjs(billData.date, 'DD-MM-YYYY'));
-    setName(billData.name)
+    setName(billData.name);
+    setPosition(billData.position || '');
     setSalary(billData.salary);
     setSub(billData.sub);
     setOT(billData.ot);
@@ -103,6 +109,10 @@ function SalaryCal() {
     setAllDeposit(billData.allDeposit)
     setAllInsurance(billData.allInsurance)
     setConfirm(billData.confirm)
+    setURLpdf(billData.urlPDF)
+    if(billData.confirm){
+      setEditable(false)
+    }
   };
 
   const getBillUnsuc=()=>{
@@ -122,6 +132,7 @@ function SalaryCal() {
     let item ={
       id:id,
       name:name,
+      position:position,
       date:date_str,
       costL:costL,
       ot:ot,
@@ -143,6 +154,7 @@ function SalaryCal() {
       allInsurance:allInsurance,
       amount:amount,
       confirm:false,
+      urlPDF:urlPDF,
     }
     console.log('save')
     if(status == "edit"){
@@ -225,7 +237,7 @@ function SalaryCal() {
     return number;
   }
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
   const doc = new jsPDF();
   
   doc.addFileToVFS("THSarabunNew.ttf", THSarabunNew.base64);
@@ -238,7 +250,7 @@ function SalaryCal() {
   doc.setFontSize(20);
   doc.text("ใบแจ้งเงินเดือน (PAY SLIP)", 14, 30);
   doc.text(`ชื่อ: ${name}`, 14, 38);
-  doc.text(`แผนก: `, 14, 46);  // You can add the department dynamically if available
+  doc.text(`ตำแหน่ง: ${position}`, 14, 46);  // You can add the department dynamically if available
   doc.text(`วันที่จ่าย (DATE): ${date.format('DD/MM/YYYY')}`, 14, 54);
   
   // Define columns and rows for the table
@@ -317,24 +329,23 @@ function SalaryCal() {
 
    // Save the PDF to the user's device
    const pdfBlob = doc.output('blob');
-   const pdfFileName = `${name}_salary_${date}.pdf`;
+   const pdfFileName = `${name}_salary_${date.format('DD_MM_YYYY')}.pdf`;
    saveAs(pdfBlob, pdfFileName);
  
-   // Upload the PDF to Firebase Storage
-  //  try {
-  //    const uploadTaskSnapshot = await storage.uploadFile(companyId, pdfFileName, pdfBlob);
+   //Upload the PDF to Firebase Storage
+   try {
+    const downloadURL = await storage.uploadBill(companyId, pdfFileName, pdfBlob);
  
-  //    // Get the download URL
-  //    const downloadURL = await uploadTaskSnapshot.ref.getDownloadURL();
- 
-  //    // Store the download URL in Firestore
-  //    await firestore.addFileLinkToFirestore(companyId, uid, downloadURL);
-     
-  //    alert('PDF uploaded and link saved successfully!');
-  //  } catch (error) {
-  //    console.error('Error uploading PDF: ', error);
-  //    alert('Error uploading PDF.');
-  //  }
+     // Store the download URL in Firestore
+     setURLpdf(downloadURL)
+     //alert('PDF uploaded and link saved successfully!');
+     if(!urlPDF){
+      firestore.updateBill(companyId, uid, {urlPDF:downloadURL}, saveSuc, saveUnsuc);
+    }
+   } catch (error) {
+     console.error('Error uploading PDF: ', error);
+     alert('Error uploading PDF.');
+   }
 };
   
 
@@ -364,6 +375,7 @@ function SalaryCal() {
                         label="วันที่"
                         value={date}
                         onChange={(newValue) => setDate(newValue)}
+                        disabled={!editable}
                         />
                   </LocalizationProvider>
                 </div>
@@ -375,7 +387,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={salary}
                     onChange={(e) => setSalary(validateNumberInput(e.target.value))}
                   />
@@ -385,7 +397,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={sub}
                     onChange={(e) => setSub(validateNumberInput(e.target.value))}
                   />
@@ -396,7 +408,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={ot}
                     onChange={(e) => setOT(validateNumberInput(e.target.value))}
                   />
@@ -406,7 +418,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={allowance}
                     onChange={(e) => setAllowance(validateNumberInput(e.target.value))}
                   >
@@ -417,7 +429,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={venhicle}
                     onChange={(e) => setVenhicle(validateNumberInput(e.target.value))}
                   />
@@ -431,7 +443,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={welth}
                     onChange={(e) => setWelth(validateNumberInput(e.target.value))}
                   />
@@ -441,7 +453,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={bonus}
                     onChange={(e) => setBonus(validateNumberInput(e.target.value))}
                       />
@@ -451,7 +463,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={costL}
                     onChange={(e) => setCostL(validateNumberInput(e.target.value))}
                   />
@@ -498,7 +510,7 @@ function SalaryCal() {
                     className="form-field"
                     style={{width:'100%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={allDeposit}
                     onChange={(e) => setAllDeposit(validateNumberInput(e.target.value))}
                   />
@@ -513,7 +525,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={insurance}
                     onChange={(e) => setInsurance(validateNumberInput(e.target.value))}
                   />
@@ -523,7 +535,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={late}
                     onChange={(e) => setLate(validateNumberInput(e.target.value))}
                   />
@@ -534,7 +546,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={withdraw}
                     onChange={(e) => setWithdraw(validateNumberInput(e.target.value))}
                   />
@@ -544,7 +556,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={borrow}
                     onChange={(e) => setBorrow(validateNumberInput(e.target.value))}
                   >
@@ -555,7 +567,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={missing}
                     onChange={(e) => setMissing(validateNumberInput(e.target.value))}
                   />
@@ -567,7 +579,7 @@ function SalaryCal() {
                     variant="filled"
                     style={{width:'19%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={tax}
                     onChange={(e) => setTax(validateNumberInput(e.target.value))}
                   />
@@ -595,7 +607,7 @@ function SalaryCal() {
                     className="form-field"
                     style={{width:'100%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{style: { color: '#000', backgroundColor: '#fff' } }}
+                    InputProps={{style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={allInsurance}
                     onChange={(e) => setAllInsurance(validateNumberInput(e.target.value))}
                   />
@@ -609,7 +621,7 @@ function SalaryCal() {
                     className="form-field"
                     style={{width:'100%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{style: { color: '#000', backgroundColor: '#fff',readOnly:true } }}
+                    InputProps={{style: { color: '#000', backgroundColor: '#fff' },readOnly: true }}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
@@ -618,7 +630,7 @@ function SalaryCal() {
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 {confirm == false && <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>}
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/salary_list',{state:{uid:id}})}>ยกเลิก</button>
-                <button style={{ width: 100, height: 50, borderRadius: 5, backgroundColor: '#026440', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>
+                {status == 'edit' && <button style={{ width: 100, height: 50, borderRadius: 5, backgroundColor: '#026440', color: '#FFFFFF', marginLeft: 10 }} onClick={exportToPDF}>Export PDF</button>}
               </div>
 
             </div>
