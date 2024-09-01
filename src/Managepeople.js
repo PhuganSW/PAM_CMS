@@ -46,22 +46,21 @@ function ManagePeople() {
     setShow(true);
   } 
 
-  const onAssign=()=>{
-    console.log(showWorkPlace,selectedUser.id)
-    if (selectedUser && workplace) {
-      firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
-        username: selectedUser.name,
-        position: selectedUser.position
-      }, () => {
-        alert("Workplace assigned successfully!");
-        handleClose();
-      }, (error) => {
-        alert("Error assigning workplace: " + error);
-      });
+  const onAssign = () => {
+    if (selectedUser && showWorkPlace) {
+        firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
+            username: selectedUser.name,
+            position: selectedUser.position
+        },{workplace:showWorkPlace}, () => {
+            alert("Workplace assigned successfully!");
+            handleClose();
+        }, (error) => {
+            alert("Error assigning workplace: " + error);
+        });
     } else {
-      alert("Please select a workplace.");
+        alert("Please select a workplace.");
     }
-  }
+  };
 
 
   const getAllUsersSuccess=(doc)=>{
@@ -135,22 +134,19 @@ function ManagePeople() {
   const handleWorkplaceChange = (event) => {
     const selectedWorkplace = event.target.value;
     setWorkplace(selectedWorkplace);
-    try{
+
     if (unsubscribe) {
-      unsubscribe(); // Unsubscribe from the previous listener
+        unsubscribe();
     }
 
     const unsubscribeFn = firestore.getUsersByWorkplace(
-      companyId,
-      selectedWorkplace,
-      getUsersByWorkplaceSuccess,
-      getUsersByWorkplaceUnsuccess
+        companyId,
+        selectedWorkplace,
+        getUsersByWorkplaceSuccess,
+        getUsersByWorkplaceUnsuccess
     );
 
     setUnsubscribe(() => unsubscribeFn);
-  }catch{
-    console.log('error')
-  }
   };
 
   return (

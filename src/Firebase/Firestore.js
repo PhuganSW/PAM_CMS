@@ -325,31 +325,64 @@ class FireStore{
     return unsubscribe;
   };
 
-  assignWork=async(companyId,workPlaceId,userId,item,success,unsuccess)=>{
-    console.log(workPlaceId)
+  removeUserFromAllWorkplaces = async (companyId, userId) => {
     try {
-      const userRef = doc(this.db, "companies", companyId, "workplaces", workPlaceId, "users", userId);
-      await setDoc(userRef, item);
-      success();
-    } catch (e) {
-      unsuccess(e);
-    }
-  }
+        // Fetch the current workplace of the user from the 'extend' sub-collection
+        const actionRef = doc(this.db, "companies", companyId, "users", userId, "extend", "workplace");
+        const actionDoc = await getDoc(actionRef);
 
-  getUsersByWorkplace = async (companyId, workPlaceId, success, unsuccess) => {
-    try {
-      const workplaceRef = collection(this.db, "companies", companyId, "workplaces", workPlaceId, "users");
-      const unsubscribe = onSnapshot(workplaceRef, (querySnapshot) => {
-        let users = [];
-        querySnapshot.forEach((doc) => {
-          users.push({ id: doc.id, ...doc.data() });
-        });
-        success(users);
-      }, unsuccess);
-      return unsubscribe;
+        if (actionDoc.exists()) {
+            const currentWorkplaceId = actionDoc.data().workplace;
+            console.log(currentWorkplaceId)
+
+            // If the user has a current workplace, delete them from that workplace
+            const userRef = doc(this.db, "companies", companyId, "workplaces", currentWorkplaceId, "users", userId);
+            const userDoc = await getDoc(userRef);
+
+            if (userDoc.exists()) {
+                await deleteDoc(userRef);
+                console.log(`Deleted user ${userId} from workplace ${currentWorkplaceId}`);
+            } else {
+                console.log(`User ${userId} not found in workplace ${currentWorkplaceId}`);
+            }
+        } else {
+            console.log(`User ${userId} does not have an assigned workplace.`);
+        }
     } catch (e) {
-      unsuccess(e);
+        console.error("Error removing user from previous workplaces: ", e);
     }
+  };
+
+  assignWork = async (companyId, workPlaceId, userId, item,actItem, success, unsuccess) => {
+    try {
+        // First, remove the user from any existing workplaces
+        await this.removeUserFromAllWorkplaces(companyId, userId);
+
+        // Then, assign the user to the new workplace
+        const userRef = doc(this.db, "companies", companyId, "workplaces", workPlaceId, "users", userId);
+        const actionRef = doc(this.db, "companies", companyId, "users", userId,"extend","workplace");
+        await setDoc(userRef, item);
+        await setDoc(actionRef, actItem);
+        success();
+    } catch (e) {
+        unsuccess(e);
+    }
+  };
+
+  getUsersByWorkplace = (companyId, workPlaceId, success, unsuccess) => {
+      try {
+          const workplaceRef = collection(this.db, "companies", companyId, "workplaces", workPlaceId, "users");
+          const unsubscribe = onSnapshot(workplaceRef, (querySnapshot) => {
+              let users = [];
+              querySnapshot.forEach((doc) => {
+                  users.push({ id: doc.id, ...doc.data() });
+              });
+              success(users);
+          }, unsuccess);
+          return unsubscribe;
+      } catch (e) {
+          unsuccess(e);
+      }
   };
 
   getLeave=async(companyId,id,success,unsuccess)=>{
