@@ -1,5 +1,5 @@
 import app from "./Config";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject,uploadBytes } from "firebase/storage";
 
 class Storage{
     constructor(){
@@ -75,6 +75,19 @@ class Storage{
           );
       });
     };
+
+    uploadWorkplaceImg = async (file, path) => {
+      try {
+        const fileExtension = file.name.split('.').pop(); // Extract the file extension
+        const storageRef = ref(this.storage, `${path}.${fileExtension}`); // Append the extension to the path
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      } catch (error) {
+        console.error("Error uploading image: ", error);
+        throw error;
+      }
+    }
 
     deleteFile = async (url) => {
       if (url) {

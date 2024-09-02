@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import { useNavigate } from 'react-router-dom';
 import firestore from './Firebase/Firestore';
+import storage from './Firebase/Storage'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { IoSearchOutline } from "react-icons/io5";
@@ -39,6 +40,9 @@ function ManagePeople() {
   const [unsubscribe, setUnsubscribe] = useState(null);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
+  const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
+  const [uploading, setUploading] = useState(false);  // State to handle uploading status
+
 
   const handleClose = () => setShow(false);
   const handleShow = (user) =>{
@@ -46,11 +50,27 @@ function ManagePeople() {
     setShow(true);
   } 
 
-  const onAssign = () => {
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  const onAssign = async () => {
     if (selectedUser && showWorkPlace) {
+      let imageUrl = null;
+
+      if (selectedImage) {
+        setUploading(true);
+        imageUrl = await storage.uploadWorkplaceImg(selectedImage, `${companyId}/workplace_images/${selectedUser.id}`);
+        setUploading(false);
+      }
+
+
         firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
             username: selectedUser.name,
-            position: selectedUser.position
+            position: selectedUser.position,
+            imageUrl: imageUrl,  // Save the image URL in Firestore
         },{workplace:showWorkPlace}, () => {
             alert("Workplace assigned successfully!");
             handleClose();
@@ -259,36 +279,36 @@ function ManagePeople() {
           </div>
         </main>
         <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>การมอบหมายงาน</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-          <FormControl variant="filled" fullWidth>
-              <InputLabel>พื้นที่ทำงาน</InputLabel>
-              <Select
-                value={showWorkPlace}
-                onChange={(e) => setShowWorkPlace(e.target.value)}
-              >
-                {workplaces.map((option,index) => (
-                  <MenuItem key={index} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Form>
-          
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={onAssign}>
-            Allow
-          </Button>
-          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>
-            Deny
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>การมอบหมายงาน</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <FormControl variant="filled" fullWidth>
+                <InputLabel>พื้นที่ทำงาน</InputLabel>
+                <Select value={showWorkPlace} onChange={(e) => setShowWorkPlace(e.target.value)}>
+                  {workplaces.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Form.Group controlId="formFile" className="mt-3">
+                <Form.Label>แนบรูปภาพ</Form.Label>
+                <Form.Control type="file" onChange={handleImageChange} />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} onClick={onAssign} disabled={uploading}>
+              {uploading ? "กำลังอัพโหลด..." : "Allow"}
+            </Button>
+            <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={handleClose}>
+              Deny
+            </Button>
+          </Modal.Footer>
+        </Modal>
       
       </div>
       
