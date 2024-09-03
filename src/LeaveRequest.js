@@ -25,8 +25,8 @@ function LeaveRequest() {
   const [dateStart,setDateStart] = useState('');
   const [dateEnd,setDateEnd] = useState('');
   const [amount,setAmount] = useState('');
-  const [state,setState] = useState('')
-  const [state1,setState1] = useState('');
+  const [state,setState] = useState('') //CMS
+  const [state1,setState1] = useState(''); //App
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
