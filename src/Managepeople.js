@@ -27,6 +27,7 @@ function ManagePeople() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(5);
   const [show, setShow] = useState(false);
+  const [showManageWP, setShowManageWp] = useState(false);
   const [selectID, setSelectID] = useState();
   const [selectedUser, setSelectedUser] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -45,9 +46,14 @@ function ManagePeople() {
 
 
   const handleClose = () => setShow(false);
+  const handleCloseWP = () => setShowManageWp(false);
   const handleShow = (user) =>{
     setSelectedUser(user);
     setShow(true);
+  } 
+
+  const handleShowWP = () =>{
+    setShowManageWp(true);
   } 
 
   const handleImageChange = (e) => {
@@ -58,25 +64,42 @@ function ManagePeople() {
 
   const onAssign = async () => {
     if (selectedUser && showWorkPlace) {
-      let imageUrl = null;
-
-      if (selectedImage) {
-        setUploading(true);
-        imageUrl = await storage.uploadWorkplaceImg(selectedImage, `${companyId}/workplace_images/${selectedUser.id}`);
-        setUploading(false);
-      }
-
 
         firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
             username: selectedUser.name,
             position: selectedUser.position,
-            imageUrl: imageUrl,  // Save the image URL in Firestore
         },{workplace:showWorkPlace}, () => {
             alert("Workplace assigned successfully!");
             handleClose();
         }, (error) => {
             alert("Error assigning workplace: " + error);
         });
+    } else {
+        alert("Please select a workplace.");
+    }
+  };
+
+  const onManageWP = async () => {
+    if (showWorkPlace) {
+      let imageUrl = null;
+
+      if (selectedImage) {
+        setUploading(true);
+        imageUrl = await storage.uploadWorkplaceImg(selectedImage, `${companyId}/workplace_images/${showWorkPlace}`);
+        setUploading(false);
+      }
+
+
+        // firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
+        //     username: selectedUser.name,
+        //     position: selectedUser.position,
+        //     imageUrl: imageUrl,  // Save the image URL in Firestore
+        // },{workplace:showWorkPlace}, () => {
+        //     alert("Workplace assigned successfully!");
+        //     handleClose();
+        // }, (error) => {
+        //     alert("Error assigning workplace: " + error);
+        // });
     } else {
         alert("Please select a workplace.");
     }
@@ -230,14 +253,19 @@ function ManagePeople() {
                   <button className='Previous-button' onClick={onPrevious}>Previous</button>
                   <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
-                <div className="form-row" style={{ display: 'flex', marginBottom: '20px',marginTop:20 }}>
+                <div className="form-row" style={{ display: 'flex', marginBottom: '20px',marginTop:20 }} >
+                  
+                    <Button style={{textAlign: 'center',width:'20%',marginRight:'1%' }} onClick={()=>handleShowWP()} >
+                      จัดการพื้นที่
+                    </Button>
+                  
                   <TextField
                     className="form-field"
                     id="filled-select"
                     select
                     label="พื้นที่ทำงาน"
                     variant="filled"
-                    style={{ width: '100%' }}
+                    style={{ width: '79%' }}
                     value={workplace}
                     onChange={handleWorkplaceChange}
                   >
@@ -294,6 +322,34 @@ function ManagePeople() {
                   ))}
                 </Select>
               </FormControl>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} onClick={onAssign} disabled={uploading}>
+             Allow
+            </Button>
+            <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={handleClose}>
+              Deny
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={showManageWP} onHide={handleCloseWP}>
+          <Modal.Header closeButton>
+            <Modal.Title>การมอบหมายงาน</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <FormControl variant="filled" fullWidth>
+                <InputLabel>พื้นที่ทำงาน</InputLabel>
+                <Select value={showWorkPlace} onChange={(e) => setShowWorkPlace(e.target.value)}>
+                  {workplaces.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <Form.Group controlId="formFile" className="mt-3">
                 <Form.Label>แนบรูปภาพ</Form.Label>
                 <Form.Control type="file" onChange={handleImageChange} />
@@ -301,10 +357,10 @@ function ManagePeople() {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} onClick={onAssign} disabled={uploading}>
+            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} disabled={uploading}>
               {uploading ? "กำลังอัพโหลด..." : "Allow"}
             </Button>
-            <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={handleClose}>
+            <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={()=>handleCloseWP()}>
               Deny
             </Button>
           </Modal.Footer>
