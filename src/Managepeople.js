@@ -88,18 +88,14 @@ function ManagePeople() {
         imageUrl = await storage.uploadWorkplaceImg(selectedImage, `${companyId}/workplace_images/${showWorkPlace}`);
         setUploading(false);
       }
-
-
-        // firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
-        //     username: selectedUser.name,
-        //     position: selectedUser.position,
-        //     imageUrl: imageUrl,  // Save the image URL in Firestore
-        // },{workplace:showWorkPlace}, () => {
-        //     alert("Workplace assigned successfully!");
-        //     handleClose();
-        // }, (error) => {
-        //     alert("Error assigning workplace: " + error);
-        // });
+        firestore.ManageWP(companyId, showWorkPlace, {
+            imageUrl: imageUrl,  // Save the image URL in Firestore
+        }, () => {
+            alert("Workplace add image successfully!");
+            handleCloseWP();
+        }, (error) => {
+            alert("Error assigning workplace: " + error);
+        });
     } else {
         alert("Please select a workplace.");
     }
@@ -357,7 +353,7 @@ function ManagePeople() {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} disabled={uploading}>
+            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} disabled={uploading} onClick={()=>onManageWP()}>
               {uploading ? "กำลังอัพโหลด..." : "Allow"}
             </Button>
             <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={()=>handleCloseWP()}>

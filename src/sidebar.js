@@ -26,7 +26,12 @@ function Sidebar(){
             <h4>Personnel Assistance Manager</h4>
           </div>
           <ul>
-            <li><Link to="/home">หน้าหลัก</Link></li>
+          <li>
+          <Link to="/home">
+            <i className="fas fa-home"></i> {/* Home Icon */}
+            <span>หน้าหลัก</span>
+          </Link>
+        </li>
             <li><Link to="/profile">จัดการประวัติพนักงาน</Link></li>
             <li><Link to="/checkin_history">ประวัติการเข้า-ออกงาน</Link></li>
             <li><Link to="/leave_request">คำขอลางาน</Link></li>

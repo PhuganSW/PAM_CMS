@@ -385,6 +385,16 @@ class FireStore{
       }
   };
 
+  ManageWP = async (companyId, workPlaceId,item,success, unsuccess) => {
+    try {
+        const userRef = doc(this.db, "companies", companyId, "workplaces", workPlaceId,);
+        await setDoc(userRef, item);
+        success();
+    } catch (e) {
+        unsuccess(e);
+    }
+  };
+
   getLeave=async(companyId,id,success,unsuccess)=>{
     try{
       const docRef = doc(this.db, "companies", companyId, "leaveRequest", id);
