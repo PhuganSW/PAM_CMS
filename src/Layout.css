@@ -15,16 +15,18 @@ body {
   
   .sidebar {
     width: 300px;
+    background-color: #343434;
     transition: width 0.5s;
     overflow: hidden;
     height: 100%;
-   
-    
+    padding: 15px;
   }
   
   .sidebar.closed {
-    width: 0px;
+    width: 100px;
     overflow: hidden;
+    align-items: center;
+    justify-content: center;
   }
   
   .sidebar-content {
@@ -35,6 +37,24 @@ body {
     /* overflow-y: auto; */
     font-family: 'THSarabunNew', sans-serif;
     position: relative;
+  }
+
+  .sidebar-content .head-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  
+  .sidebar.closed .head-sidebar img {
+    width: 50px; /* Smaller logo in collapsed state */
+    height: 50px;
+    margin-top: 30px;
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  .sidebar.closed .head-sidebar h4 {
+    display: none; /* Hide text in collapsed state */
   }
   
   .sidebar-content h4 {
@@ -62,9 +82,19 @@ body {
     font-size: 22px;
     transition: background 0.5s ease;
     display: block;
-    
     margin: 5px;
     border-radius: 4px;
+  }
+
+  .sidebar.closed nav ul li a i {
+    align-self: center;
+    justify-content: center;
+    margin-right: 50px;
+    font-size: 20px; /* Increase icon size in collapsed state */
+  }
+  
+  .sidebar.closed nav ul li a span {
+    display: none; /* Hide text in collapsed state */
   }
 
   .sidebar-content nav ul li a:hover {
@@ -76,38 +106,41 @@ body {
     /*background: #a39e9ef8; /* slightly lighter shade for active link */
     font-weight: bold;
     text-decoration: underline;
+    padding-top: 5px;
   }
 
   .sidebar-content ul li.active a {
     background-color: rgba(110, 110, 110, 0.7);
     color: white;
-    padding-left: 15px;
+    /* width: 100%; */
+    padding-left: 10px;
   }
-  
-  .sidebar-content .sign-out {
-    background-color: rgb(95, 11, 11);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  .main-contented {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
+
+  .sidebar.closed .logout-button button {
+    justify-content: center;
     align-items: center;
-    padding: 0px 0;
-    background-color: #f1f1f1;
-    padding-left: 20px;
+    width: 80%;
+  }
+
+  .logout-button button {
+    width: 80%;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #601616;
+    color: #fff;
+    
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button button:hover {
+    background-color: #60161699;
   }
   
   .toggle-button {
-    background-color: #343434;
+    background-color: #34343470;
+    border-radius: 100px;
     color: white;
     border: none;
     padding: 10px 10px;

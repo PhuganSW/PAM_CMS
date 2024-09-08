@@ -30,6 +30,15 @@ function WelthfareManage() {
   const [otherR,setOtherR] = useState(''); //ลาสิทธิ์อื่น
   const { setCurrentUser, companyId } = useContext(UserContext);
 
+  const handleNumberInput = (e) => {
+    const { value } = e.target;
+    const validNumber = /^-?\d*\.?\d*$/; // Regex to allow only numbers and decimal
+    if (value === '' || validNumber.test(value)) {
+      return true;
+    }
+    return false;
+  };
+
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
   }
@@ -125,7 +134,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={absence}
-                    onChange={(e) => setAbsence(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setAbsence(e.target.value)}
                   />
                   <TextField
                     label="สิทธิ์ลากิจที่เหลือ"
@@ -135,7 +144,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={absenceR}
-                    onChange={(e) => setAbsenceR(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setAbsenceR(e.target.value)}
                   />
                   <TextField
                     label="ลาป่วย"
@@ -145,7 +154,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sick}
-                    onChange={(e) => setSick(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setSick(e.target.value)}
                   />
                   <TextField
                     label="สิทธิ์ลาป่วยที่เหลือ"
@@ -155,7 +164,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sickR}
-                    onChange={(e) => setSickR(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setSickR(e.target.value)}
                   />
                   
                 </div>
@@ -168,7 +177,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={holiday}
-                    onChange={(e) => setHoliday(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setHoliday(e.target.value)}
                   />
                   <TextField
                     label="สิทธิ์ลาพักร้อนที่เหลือ"
@@ -178,7 +187,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={holidayR}
-                    onChange={(e) => setHolidayR(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setHolidayR(e.target.value)}
                   />
                   <TextField
                     label="ลาคลอด"
@@ -188,7 +197,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={maternity}
-                    onChange={(e) => setMaternity(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setMaternity(e.target.value)}
                   />
                    <TextField
                     label="สิทธิ์ลาคลอดที่เหลือ"
@@ -198,7 +207,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={maternityR}
-                    onChange={(e) => setMaternityR(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setMaternityR(e.target.value)}
                   />
                   
                 </div>
@@ -211,7 +220,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={kama}
-                    onChange={(e) => setKama(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setKama(e.target.value)}
                   />
                   <TextField
                     label="สิทธิ์ลาบวชที่เหลือ"
@@ -221,7 +230,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={kamaR}
-                    onChange={(e) => setKamaR(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setKamaR(e.target.value)}
                   />
                   <TextField
                     label="ลาด้วยสิทธิ์อื่นๆ"
@@ -231,7 +240,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={other}
-                    onChange={(e) => setOther(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setOther(e.target.value)}
                   />
                   <TextField
                     label="จำนวนวันลาด้วยสิทธิ์อื่นๆ ที่เหลือ"
@@ -241,7 +250,7 @@ function WelthfareManage() {
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={otherR}
-                    onChange={(e) => setOtherR(e.target.value)}
+                    onChange={(e) => handleNumberInput(e) && setOtherR(e.target.value)}
                   />
                 </div>
               </div>

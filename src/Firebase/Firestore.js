@@ -395,6 +395,17 @@ class FireStore{
     }
   };
 
+  getWorkplaceDoc=async(companyId, workplaceId)=> {
+    try {
+      const docRef = doc(this.db, "companies", companyId, "workplaces", workplaceId);
+      const docSnap = await getDoc(docRef);
+      return docSnap;
+    } catch (error) {
+      console.error("Error fetching workplace doc:", error);
+      throw error;
+    }
+  }
+
   getLeave=async(companyId,id,success,unsuccess)=>{
     try{
       const docRef = doc(this.db, "companies", companyId, "leaveRequest", id);

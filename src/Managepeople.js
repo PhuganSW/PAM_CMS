@@ -43,7 +43,7 @@ function ManagePeople() {
 
   const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
   const [uploading, setUploading] = useState(false);  // State to handle uploading status
-
+  const [workplaceImageUrl, setWorkplaceImageUrl] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleCloseWP = () => setShowManageWp(false);
@@ -136,6 +136,22 @@ function ManagePeople() {
     }
   };
 
+  const fetchWorkplaceImage = async (workplaceId) => {
+    try {
+      const workplaceDoc = await firestore.getWorkplaceDoc(companyId, workplaceId);
+      if (workplaceDoc.exists()) {
+        const imageUrl = workplaceDoc.data().imageUrl || null;
+        setWorkplaceImageUrl(imageUrl); // Set the image URL
+        console.log("Fetched imageUrl:", imageUrl); // Debug log
+      } else {
+        setWorkplaceImageUrl(null); // Clear if no image
+        console.log("No image URL found for this workplace.");
+      }
+    } catch (error) {
+      console.error('Error fetching workplace image:', error);
+    }
+  };
+
 
   useEffect(() => {
     firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess);
@@ -170,22 +186,29 @@ function ManagePeople() {
     setFilteredUsers(filtered);
   };
 
-  const handleWorkplaceChange = (event) => {
+  const handleWorkplaceChange = async (event) => {
     const selectedWorkplace = event.target.value;
     setWorkplace(selectedWorkplace);
-
+  
     if (unsubscribe) {
         unsubscribe();
     }
-
+  
     const unsubscribeFn = firestore.getUsersByWorkplace(
         companyId,
         selectedWorkplace,
         getUsersByWorkplaceSuccess,
         getUsersByWorkplaceUnsuccess
     );
-
+  
     setUnsubscribe(() => unsubscribeFn);
+    await fetchWorkplaceImage(selectedWorkplace); 
+  };
+
+  const openLargeImage = () => {
+    if (workplaceImageUrl) {
+      window.open(workplaceImageUrl, '_blank');
+    }
   };
 
   return (
@@ -302,6 +325,7 @@ function ManagePeople() {
             </div>
           </div>
         </main>
+        {/* assignWP */}
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>การมอบหมายงาน</Modal.Title>
@@ -330,15 +354,17 @@ function ManagePeople() {
           </Modal.Footer>
         </Modal>
 
+        {/* showManageWP */}
         <Modal show={showManageWP} onHide={handleCloseWP}>
           <Modal.Header closeButton>
-            <Modal.Title>การมอบหมายงาน</Modal.Title>
+            <Modal.Title>Manage Workplace</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <FormControl variant="filled" fullWidth>
                 <InputLabel>พื้นที่ทำงาน</InputLabel>
-                <Select value={showWorkPlace} onChange={(e) => setShowWorkPlace(e.target.value)}>
+                {/* On changing the workplace, handleWorkplaceChange is called */}
+                <Select value={workplace} onChange={handleWorkplaceChange}>
                   {workplaces.map((option, index) => (
                     <MenuItem key={index} value={option}>
                       {option}
@@ -346,6 +372,19 @@ function ManagePeople() {
                   ))}
                 </Select>
               </FormControl>
+
+              {/* If workplaceImageUrl exists, show the image */}
+              {workplaceImageUrl && (
+                <div className="image-container mt-3">
+                  <img
+                    src={workplaceImageUrl}
+                    alt="Workplace"
+                    style={{ width: '100%', cursor: 'pointer' }}
+                    onClick={openLargeImage} // Clicking opens the image in a new tab
+                  />
+                </div>
+              )}
+
               <Form.Group controlId="formFile" className="mt-3">
                 <Form.Label>แนบรูปภาพ</Form.Label>
                 <Form.Control type="file" onChange={handleImageChange} />
@@ -353,10 +392,15 @@ function ManagePeople() {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} disabled={uploading} onClick={()=>onManageWP()}>
-              {uploading ? "กำลังอัพโหลด..." : "Allow"}
+            <Button
+              variant="primary"
+              style={{ backgroundColor: '#D3D3D3', color: 'black' }}
+              disabled={uploading}
+              onClick={onManageWP}
+            >
+              {uploading ? 'กำลังอัพโหลด...' : 'Allow'}
             </Button>
-            <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={()=>handleCloseWP()}>
+            <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={handleCloseWP}>
               Deny
             </Button>
           </Modal.Footer>

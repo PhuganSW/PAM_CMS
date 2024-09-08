@@ -14,9 +14,9 @@ const Layout = ({ children }) => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1024) {
-        setSidebarOpen(false);
+        setSidebarOpen(false); // Collapse sidebar if screen is small
       } else {
-        setSidebarOpen(true);
+        setSidebarOpen(true);  // Open sidebar if screen is large
       }
     };
 
@@ -57,8 +57,8 @@ const Layout = ({ children }) => {
           </button>
            */}
         <div className='head-sidebar'>
-            <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={80} height={80} style={{marginRight:20}} alt="Logo" />
-            <h4>Personnel Assistance Manager</h4>
+            <img src="https://i.postimg.cc/VLLwZdzX/PAM-logo.png" width={80} height={80} style={{marginRight:20}} alt="Logo" />
+            {sidebarOpen && <h4>Personnel Assistance Manager</h4>}
           </div>
           <nav>
           <ul>
@@ -151,7 +151,7 @@ const Layout = ({ children }) => {
           <div className='logout-button'> 
           <button style={{ fontSize: 22 }} onClick={logout}>
               <i className="fas fa-sign-out-alt"></i> {/* Sign Out Icon */}
-              Sign Out
+              {sidebarOpen && "Sign Out"}
             </button>
           </div>
         </div>

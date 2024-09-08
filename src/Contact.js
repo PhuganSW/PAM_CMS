@@ -13,17 +13,15 @@ function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('detail', detail);
-    formData.append('email', email);
-    attachments.forEach((file, index) => {
-      formData.append(`attachment${index}`, file);
-    });
-
-    emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData, 'YOUR_USER_ID')
+    // Send form data using EmailJS
+    emailjs.sendForm('service_di307hh', 'template_q69jogx', e.target, 'sT8ZIWDhLD1_zjzvb')
       .then((result) => {
         alert('Email successfully sent!');
+        // Reset form fields
+        setName('');
+        setDetail('');
+        setEmail('');
+        setAttachments([]);
       }, (error) => {
         alert('Failed to send email. Please try again.');
       });
@@ -43,7 +41,7 @@ function Contact() {
       <main className="main-content">
         <div className="contact-page">
           <div className="contact-container">
-            <form className="contact-form" onSubmit={handleSubmit}>
+            <form className="contact-form" onSubmit={handleSubmit} encType="multipart/form-data">
               <div className="form-group">
                 <label htmlFor="name">ชื่อ</label>
                 <input 
@@ -76,7 +74,7 @@ function Contact() {
                   required 
                 />
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label htmlFor="attachments">แนบรูปภาพ (สูงสุด 5 รูป)</label>
                 <input 
                   type="file" 
@@ -87,7 +85,7 @@ function Contact() {
                   onChange={handleFileChange} 
                 />
                 <IoAttach size={24} />
-              </div>
+              </div> */}
               <button type="submit" className="submit-button">ส่งข้อความ</button>
             </form>
             <div className="quote">
