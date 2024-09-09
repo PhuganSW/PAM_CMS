@@ -22,7 +22,7 @@ function Home() {
        <Layout />
         
         
-        <main className="main-content">
+        <main className="dashboard-contain">
         
           {/* <header>
             <h1>Dashboard</h1>
@@ -40,8 +40,8 @@ function Home() {
                   ],
                 },
               ]}
-              width={400}
-              height={200}
+              width={350}
+              height={150}
               labels={{ style: { fontFamily: 'THSarabunNew', fontSize: 16 } }}
               responsive
             />
@@ -58,8 +58,8 @@ function Home() {
                   ],
                 },
               ]}
-              width={400}
-              height={200}
+              width={350}
+              height={150}
               labels={{ style: { fontFamily: 'THSarabunNew', fontSize: 16 } }}
               responsive
             />
@@ -71,7 +71,7 @@ function Home() {
               xAxis={[{ scaleType: 'band', data: ['group A', 'group B', 'group C'] }]}
               series={[{ data: [4, 3, 5] }, { data: [1, 6, 3] }, { data: [2, 5, 6] }]}
               width={500}
-              height={300}
+              height={250}
               style={{ fontFamily: 'THSarabunNew', fontSize: 16 }}
               responsive
             />
@@ -81,7 +81,7 @@ function Home() {
               xAxis={[{ scaleType: 'band', data: ['group D', 'group E', 'group F'] }]}
               series={[{ data: [5, 2, 4] }, { data: [3, 5, 6] }, { data: [4, 3, 7] }]}
               width={500}
-              height={300}
+              height={250}
               style={{ fontFamily: 'THSarabunNew', fontSize: 16 }}
               responsive
             />

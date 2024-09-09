@@ -854,6 +854,34 @@ class FireStore{
     }
   }
 
+   // Function to save notes for a specific day
+   async saveNotes(companyId, date, notes) {
+    try {
+      const noteRef = doc(this.db, 'companies', companyId, 'calendar_notes', date);
+      await setDoc(noteRef, { notes }, { merge: true });
+      console.log('Notes successfully saved for', date);
+    } catch (error) {
+      console.error('Error saving notes:', error);
+      throw error;
+    }
+  }
+
+  // Function to load notes for a specific day
+  async loadNotes(companyId, date) {
+    try {
+      const noteRef = doc(this.db, 'companies', companyId, 'calendar_notes', date);
+      const noteDoc = await getDoc(noteRef);
+      if (noteDoc.exists()) {
+        return noteDoc.data().notes || [];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error('Error loading notes:', error);
+      throw error;
+    }
+  }
+
 }
 
 const firestore = new FireStore();
