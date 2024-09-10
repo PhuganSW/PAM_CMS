@@ -23,6 +23,7 @@ function CheckHistory() {
   const [filteredOut, setFilteredOut] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
+  const [uid,setUid] = useState('')
   const [name,setName] = useState('');
   const [date,setDate] = useState('');
   const [time,setTime] = useState('');
@@ -42,7 +43,9 @@ function CheckHistory() {
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
-  const handleShow = (date,time,workplace) =>{
+  const handleShow = (uid,date,time,workplace) =>{
+    
+    setUid(uid);
     setDate(date)
     setTime(time)
     setWorkplace(workplace)
@@ -56,7 +59,7 @@ function CheckHistory() {
     if (allIN.length === 0) {
         
       doc.forEach((item) => {
-        ins.push({id: item.id,date:item.date, name: item.name, time: item.time,workplace:item.workplace,late:item.late});
+        ins.push({id: item.id,uid:item.user,date:item.date, name: item.name, time: item.time,});
       });
       setAllIn(ins);
       setFilteredUsers(ins);
@@ -68,7 +71,7 @@ function CheckHistory() {
     if (allOut.length === 0) {
         
       doc.forEach((item) => {
-        outs.push({id: item.id,date:item.date, name: item.name, time: item.time,workplace:item.workplace,late:item.late});
+        outs.push({id: item.id,uid:item.user,date:item.date, name: item.name, time: item.time,});
       });
       setAllOut(outs);
       setFilteredOut(outs);
@@ -172,7 +175,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.date,item.time,item.workplace)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.uid,item.date,item.time,item.workplace)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -204,7 +207,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.workplace)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.uid,item.date,item.time,item.workplace)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -221,7 +224,7 @@ function CheckHistory() {
         </main>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>การมอบหมายงาน</Modal.Title>
+          <Modal.Title>ข้อมูลเข้าออกงาน</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -239,7 +242,7 @@ function CheckHistory() {
                 value={time}
               />
             </Form.Group>
-          <FormControl variant="filled" fullWidth>
+          {/* <FormControl variant="filled" fullWidth>
               <InputLabel>พื้นที่ทำงาน</InputLabel>
               <Select
                 value={workplace}
@@ -251,7 +254,7 @@ function CheckHistory() {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Form>
           
         </Modal.Body>

@@ -129,7 +129,8 @@ body {
     border-radius: 5px;
     background-color: #601616;
     color: #fff;
-    
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }

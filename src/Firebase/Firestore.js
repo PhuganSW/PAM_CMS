@@ -282,14 +282,7 @@ class FireStore{
       const allcheckin = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        allcheckin.push({
-          id:doc.id,
-          date: data.date,
-          name: data.name,
-          time: data.time,
-          workplace: data.workplace,
-          late: data.late,
-        });
+        allcheckin.push({id:doc.id, ...doc.data()});
       });
       success(allcheckin);
     }, (error) => {
@@ -305,15 +298,7 @@ class FireStore{
     const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "checkout"), (querySnapshot) => {
       const allcheckout = [];
       querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        allcheckout.push({
-          id:doc.id,
-          date: data.date,
-          name: data.name,
-          time: data.time,
-          workplace: data.workplace,
-          late: data.late,
-        });
+        allcheckout.push({id:doc.id, ...doc.data()});
       });
       success(allcheckout);
     }, (error) => {
