@@ -224,22 +224,24 @@ function CheckHistory() {
         </main>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>ข้อมูลเข้าออกงาน</Modal.Title>
+          <Modal.Title style={{ fontSize: '24px' }}>ข้อมูลเข้าออกงาน</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>วันที่</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>วันที่</Form.Label>
               <Form.Control
                 autoFocus
                 value={date}
+                style={{ fontSize: '18px' }}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>เวลา</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>เวลา</Form.Label>
               <Form.Control
                 autoFocus
                 value={time}
+                style={{ fontSize: '18px' }}
               />
             </Form.Group>
           {/* <FormControl variant="filled" fullWidth>
@@ -259,10 +261,10 @@ function CheckHistory() {
           
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} >
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} >
             Allow
           </Button>
-          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>
+          <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>
             Deny
           </Button>
         </Modal.Footer>

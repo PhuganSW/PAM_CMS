@@ -135,6 +135,8 @@ function AnnouceAdd() {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
+  const isEmergencyType = type === 1;
+
   return (
     
       <div className="dashboard">
@@ -164,6 +166,7 @@ function AnnouceAdd() {
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    disabled={isEmergencyType}
                   />
                   
                    

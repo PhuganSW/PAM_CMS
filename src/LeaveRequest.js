@@ -187,97 +187,94 @@ function LeaveRequest() {
         </main>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>รายละเอียดการขอลางาน</Modal.Title>
+          <Modal.Title style={{ fontSize: '24px' }}>รายละเอียดการขอลางาน</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>ชื่อ - นามสกุล</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>ชื่อ - นามสกุล</Form.Label>
               <Form.Control
-                type="email"
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={name}
-                autoFocus
-                
+                readOnly
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>ประเภทการลา</Form.Label>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+              <Form.Label style={{ fontSize: '20px' }}>ประเภทการลา</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={type}
-                autoFocus
-                
+                readOnly
               />
-              {/*<Form.Control as="textarea" rows={3} />*/}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>ลาเนื่องจาก</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>ลาเนื่องจาก</Form.Label>
               <Form.Control
-                type="name"
-                autoFocus
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={detail}
+                readOnly
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>เบอร์โทรติดต่อ</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>เบอร์โทรติดต่อ</Form.Label>
               <Form.Control
-                type="name"
-                autoFocus
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={phone}
+                readOnly
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>ลาตั้งแต่วันที่</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>ลาตั้งแต่วันที่</Form.Label>
               <Form.Control
-                type="name"
-                autoFocus
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={dateStart}
+                readOnly
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>ลาถึงวันที่</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>ลาถึงวันที่</Form.Label>
               <Form.Control
-                type="name"
-                autoFocus
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={dateEnd}
+                readOnly
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>รวมวันลาที่ต้องการลา</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>รวมวันลาที่ต้องการลา</Form.Label>
               <Form.Control
-                type="name"
-                autoFocus
+                style={{ fontSize: '18px' }}
+                type="text"
                 value={amount}
+                readOnly
               />
             </Form.Group>
-            {/* <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>สถานะ(หัวหน้างาน)</Form.Label>
-              <Form.Control
-                type="name"
-                autoFocus
-                value={state}
-              />
-            </Form.Group> */}
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>เอกสารแนบ</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>เอกสารแนบ</Form.Label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                 {imageURLs.map((url, index) => (
                   <a key={index} href={url} target="_blank" rel="noopener noreferrer">
-                    <img src={url} alt={`attachment-${index}`} style={{ maxWidth: '100px', maxHeight: '100px', borderRadius: '10px', objectFit: 'contain' }} />
+                    <img
+                      src={url}
+                      alt={`attachment-${index}`}
+                      style={{ maxWidth: '100px', maxHeight: '100px', borderRadius: '10px', objectFit: 'contain' }}
+                    />
                   </a>
                 ))}
               </div>
             </Form.Group>
           </Form>
-          
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={onAllow}>
+          <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black',fontSize:20 }} onClick={onAllow}>
             Allow
           </Button>
-          <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleClose}>
+          <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={handleClose}>
             Deny
           </Button>
         </Modal.Footer>

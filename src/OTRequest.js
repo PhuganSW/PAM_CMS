@@ -187,74 +187,80 @@ function OTRequest() {
         </main>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>รายละเอียดการขอทำ OT</Modal.Title>
+          <Modal.Title style={{ fontSize: '24px' }}>รายละเอียดการขอทำ OT</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>ชื่อ - นามสกุล</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>ชื่อ - นามสกุล</Form.Label>
               <Form.Control
                 type="email"
                 value={name}
                 autoFocus
-                
+                style={{ fontSize: '18px' }}
               />
             </Form.Group>
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Label>ตำแหน่ง</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>ตำแหน่ง</Form.Label>
               <Form.Control
                 value={position}
                 autoFocus
-                
+                style={{ fontSize: '18px' }}
               />
               {/*<Form.Control as="textarea" rows={3} />*/}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>วันที่</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>วันที่</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
                 type="name"
                 autoFocus
                 value={date}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>เริ่มตั้งแต่เวลา</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>เริ่มตั้งแต่เวลา</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
                 type="name"
                 autoFocus
                 value={timeStart}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>จนถึงเวลา</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>จนถึงเวลา</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
                 type="name"
                 autoFocus
                 value={timeEnd}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>รวมจำนวนชั่วโมงการทำ OT</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>รวมจำนวนชั่วโมงการทำ OT</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
                 type="name"
                 autoFocus
                 value={amount}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>รายละเอียด</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>รายละเอียด</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
                 type="name"
                 autoFocus
                 value={detail}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>สถานะ</Form.Label>
+              <Form.Label style={{ fontSize: '20px' }}>สถานะ</Form.Label>
               <Form.Control
+                style={{ fontSize: '18px' }}
                 type="name"
                 autoFocus
                 value={status}
@@ -263,10 +269,10 @@ function OTRequest() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-        <Button style={{backgroundColor:'#000000'}} onClick={onAllow}>
+        <Button style={{backgroundColor:'#000000', fontSize:20}} onClick={onAllow}>
            Allow
           </Button>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button style={{ fontSize: '20px' }} variant="secondary" onClick={handleClose}>
             Close
           </Button>
           

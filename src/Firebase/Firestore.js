@@ -420,7 +420,8 @@ class FireStore{
   }
 
   getAllLeave = (companyId,success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "leaveRequest"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(query(collection(this.db, "companies", companyId, "leaveRequest"),orderBy("dateStart", "desc")
+      ), (querySnapshot) => {
       const allLeave = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -472,7 +473,7 @@ class FireStore{
 
 
   getAllOT = (companyId,success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "otRequest"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(query(collection(this.db, "companies", companyId, "otRequest"),orderBy('date','desc')), (querySnapshot) => {
       const allOT = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -852,17 +853,20 @@ class FireStore{
   }
 
   // Function to load notes for a specific day
-  async loadNotes(companyId, date) {
+  async loadAllNotes(companyId) {
     try {
-      const noteRef = doc(this.db, 'companies', companyId, 'calendar_notes', date);
-      const noteDoc = await getDoc(noteRef);
-      if (noteDoc.exists()) {
-        return noteDoc.data().notes || [];
-      } else {
-        return [];
-      }
+      const notesCollectionRef = collection(this.db, 'companies', companyId, 'calendar_notes');
+      const querySnapshot = await getDocs(notesCollectionRef);
+      
+      const allNotes = {};
+      querySnapshot.forEach((doc) => {
+        const date = doc.id;  // The document ID is the date
+        allNotes[date] = doc.data().notes || [];
+      });
+  
+      return allNotes;
     } catch (error) {
-      console.error('Error loading notes:', error);
+      console.error('Error loading all notes:', error);
       throw error;
     }
   }

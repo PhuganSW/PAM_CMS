@@ -28,27 +28,36 @@ function CalendarPage() {
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES,
       }).then(() => {
-        gapi.auth2.getAuthInstance().signIn().then(() => {
-          loadCalendarEvents();
-        });
+        // gapi.auth2.getAuthInstance().signIn().then(() => {
+        //   loadCalendarEvents();
+        // });
       });
     }
+    const loadAllNotes = async () => {
+      try {
+        const allNotes = await firestore.loadAllNotes(companyId);
+        setNotes(allNotes);
+      } catch (error) {
+        console.error('Failed to load all notes:', error);
+      }
+    };
     gapi.load('client:auth2', start);
-  }, []);
+    loadAllNotes();
+  }, [companyId]);
 
-  const loadCalendarEvents = () => {
-    gapi.client.calendar.events.list({
-      calendarId: 'primary',
-      timeMin: (new Date()).toISOString(),
-      showDeleted: false,
-      singleEvents: true,
-      maxResults: 10,
-      orderBy: 'startTime',
-    }).then(response => {
-      const events = response.result.items;
-      setEvents(events);
-    });
-  };
+  // const loadCalendarEvents = () => {
+  //   gapi.client.calendar.events.list({
+  //     calendarId: 'primary',
+  //     timeMin: (new Date()).toISOString(),
+  //     showDeleted: false,
+  //     singleEvents: true,
+  //     maxResults: 10,
+  //     orderBy: 'startTime',
+  //   }).then(response => {
+  //     const events = response.result.items;
+  //     setEvents(events);
+  //   });
+  // };
 
   const handleDateChange = async (date) => {
     setSelectedDate(date);
