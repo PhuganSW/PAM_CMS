@@ -7,27 +7,33 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [companyId, setCompanyId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [checkUser, setCheckUser] = useState(false);
-  const [account, setAccount] = useState([]);
+  const [companyId, setCompanyId] = useState(localStorage.getItem('companyId') || null);
+  const [loading, setLoading] = useState(true);  // Set loading to true initially
 
   useEffect(() => {
+    // Listen for Firebase authentication changes
     const unsubscribe = auth.checksignin((user) => {
-      if (user && companyId) {
-        setCurrentUser(user);
-        firestore.getAccount(companyId, user.uid, (data) => {
-          setCheckUser(true);
-          setAccount(data)
-        }, () => alert("Not Found user!!"));
+      if (user) {
+        setCurrentUser(user);  // Set user if authenticated
+        const storedCompanyId = localStorage.getItem('companyId');
+        if (storedCompanyId) {
+          setCompanyId(storedCompanyId);  // Retrieve companyId from localStorage
+        }
+      } else {
+        setCurrentUser(null);  // Clear user state if not authenticated
+        setCompanyId(null);    // Clear companyId if not authenticated
       }
-      setLoading(false); // Stop loading when auth state is determined
+      setLoading(false);  // Stop loading after the check is complete
     });
-    return unsubscribe;
-  }, [companyId]);
+
+    return () => {
+      // Ensure unsubscribe is called on component unmount
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, companyId, setCompanyId, loading, checkUser,account }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, companyId, setCompanyId, loading }}>
       {children}
     </UserContext.Provider>
   );

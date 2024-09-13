@@ -1,3 +1,4 @@
+//Login.js
 import './App.css';
 import React, { useState,useEffect, useContext  } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -15,28 +16,26 @@ const Login = () => {
   // const [currentUser,setCurrentUser] = useState(null)
   const { setCurrentUser, companyId } = useContext(UserContext);
 
-  const getAccountS=(data)=>{
+  const getAccountS = (data) => {
+    // Save companyId to local storage to persist across refreshes
+    localStorage.setItem('companyId', companyId);
     navigate("/home");
-  }
+  };
 
-  const getAccountUn=(e)=> alert("Account: Not Found user!!");
+  const getAccountUn = () => alert("Account: Not Found user!!");
 
-  const loginSuc=(user)=>{
-    //navigate("/home");
-    if(user){
-      setCurrentUser(user)
-      firestore.getAccount(companyId,user.uid,getAccountS,getAccountUn)
-      console.log(companyId)
-      //navigate("/home");
-    }
-    else{
-      alert("Login: Not Found user!!")
+  const loginSuc = (user) => {
+    if (user) {
+      setCurrentUser(user);
+      firestore.getAccount(companyId, user.uid, getAccountS, getAccountUn);
+    } else {
+      alert("Login: Not Found user!!");
     }
   }
 
-  const loginUnsuc=(err1,err2)=>{
-    console.log(err1+": "+err2);
-    alert("email or password is wrong!!")
+  const loginUnsuc = (err1, err2) => {
+    console.log(err1 + ": " + err2);
+    alert("email or password is wrong!!");
   }
 
   const onLogin = async (e) => {

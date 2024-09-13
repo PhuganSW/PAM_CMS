@@ -36,7 +36,7 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginCompany /> }/>
+          <Route path="/" element={<ProtectedRouteHome><LoginCompany /></ProtectedRouteHome>} />
           <Route path="/login" element={<ProtectedLogin><Login /></ProtectedLogin>} />
           <Route path="/forgot_password" element={<ForgotPass />} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
@@ -69,34 +69,48 @@ function App() {
   );
 }
 
-const Redirecthome = ({ children }) => {
-  const { currentUser, checkUser } = useContext(UserContext);
+const ProtectedRouteHome = ({ children }) => {
+  const { currentUser, loading, companyId } = useContext(UserContext);
 
-  if (!currentUser || !checkUser) {
-    return <Navigate to="/home" />;
+  if (loading) {
+    console.log('loading is true');
+    return <div>Loading...</div>; // Show loading while checking auth state
   }
 
-  return children;
+  console.log('currentUser:', currentUser, 'companyId:', companyId);
+
+  if (currentUser && companyId) {
+    return <Navigate to="/home" />; // If user is signed in and companyId exists, redirect to home
+  }
+
+  return children; // Otherwise, show login company page
 };
 
+// Protect all authenticated routes
 const ProtectedRoute = ({ children }) => {
-  const { currentUser, checkUser } = useContext(UserContext);
+  const { currentUser, loading } = useContext(UserContext);
 
-  if (!currentUser || !checkUser) {
-    return <Navigate to="/" />;
+  if (loading) {
+    return <div>Loading...</div>;  // Show loading while checking auth state
+  }
+
+  if (!currentUser) {
+    return <Navigate to="/" />;  // Redirect to the login company page if not logged in
   }
 
   return children;
 };
 
+// Prevent access to login page if already signed in
 const ProtectedLogin = ({ children }) => {
-  const { currentUser, checkUser,companyId } = useContext(UserContext);
-  console.log("App: ",companyId)
-  if (!companyId) {
-    return <Navigate to="/" />;
+  const { currentUser, companyId } = useContext(UserContext);
+
+  if (currentUser && companyId) {
+    return <Navigate to="/home" />;  // Redirect to home if already logged in
   }
 
   return children;
 };
 
 export default App;
+

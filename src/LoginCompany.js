@@ -1,8 +1,9 @@
 import './App.css';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
 import firestore from './Firebase/Firestore';
+import auth from './Firebase/Auth';
 
 const LoginCompany = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const LoginCompany = () => {
     const success = (found) => {
       if (found) {
         setContextCompanyId(companyId);
+        localStorage.setItem('companyId', companyId);  // Save companyId to localStorage
         navigate('/login');
       } else {
         alert('Company not found!');
@@ -27,6 +29,14 @@ const LoginCompany = () => {
 
     firestore.checkCompany(companyId, success, unsuccess);
   };
+
+  useEffect(() => {
+    auth.checksignin((user) => {
+      if (user) {
+        navigate('/home');
+      }
+    });
+  }, [navigate]);
 
   return (
     <div className="App">

@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { companyId } = useContext(UserContext);
+  const { companyId, setCurrentUser, setCompanyId } = useContext(UserContext);
 
 
   useEffect(() => {
@@ -32,17 +32,17 @@ const Layout = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const [currentUser,setCurrentUser] = useState('');
+  const logOutSuccess = () => {
+    setCurrentUser(null);  // Clear user from context
+    setCompanyId(null);    // Clear companyId from context
+    localStorage.removeItem('companyId');  // Clear companyId from localStorage
+    navigate('/');  // Redirect to login company page
+  };
 
-  const logOutSuc =()=>{
-    setCurrentUser(null)
-    navigate("/")
-  }
-
-  const logout=(e)=>{
-    e.preventDefault()
-    auth.signOut(logOutSuc)
-  }
+  const logout = (e) => {
+    e.preventDefault();
+    auth.signOut(logOutSuccess);
+  };
 
   const isActive = (path) => {
     return location.pathname.startsWith(path);

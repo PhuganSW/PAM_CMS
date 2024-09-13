@@ -278,7 +278,7 @@ class FireStore{
   };
 
   getAllCheckin = (companyId,success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "checkin"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(query(collection(this.db, "companies", companyId, "checkin"),orderBy('date','desc'),orderBy('time','desc')), (querySnapshot) => {
       const allcheckin = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -295,7 +295,7 @@ class FireStore{
   };
 
   getAllCheckout = (companyId,success, unsuccess) => {
-    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "checkout"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(query(collection(this.db, "companies", companyId, "checkout"),orderBy('date','desc'),orderBy('time','desc')), (querySnapshot) => {
       const allcheckout = [];
       querySnapshot.forEach((doc) => {
         allcheckout.push({id:doc.id, ...doc.data()});
