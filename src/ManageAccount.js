@@ -14,7 +14,7 @@ import auth from './Firebase/Auth';
 import firestore from './Firebase/Firestore';
 import Layout from './Layout';
 import { UserContext } from './UserContext';
-
+import ReactSelect from 'react-select';
 
 
 function ManageAccount() {
@@ -32,15 +32,11 @@ function ManageAccount() {
     const [endIndex, setEndIndex] = useState(10);
     const { setCurrentUser, companyId } = useContext(UserContext);
 
-    const levels =[
-   
-      {label:'ประกาศฉุกเฉิน',value:1},
-      {label:'ข่าวสารภายใน',value:2},
-      {label:'กฎระเบียบ',value:3},
-      {label:'ข่าวสารทั่วไป',value:4},
-      {label:'รณรงค์ลดโลกร้อน',value:5},
-      {label:'ปฏิทินวันหยุด',value:6}
-    ]
+    const levels = [
+      { label: 'Super Admin', value: 1 },
+      { label: 'Admin', value: 2 },
+      { label: 'User', value: 3 }
+    ];
     
     const getallAccountSuccess=(doc)=>{
       let accounts = [];
@@ -225,12 +221,29 @@ function ManageAccount() {
                 onChange={(e) => setPosition(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3" controlId="formLevel">
               <Form.Label>Level</Form.Label>
-              <Form.Control
-                type="name"
-                autoFocus
-                onChange={(e) => setLevel(e.target.value)}
+              <ReactSelect
+                value={levels.find(option => option.value === level)}
+                onChange={(selectedOption) => setLevel(selectedOption.value)}
+                options={levels}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    borderRadius: '4px', // Border radius for the select field
+                    border: '1px solid #ced4da',
+                    padding: '4px',  // Adjust padding for the select field
+                  }),
+                  option: (base) => ({
+                    ...base,
+                    borderRadius: '4px', // Border radius for options when they are rendered
+                    padding: '10px', // Add padding to options
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    borderRadius: '4px', // Border radius for the dropdown menu
+                  }),
+                }}
               />
             </Form.Group>
           </Form>
