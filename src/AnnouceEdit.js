@@ -149,6 +149,12 @@ function AnnouceEdit() {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
+  const isEmergencyType = type === 1;
+  const isInternalType = type === 2;
+  const isRuleType = type === 3;
+  const isGeneralType = type === 4;
+  const isCampaignType = type === 5;
+  const isHolidayType = type === 6;
 
   return (
     
@@ -239,6 +245,7 @@ function AnnouceEdit() {
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                         value={link}
                         onChange={(e) => setLink(e.target.value)}
+                        disabled={isEmergencyType||isRuleType||isHolidayType}
                     />
                
                     
@@ -256,10 +263,11 @@ function AnnouceEdit() {
                         style={{width:'100%'}}
                         value={detail}
                         onChange={(e) => setDetail(e.target.value)}
+                        disabled={isInternalType||isRuleType||isGeneralType||isCampaignType||isHolidayType}
                     >
                     </TextField>
                 </div>
-                <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                {(!isEmergencyType && !isInternalType && !isGeneralType && !isCampaignType)&&<div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <div className="file-picker">
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
@@ -286,7 +294,7 @@ function AnnouceEdit() {
                     )}
                   </div>
                 </div>
-                </div>
+                </div>}
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>

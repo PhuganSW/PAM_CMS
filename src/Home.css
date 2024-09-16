@@ -101,6 +101,9 @@ body {
     .main-content {
       padding: 40px;
     }
+    .dashboard-contain{
+      overflow-y: auto;
+    }
   }
   
   @media (max-width: 1024px) {

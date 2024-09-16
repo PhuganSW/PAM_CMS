@@ -39,7 +39,8 @@ function ProfileManage() {
     if (allUser.length === 0) {
         
       doc.forEach((item) => {
-        users.push({id: item.id, name: item.name, position: item.position});
+        if(item.position != 'tester')
+          users.push({id: item.id, name: item.name, position: item.position});
       });
       setAllUser(users);
       setFilteredUsers(users);
