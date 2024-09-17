@@ -372,7 +372,7 @@ class FireStore{
 
   ManageWP = async (companyId, workPlaceId,item,success, unsuccess) => {
     try {
-        const userRef = doc(this.db, "companies", companyId, "workplaces", workPlaceId,);
+        const userRef = doc(this.db, "companies", companyId, "workplaces", workPlaceId);
         await setDoc(userRef, item);
         success();
     } catch (e) {
@@ -644,6 +644,7 @@ class FireStore{
   };
 
   deleteAnnouce=async(companyId,id)=>{
+    //console.log("deleteAnnouce",companyId,id)
     await deleteDoc(doc(this.db, "companies", companyId, "annouce", id));
   }
 
@@ -870,6 +871,25 @@ class FireStore{
       throw error;
     }
   }
+
+  addAnnouceState = async (companyId, type) => {
+    try {
+      const usersCollectionRef = collection(this.db, 'companies', companyId, 'users');
+  
+      const querySnapshot = await getDocs(usersCollectionRef);
+      querySnapshot.forEach(async (userDoc) => {
+        //console.log(userDoc.id);
+  
+        // Reference to the specific document in 'extend/annouceAct'
+        const annouceRef = doc(this.db, 'companies', companyId, 'users', userDoc.id, 'extend', 'annouceAct');
+  
+        // Use computed property name to dynamically create the field name
+        await setDoc(annouceRef, { annouceState: false, [type]: false }, { merge: true });
+      });
+    } catch (error) {
+      console.error('Error addAnnouceState:', error);
+    }
+  };
 
 }
 

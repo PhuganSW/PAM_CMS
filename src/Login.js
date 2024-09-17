@@ -8,12 +8,15 @@ import auth from './Firebase/Auth';
 import firestore from './Firebase/Firestore';
 import { UserContext } from './UserContext';
 import { Tune } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material'; // Icons for visibility
+
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // const [currentUser,setCurrentUser] = useState(null)
+  const [showPassword, setShowPassword] = useState(false); // Track password visibility
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getAccountS = (data) => {
@@ -60,6 +63,11 @@ const Login = () => {
   //   auth.checksignin(suc);
   // }, []);
 
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
 
   return (
     <div className="App">
@@ -68,7 +76,22 @@ const Login = () => {
           <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={200} height={200} alt="Logo" />
           <form onSubmit={onLogin}>
             <input type="email" style={{marginTop:10}} className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} autoFocus={true} required />
-            <input type="password" className="input-field" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
+            <div className="password-input-wrapper" style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input-field"
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <div
+                className="visibility-toggle"
+                onClick={togglePasswordVisibility}
+                style={{ color: 'black' }}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </div>
+            </div>
             <div className="forgotPass" onClick={forgotPassword}>forgot password?</div>
             <button type="submit" className="login-button">LOGIN</button>
           </form>

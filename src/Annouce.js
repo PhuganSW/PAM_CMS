@@ -104,8 +104,8 @@ function Annouce() {
   }
 
   const deleteAnnouce =()=>{
-    firestore.deleteAnnouce(selectID)
-    console.log('Del'+selectID)
+    firestore.deleteAnnouce(companyId,selectID)
+    //console.log('Del'+selectID)
     handleClose()
   }
 

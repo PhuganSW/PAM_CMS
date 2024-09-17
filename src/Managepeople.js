@@ -38,6 +38,8 @@ function ManagePeople() {
   const [workplace,setWorkplace] =useState('');
   const [showWorkPlace,setShowWorkPlace] = useState('');
   const [workplaces,setWorkplaces] = useState([]);
+  const [lat,setLat] = useState(null);
+  const [lon,setLon] = useState(null);
   const [unsubscribe, setUnsubscribe] = useState(null);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
@@ -53,6 +55,10 @@ function ManagePeople() {
   } 
 
   const handleShowWP = () =>{
+    setShowWorkPlace('');
+    setLat('');
+    setLon('');
+    setWorkplaceImageUrl(null)
     setShowManageWp(true);
   } 
 
@@ -81,7 +87,7 @@ function ManagePeople() {
 
   const onManageWP = async () => {
     if (showWorkPlace) {
-      let imageUrl = null;
+      let imageUrl = null || workplaceImageUrl;
 
       if (selectedImage) {
         setUploading(true);
@@ -90,14 +96,16 @@ function ManagePeople() {
       }
         firestore.ManageWP(companyId, showWorkPlace, {
             imageUrl: imageUrl,  // Save the image URL in Firestore
+            lat:lat || null,
+            lon:lon || null
         }, () => {
-            alert("Workplace add image successfully!");
+            alert("Workplace update successfully!");
             handleCloseWP();
         }, (error) => {
             alert("Error assigning workplace: " + error);
         });
     } else {
-        alert("Please select a workplace.");
+        alert("Error assigning workplace: ");
     }
   };
 
@@ -142,6 +150,8 @@ function ManagePeople() {
       if (workplaceDoc.exists()) {
         const imageUrl = workplaceDoc.data().imageUrl || null;
         setWorkplaceImageUrl(imageUrl); // Set the image URL
+        setLat(workplaceDoc.data().lat)
+        setLon(workplaceDoc.data().lon)
         console.log("Fetched imageUrl:", imageUrl); // Debug log
       } else {
         setWorkplaceImageUrl(null); // Clear if no image
@@ -188,7 +198,8 @@ function ManagePeople() {
 
   const handleWorkplaceChange = async (event) => {
     const selectedWorkplace = event.target.value;
-    setWorkplace(selectedWorkplace);
+    setShowWorkPlace(selectedWorkplace);
+    setWorkplace(selectedWorkplace)
   
     if (unsubscribe) {
         unsubscribe();
@@ -364,7 +375,7 @@ function ManagePeople() {
               <FormControl variant="filled" fullWidth>
                 <InputLabel>พื้นที่ทำงาน</InputLabel>
                 {/* On changing the workplace, handleWorkplaceChange is called */}
-                <Select value={workplace} onChange={handleWorkplaceChange}>
+                <Select value={showWorkPlace} onChange={handleWorkplaceChange}>
                   {workplaces.map((option, index) => (
                     <MenuItem key={index} value={option}>
                       {option}
@@ -372,6 +383,22 @@ function ManagePeople() {
                   ))}
                 </Select>
               </FormControl>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1" style={{marginTop:15}}>
+              <Form.Label>พิกัด latitude</Form.Label>
+              <Form.Control
+                
+                value={lat}
+                onChange={(e) => setLat(e.target.value)}
+              />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>พิกัด longtitude</Form.Label>
+                <Form.Control
+                  
+                  value={lon}
+                  onChange={(e) => setLon(e.target.value)}
+                />
+              </Form.Group>
 
               {/* If workplaceImageUrl exists, show the image */}
               {workplaceImageUrl && (
