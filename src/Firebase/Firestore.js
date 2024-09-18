@@ -2,7 +2,7 @@
 //import { image } from "html2canvas/dist/types/css/types/image";
 import app from "./Config";
 import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, 
-        deleteDoc, updateDoc, orderBy, query, where, getDocs,  } from "firebase/firestore";
+        deleteDoc, updateDoc, orderBy, query, where, getDocs,writeBatch  } from "firebase/firestore";
 
 class FireStore{
   constructor(){
@@ -888,6 +888,37 @@ class FireStore{
       });
     } catch (error) {
       console.error('Error addAnnouceState:', error);
+    }
+  };
+
+  resetLikeStatus = async (companyId, currentId) => {
+    try {
+      const batch = writeBatch(this.db); // Use writeBatch() to initialize a batch
+  
+      // Reference to all users in the company
+      const usersCollectionRef = collection(this.db, "companies", companyId, "users");
+      const querySnapshot = await getDocs(usersCollectionRef);
+  
+      querySnapshot.forEach((docSnapshot) => {
+        const userId = docSnapshot.id;
+  
+        // Reference to the user's networkAct document
+        const netActRef = doc(this.db, 'companies', companyId, 'users', userId, 'networkAct', currentId);
+  
+        // Add operation to batch: Reset like status
+        batch.set(netActRef, { act: false, likeBG: '#BEBEBE' }, { merge: true });
+      });
+  
+      // Reset the like count in the global network collection
+      const netRef = doc(this.db, 'companies', companyId, 'network', currentId);
+      batch.set(netRef, { count: 0, timestamp: new Date() }, { merge: true });
+  
+      // Commit the batch operation
+      await batch.commit();
+      console.log("Like status reset for all users.");
+  
+    } catch (error) {
+      console.error("Error resetting like status:", error);
     }
   };
 

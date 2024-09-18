@@ -30,6 +30,7 @@ import LoginCompany from './LoginCompany';
 import ProfileRole from './Profile/ProfileRole';
 import ProfileUpSk from './Profile/ProfileUpSk';
 import ProfileNotice from './Profile/ProfileNotice';
+import ProfileSalary from './Profile/ProfileSalary';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           <Route path="/profile_role" element={<ProtectedRoute><ProfileRole /></ProtectedRoute>} />
           <Route path="/profile_upskill" element={<ProtectedRoute><ProfileUpSk /></ProtectedRoute>} />
           <Route path="/profile_notice" element={<ProtectedRoute><ProfileNotice /></ProtectedRoute>} />
+          <Route path="/profile_salary" element={<ProtectedRoute><ProfileSalary /></ProtectedRoute>} />
           <Route path="/manage_account" element={<ProtectedRoute><ManageAccount /></ProtectedRoute>} />
           <Route path="/salary_cal" element={<ProtectedRoute><SalaryCal /></ProtectedRoute>} />
           <Route path="/salary_list" element={<ProtectedRoute><SalaryList /></ProtectedRoute>} />

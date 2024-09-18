@@ -210,6 +210,7 @@ function ProfileEdit() {
     let imageUrl = '';
     if (image_off instanceof File) {
       imageUrl = await storage.uploadImage(companyId, image_off);
+      firestore.resetLikeStatus(companyId,uid)
     } else {
       imageUrl = image_off; // Keep the existing URL if no new image is uploaded
     }
@@ -246,24 +247,6 @@ function ProfileEdit() {
       blood_type: blood_type || '',
       Ldrug: Ldrug || '',
       wealthHos: wealthHos || '',
-      costL: costL || 0,
-      ot: ot || 0,
-      allowance: allowance || 0,
-      salary: salary || 0,
-      venhicle: venhicle || 0,
-      sub: sub || 0,
-      welth: welth || 0,
-      bonus: bonus || 0,
-      allDeposit: allDeposit || 0,
-      tax: tax || 0,
-      insurance: insurance || 0,
-      late: late || 0,
-      missing: missing || 0,
-      borrow: borrow || 0,
-      withdraw: withdraw || 0,
-      allInsurance: allInsurance || 0,
-      jobDesc: jobDesc || '',
-      duty: duty || '',
     };
   
     firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);
@@ -651,186 +634,7 @@ function ProfileEdit() {
                 onChange={(e) => setEmer_Phone(e.target.value)}
               />
             </div>
-            <div className="form-row" style={{ display: 'flex'}}>
-              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>เงินเดือน :</p>
-            </div>
-            <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-            <TextField
-                  label="เงินเดือน"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={salary}
-                  onChange={(e) => setSalary(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                  label="ค่าจ้าง"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={sub}
-                  onChange={(e) => setSub(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                  
-                  label="ค่าล่วงเวลา"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={ot}
-                  onChange={(e) => setOT(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                  label="ค่าเบี้ยเลี้ยง"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={allowance}
-                  onChange={(e) => setAllowance(validateNumberInput(e.target.value))}
-                >
-                </TextField>
-                <TextField
-                  label="ค่าพาหนะ"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={venhicle}
-                  onChange={(e) => setVenhicle(validateNumberInput(e.target.value))}
-                />
-            </div>
-            <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-            <TextField
-                  label="ค่าสวัสดิการ"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={welth}
-                  onChange={(e) => setWelth(validateNumberInput(e.target.value))}
-                />
-                 <TextField
-                  label="เงินโบนัส"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={bonus}
-                  onChange={(e) => setBonus(validateNumberInput(e.target.value))}
-                    />
-                <TextField
-                  label="เงินพิเศษ"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={costL}
-                  onChange={(e) => setCostL(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                    label="รายได้สะสม"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={allDeposit}
-                    onChange={(e) => setAllDeposit(validateNumberInput(e.target.value))}
-                  />
-            </div>
-            <div className="form-row" style={{ display: 'flex' }}>
-              <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>รายการหัก :</p>
-            </div>
-            <div className="form-row" style={{ display: 'flex',  marginBottom: '20px' }}>
-            <TextField
-                  label="เงินประกันสังคม"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={insurance}
-                  onChange={(e) => setInsurance(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                  label="เงินหัก ณ ที่จ่าย"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={late}
-                  onChange={(e) => setLate(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                  
-                  label="เงินเบิกล่วงหน้า"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={withdraw}
-                  onChange={(e) => setWithdraw(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                  label="เงินกู้ยืมสวัสดิการ"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={borrow}
-                  onChange={(e) => setBorrow(validateNumberInput(e.target.value))}
-                >
-                </TextField>
-                <TextField
-                  label="ขาดงาน"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={missing}
-                  onChange={(e) => setMissing(validateNumberInput(e.target.value))}
-                />
-            </div>
-            <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
-                <TextField
-                  label="หักภาษีเงินได้"
-                  className="form-field"
-                  variant="filled"
-                  style={{width:'19%',marginRight:'1.25%'}}
-                  InputLabelProps={{ style: { color: '#000' },shrink: true  }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={tax}
-                  onChange={(e) => setTax(validateNumberInput(e.target.value))}
-                />
-                <TextField
-                    label="เงินประกันสังคมสะสม"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={allInsurance}
-                    onChange={(e) => setAllInsurance(validateNumberInput(e.target.value))}
-                  />
-              </div>
+            
             <div className="form-row" style={{ display: 'flex'}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>สิทธิ์การใช้งานแอปฯ :</p>
@@ -888,7 +692,8 @@ function ProfileEdit() {
             </div>
             <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+              <button style={{width:120,height:50,borderRadius:5,backgroundColor:'#BEBEBE'}} onClick={()=>navigate('/profile_salary',{state:{action:'edit',uid:uid}})}>ข้อมูลเงินเดือน</button>
             </div>
 
           </div>

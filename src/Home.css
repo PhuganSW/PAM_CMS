@@ -18,7 +18,7 @@ body {
     padding-left: 40px;
     width: 100%;
     background: #D3D3D3;
-    overflow-y: hidden; /* allows scrolling */
+    overflow-y: auto; /* allows scrolling */
     font-family: 'THSarabunNew', sans-serif;
     transition: margin-left 0.3s ease-in-out;
     justify-content: center;
@@ -90,6 +90,10 @@ body {
   }
 
   @media (min-width: 768px) {
+
+    .dashboard{
+      overflow-y: scroll;
+    }
     .layout {
       flex-direction: row;
     }

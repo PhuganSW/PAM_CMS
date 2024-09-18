@@ -38,6 +38,8 @@ function CheckHistory() {
   const [endIndex, setEndIndex] = useState(10);
   const [outStartIndex, setOutStartIndex] = useState(0);
   const [outEndIndex, setOutEndIndex] = useState(10);
+  const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order
+  const [sortOrderOut, setSortOrderOut] = useState('desc'); // For checkout sorting order
 
   const [workplaces,setWorkplaces] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
@@ -127,6 +129,36 @@ function CheckHistory() {
     fetchDropdownOptions();
   }, []);
 
+  // Function to convert date string to Date object for comparison
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  // Sort the data based on the date (toggle between ascending and descending)
+  const sortData = (order, setData, data) => {
+    const sortedData = [...data].sort((a, b) => {
+      const dateA = parseDate(a.date);
+      const dateB = parseDate(b.date);
+      return order === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    setData(sortedData);
+  };
+
+  // Toggle sorting order for check-ins
+  const toggleSortOrder = () => {
+    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newOrder);
+    sortData(newOrder, setFilteredUsers, allIN);
+  };
+
+  // Toggle sorting order for check-outs
+  const toggleSortOrderOut = () => {
+    const newOrder = sortOrderOut === 'asc' ? 'desc' : 'asc';
+    setSortOrderOut(newOrder);
+    sortData(newOrder, setFilteredOut, allOut);
+  };
+
   return (
     
       <div className="dashboard">
@@ -158,7 +190,9 @@ function CheckHistory() {
                 <TableBootstrap striped bordered hover className='table' style={{marginTop:10,width:'100%'}}>
                   <thead>
                     <tr>
-                      <th scope="col">วันที่</th>
+                      <th scope="col" onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
+                        วันที่ {sortOrder === 'asc' ? '▲' : '▼'}
+                      </th>
                       <th scope="col">ชื่อ-สกุล</th>
                       <th scope="col">เวลา</th>
                       <th scope="col">พื้นที่ปฏิบัติงาน</th>
@@ -191,7 +225,9 @@ function CheckHistory() {
                 <TableBootstrap striped bordered hover style={{marginTop:10}}>
                   <thead>
                     <tr>
-                      <th scope="col">วันที่</th>
+                      <th scope="col" onClick={toggleSortOrderOut} style={{ cursor: 'pointer' }}>
+                        วันที่ {sortOrderOut === 'asc' ? '▲' : '▼'}
+                      </th>
                       <th scope="col">ชื่อ-สกุล</th>
                       <th scope="col">เวลา</th>
                       <th scope="col">พื้นที่ปฏิบัติงาน</th>
