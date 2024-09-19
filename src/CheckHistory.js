@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from './UserContext';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material'
 
 function CheckHistory() {
 
@@ -40,48 +41,21 @@ function CheckHistory() {
   const [outEndIndex, setOutEndIndex] = useState(10);
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order
   const [sortOrderOut, setSortOrderOut] = useState('desc'); // For checkout sorting order
+  const [isCheckin, setIsCheckin] = useState(true);
 
   const [workplaces,setWorkplaces] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
-  const handleShow = (uid,date,time,workplace) =>{
+  const handleShow = (uid,date,time,workplace,isCheckin) =>{
     
     setUid(uid);
     setDate(date)
     setTime(time)
     setWorkplace(workplace)
+    setIsCheckin(isCheckin);
     setShow(true);
   } 
-
-
-  const getInSuc=(doc)=>{
-    console.log(doc)
-    let ins = []
-    if (allIN.length === 0) {
-        
-      doc.forEach((item) => {
-        ins.push({id: item.id,uid:item.user,date:item.date, name: item.name, time: item.time,});
-      });
-      setAllIn(ins);
-      setFilteredUsers(ins);
-    }
-  }
-
-  const getOutSuc=(doc)=>{
-    let outs = []
-    if (allOut.length === 0) {
-        
-      doc.forEach((item) => {
-        outs.push({id: item.id,uid:item.user,date:item.date, name: item.name, time: item.time,});
-      });
-      setAllOut(outs);
-      setFilteredOut(outs);
-    }
-  }
-
-  const getInUnsuc=(e)=> console.log(e)
-  const getOutUnsuc=(e)=> console.log(e)
 
   const onNextIn = () => {
     setStartIndex(startIndex + 10);
@@ -113,6 +87,32 @@ function CheckHistory() {
     setFilteredOut(filtered1);
   };
 
+  const handleSave = async () => {
+    const updatedData = {
+      date:date,
+      time:time,
+      workplace:workplace || '',
+    };
+
+    console.log(`UID: ${uid}`);  // Debugging the UID
+
+    if (isCheckin) {
+      // Update check-in data
+      firestore.updateCheckin(companyId, uid, updatedData, 
+        () => alert("Check-in updated successfully!"), 
+        (error) => console.error("Error updating check-in:", error)
+      );
+    } else {
+      // Update check-out data
+      firestore.updateCheckout(companyId, uid, updatedData, 
+        () => alert("Check-out updated successfully!"), 
+        (error) => console.error("Error updating check-out:", error)
+      );
+    }
+
+    setShow(false);
+  };
+
   const fetchDropdownOptions = async () => {
     try {
       const workplaces = await firestore.getDropdownOptions(companyId,'workplace');
@@ -124,10 +124,22 @@ function CheckHistory() {
   };
 
   useEffect(() => {
-    firestore.getAllCheckin(companyId,getInSuc,getInUnsuc)
-    firestore.getAllCheckout(companyId,getOutSuc,getOutUnsuc)
     fetchDropdownOptions();
-  }, []);
+    const unsubscribeIn = firestore.getAllCheckin(companyId, (inData) => {
+      setAllIn(inData);
+      sortData(sortOrder, setFilteredUsers, inData); // Ensure sorting after data update
+    }, console.error);
+
+    const unsubscribeOut = firestore.getAllCheckout(companyId, (outData) => {
+      setAllOut(outData);
+      sortData(sortOrderOut, setFilteredOut, outData); // Ensure sorting after data update
+    }, console.error);
+
+    return () => {
+      unsubscribeIn();
+      unsubscribeOut();
+    };
+  }, [companyId, sortOrder, sortOrderOut]);
 
   // Function to convert date string to Date object for comparison
   const parseDate = (dateString) => {
@@ -163,9 +175,10 @@ function CheckHistory() {
     
       <div className="dashboard">
         {/* <Sidebar /> */}
-        <Layout />
+        <div><Layout /></div>
         <main className="main-content">
-        
+         
+          
           <div class="main">
           <div className='header-page'>
           <header>
@@ -191,7 +204,7 @@ function CheckHistory() {
                   <thead>
                     <tr>
                       <th scope="col" onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
-                        วันที่ {sortOrder === 'asc' ? '▲' : '▼'}
+                        วันที่ {sortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                       </th>
                       <th scope="col">ชื่อ-สกุล</th>
                       <th scope="col">เวลา</th>
@@ -209,7 +222,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.uid,item.date,item.time,item.workplace)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, true)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -226,7 +239,7 @@ function CheckHistory() {
                   <thead>
                     <tr>
                       <th scope="col" onClick={toggleSortOrderOut} style={{ cursor: 'pointer' }}>
-                        วันที่ {sortOrderOut === 'asc' ? '▲' : '▼'}
+                        วันที่ {sortOrderOut === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                       </th>
                       <th scope="col">ชื่อ-สกุล</th>
                       <th scope="col">เวลา</th>
@@ -243,7 +256,7 @@ function CheckHistory() {
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={()=>handleShow(item.uid,item.date,item.time,item.workplace)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, false)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -264,23 +277,26 @@ function CheckHistory() {
         </Modal.Header>
         <Modal.Body>
           <Form>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{ fontSize: '20px' }}>วันที่</Form.Label>
+            <Form.Group controlId="date">
+              <Form.Label style={{fontSize:22}}>วันที่</Form.Label>
               <Form.Control
-                autoFocus
+                type="text"
                 value={date}
-                style={{ fontSize: '18px' }}
+                onChange={(e) => setDate(e.target.value)}
+                style={{fontSize:20,marginBottom:20}}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{ fontSize: '20px' }}>เวลา</Form.Label>
+
+            <Form.Group controlId="time">
+              <Form.Label style={{fontSize:22}}>เวลา</Form.Label>
               <Form.Control
-                autoFocus
+                type="text"
                 value={time}
-                style={{ fontSize: '18px' }}
+                onChange={(e) => setTime(e.target.value)}
+                style={{fontSize:20,marginBottom:30}}
               />
             </Form.Group>
-          {/* <FormControl variant="filled" fullWidth>
+          <FormControl variant="filled" fullWidth>
               <InputLabel>พื้นที่ทำงาน</InputLabel>
               <Select
                 value={workplace}
@@ -292,12 +308,12 @@ function CheckHistory() {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl> */}
+            </FormControl>
           </Form>
           
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} >
+          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} onClick={handleSave}>
             Allow
           </Button>
           <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>

@@ -6,18 +6,20 @@
   body {
     font-family: 'THSarabunNew', sans-serif;
   }
+
 .table-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
     
   }
   
   .table-section {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 48%;
     margin-bottom: 20px;
     align-self: flex-start;
     /* background-color: aqua; */
@@ -28,9 +30,31 @@
     text-align: center;
     font-family: 'THSarabunNew', sans-serif;
   }
+
+  @media (min-width: 1180px) {
+    .table-container {
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .table-section {
+        width: 48%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1179px) {
+  .table-container {
+      flex-direction: row;
+      justify-content: space-between;
+  }
+
+  .table-section {
+      width: 48%; /* Ensure tables don't overlap and take 48% width */
+  }
+}
   
   /* Media queries for responsiveness */
-  @media (min-width: 768px) {
+  @media (min-width: 1180px) {
     .table-container {
       flex-direction: row;
       justify-content: space-around;
@@ -43,12 +67,15 @@
   
   /* Additional styles for small screens */
   @media (max-width: 767px) {
+    .table-container {
+        flex-direction: column; /* Stack the tables vertically on small screens */
+    }
+
     .table-section {
-      width: 90%;
+        width: 100%; /* Take full width on small screens */
     }
-  
+
     .table-title {
-      font-size: 26px;
-      font-family: 'THSarabunNew', sans-serif;
+        font-size: 24px;
     }
-  }
+}

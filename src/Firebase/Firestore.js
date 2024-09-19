@@ -310,6 +310,28 @@ class FireStore{
     return unsubscribe;
   };
 
+  updateCheckin = async (companyId, uid, updatedData, success, unsuccess) => {
+    try {
+      const checkinRef = doc(this.db, "companies", companyId, "checkin", uid);
+      // Use setDoc with merge: true to update only the provided fields
+      await setDoc(checkinRef, updatedData, { merge: true });
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+  
+  updateCheckout = async (companyId, uid, updatedData, success, unsuccess) => {
+    try {
+      const checkoutRef = doc(this.db, "companies", companyId, "checkout", uid);
+      // Use setDoc with merge: true to update only the provided fields
+      await setDoc(checkoutRef, updatedData, { merge: true });
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+
   removeUserFromAllWorkplaces = async (companyId, userId) => {
     try {
         // Fetch the current workplace of the user from the 'extend' sub-collection
@@ -920,6 +942,35 @@ class FireStore{
     } catch (error) {
       console.error("Error resetting like status:", error);
     }
+  };
+
+  // Get all workplaces and their user count
+  getWorkplaceUserCounts = (companyId, success, unsuccess) => {
+    const workplacesRef = collection(this.db, "companies", companyId, "workplaces");
+
+    // Fetch all workplaces
+    getDocs(workplacesRef)
+      .then(async (snapshot) => {
+        const workplaceData = [];
+
+        for (const doc of snapshot.docs) {
+          const workplaceId = doc.id;
+          
+
+          // For each workplace, fetch the user count
+          const usersRef = collection(this.db, "companies", companyId, "workplaces", workplaceId, "users");
+          const userSnapshot = await getDocs(usersRef);
+
+          // Push workplace data with user count
+          workplaceData.push({
+            name: workplaceId,
+            count: userSnapshot.size,  // Number of users
+          });
+        }
+
+        success(workplaceData);
+      })
+      .catch((error) => unsuccess(error));
   };
 
 }

@@ -15,6 +15,8 @@ import firestore from './Firebase/Firestore';
 import Layout from './Layout';
 import { UserContext } from './UserContext';
 import ReactSelect from 'react-select';
+import CryptoJS from 'crypto-js';
+import { IoEyeOff, IoEye } from "react-icons/io5";
 
 
 function ManageAccount() {
@@ -23,6 +25,7 @@ function ManageAccount() {
     const [showDel, setShowDel] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [name, setName] = useState('');
     const [position, setPosition] = useState('');
     const [level, setLevel] = useState('');
@@ -33,17 +36,21 @@ function ManageAccount() {
     const { setCurrentUser, companyId } = useContext(UserContext);
 
     const levels = [
+      { label: 'Administrator', value: 0 },
       { label: 'Super Admin', value: 1 },
       { label: 'Admin', value: 2 },
       { label: 'User', value: 3 }
     ];
+
+    const selectableLevels = levels.filter(l => l.value !== 0);
     
     const getallAccountSuccess=(doc)=>{
       let accounts = [];
       if (allaccount.length === 0) {
         
         doc.forEach((item) => {
-          accounts.push({id: item.id, email: item.email, name: item.name, position: item.position, level: item.level});
+          const matchingLevel = levels.find(l => l.value === item.level);
+          accounts.push({id: item.id, email: item.email, name: item.name, position: item.position, level: matchingLevel ? matchingLevel.label : 'Unknown'});
         });
         setAllAccount(accounts);
       }
@@ -66,16 +73,29 @@ function ManageAccount() {
       setShowDel(true);
     }
 
-    const createSuccess=(user)=>{
+    const createSuccess=async(user)=>{
+      //const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashedPassword = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
       let item={
         email:email,
         name:name,
         position:position,
-        level:level
+        level:level,
+        password: hashedPassword
       }
       //console.log(item)
       firestore.addAccount(companyId,user.uid,item)
-      handleClose()
+      .then(() => {
+        alert("Account created successfully!");
+        handleClose();
+      })
+      .catch((error) => {
+        console.error("Error adding account to Firestore", error);
+      });
     }
 
     const createUnsuccess=(error)=>{
@@ -112,6 +132,10 @@ function ManageAccount() {
     const onPrevious = () => {
       setStartIndex(Math.max(startIndex - 10, 0)); // Decrement the start index by 5, ensuring it doesn't go below 0
       setEndIndex(Math.max(endIndex - 10, 10)); // Decrement the end index by 5, ensuring it doesn't go below 5
+    };
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
     };
 
     return (
@@ -192,18 +216,31 @@ function ManageAccount() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                //placeholder="name@example.com"
-                autoFocus
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {/*<Form.Control as="textarea" rows={3} />*/}
+              <div style={{ position: 'relative' }}>
+                <Form.Control
+                  type={showPassword ? 'text' : 'password'}  // Change input type based on visibility state
+                  placeholder="Enter password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ paddingRight: '2.5rem' }}  // Adjust padding to prevent text overlaying the icon
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: '10px',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {showPassword ? <IoEyeOff size={24} /> : <IoEye size={24} />}
+                </button>
+              </div>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Name</Form.Label>
@@ -226,7 +263,7 @@ function ManageAccount() {
               <ReactSelect
                 value={levels.find(option => option.value === level)}
                 onChange={(selectedOption) => setLevel(selectedOption.value)}
-                options={levels}
+                options={selectableLevels}
                 styles={{
                   control: (base) => ({
                     ...base,

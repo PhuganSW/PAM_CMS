@@ -12,7 +12,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #343434;
+  background-color: #BEBEBE;
   color: white;
 }
 
@@ -23,6 +23,8 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  align-self: center;
+  justify-content: center;
 }
 
 .contact-form {
@@ -38,6 +40,7 @@ body {
   align-self: center;
   justify-content: center;
   width: 100%;
+  margin-left: 30px;
 }
 
 .form-group label {

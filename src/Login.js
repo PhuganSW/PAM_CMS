@@ -21,6 +21,7 @@ const Login = () => {
 
   const getAccountS = (data) => {
     // Save companyId to local storage to persist across refreshes
+    console.log(data)
     localStorage.setItem('companyId', companyId);
     navigate("/home");
   };
