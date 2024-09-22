@@ -5,18 +5,31 @@ import auth from './Firebase/Auth';
 import { UserContext } from './UserContext';
 
 const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024); // Default: open on large screens, closed on small screens
+  // const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1024); // Check if it's mobile view
   const navigate = useNavigate();
   const location = useLocation();
-  const { companyId, setCurrentUser, setCompanyId } = useContext(UserContext);
+  const { companyId, setCurrentUser, setCompanyId,setUserData,userData } = useContext(UserContext);
 
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    const savedSidebarState = localStorage.getItem('sidebarOpen');
+    return savedSidebarState ? JSON.parse(savedSidebarState) : window.innerWidth > 1024;
+  });
+  
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1024);
 
   useEffect(() => {
+    const savedSidebarState = localStorage.getItem('sidebarOpen');
+    if (savedSidebarState !== null) {
+      setSidebarOpen(JSON.parse(savedSidebarState));
+    }
     const handleResize = () => {
       if (window.innerWidth <= 1024) {
-        setSidebarOpen(false); // Collapse sidebar if screen is small
+        setIsMobileView(true);
+        setSidebarOpen(false); // Collapse on mobile view
       } else {
-        setSidebarOpen(true);  // Open sidebar if screen is large
+        setIsMobileView(false);
+        //setSidebarOpen(true); // Expand on large screens
       }
     };
 
@@ -29,13 +42,18 @@ const Layout = ({ children }) => {
   }, []);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    const newSidebarState = !sidebarOpen;
+    setSidebarOpen(newSidebarState);
+    localStorage.setItem('sidebarOpen', JSON.stringify(newSidebarState)); // Store sidebar state
   };
 
   const logOutSuccess = () => {
     setCurrentUser(null);  // Clear user from context
     setCompanyId(null);    // Clear companyId from context
+    setUserData(null);     // Clear userData from context
     localStorage.removeItem('companyId');  // Clear companyId from localStorage
+    localStorage.removeItem('userData'); // Clear companyId from localStorage
+    localStorage.removeItem('sidebarOpen');
     navigate('/');  // Redirect to login company page
   };
 
@@ -52,10 +70,6 @@ const Layout = ({ children }) => {
     <div className="layout">
       <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-content">
-        {/* <button className="toggle-button" onClick={toggleSidebar}>
-            {sidebarOpen ? '☰' : '☰'}
-          </button>
-           */}
         <div className='head-sidebar'>
             <img src="https://i.postimg.cc/VLLwZdzX/PAM-logo.png" width={80} height={80} style={{marginRight:20}} alt="Logo" />
             {sidebarOpen && <h4>Personnel Assistance Manager</h4>}
@@ -158,9 +172,9 @@ const Layout = ({ children }) => {
       </div>
       
         
-          <button className="toggle-button" onClick={toggleSidebar}>
-            {sidebarOpen ? '☰' : '☰'}
-          </button>
+        <button className="toggle-button" onClick={toggleSidebar}>
+          ☰
+        </button>
           
        
         <div className="content">

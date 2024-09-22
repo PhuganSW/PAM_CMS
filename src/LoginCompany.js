@@ -33,7 +33,7 @@ const LoginCompany = () => {
   useEffect(() => {
     auth.checksignin((user) => {
       if (user) {
-        firestore.getAccount(companyId,user.id,(data)=>console.log(data),(e)=>console.log(e))
+        //firestore.getAccount(companyId,user.id,(data)=>console.log(data),(e)=>console.log(e))
         navigate('/home');
       }
     });

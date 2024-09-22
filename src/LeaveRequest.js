@@ -9,9 +9,10 @@ import firestore from './Firebase/Firestore';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline, IoArrowDown, IoArrowUp } from "react-icons/io5";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 function LeaveRequest() {
   const navigate = useNavigate();
@@ -34,6 +35,9 @@ function LeaveRequest() {
   const [endIndex, setEndIndex] = useState(10);
   const [imageURLs, setImageURLs] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
+
+  const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order for dates
+  const [nameSortOrder, setNameSortOrder] = useState('asc');
 
   const getAllLeaveSuccess=(doc)=>{
     let leaves = []
@@ -97,8 +101,12 @@ function LeaveRequest() {
   }
 
   useEffect(() => {
-    firestore.getAllLeave(companyId,getAllLeaveSuccess,getAllLeaveUnsuccess)
-  }, []);
+    // Fetch all leave data from Firestore
+    firestore.getAllLeave(companyId, (data) => {
+      setAllLeave(data);
+      sortData(sortOrder, setFilteredUsers, data); // Initially sort by date
+    }, console.error);
+  }, [companyId, sortOrder]);
 
   const onNext = () => {
     setStartIndex(startIndex + 10); // Increment the start index by 5
@@ -116,6 +124,47 @@ function LeaveRequest() {
     setSearchQuery(query);
     const filtered = allLeave.filter(user => user.name.toLowerCase().includes(query));
     setFilteredUsers(filtered);
+  };
+
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  // Sort the data based on the date (toggle between ascending and descending)
+  const sortData = (order, setData, data) => {
+    const sortedData = [...data].sort((a, b) => {
+      const dateA = parseDate(a.date);
+      const dateB = parseDate(b.date);
+      return order === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    setData(sortedData);
+  };
+
+  // Sort the data based on names (toggle between ascending and descending)
+  const sortByName = (order, setData, data) => {
+    const sortedData = [...data].sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (nameA < nameB) return order === 'asc' ? -1 : 1;
+      if (nameA > nameB) return order === 'asc' ? 1 : -1;
+      return 0;
+    });
+    setData(sortedData);
+  };
+
+  // Toggle sorting order for dates
+  const toggleSortOrder = () => {
+    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newOrder);
+    sortData(newOrder, setFilteredUsers, allLeave);
+  };
+
+  // Toggle sorting order for names
+  const toggleNameSortOrder = () => {
+    const newOrder = nameSortOrder === 'asc' ? 'desc' : 'asc';
+    setNameSortOrder(newOrder);
+    sortByName(newOrder, setFilteredUsers, allLeave);
   };
 
   return (
@@ -150,8 +199,12 @@ function LeaveRequest() {
                   <thead>
                     <tr>
                       <th scope="col">ลำดับ</th>
-                      <th scope="col">วันที่</th>
-                      <th scope="col">ชื่อ-สกุล</th>
+                      <th scope="col" onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
+                        วันที่ {sortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      </th>
+                      <th scope="col" onClick={toggleNameSortOrder} style={{ cursor: 'pointer' }}>
+                        ชื่อ-สกุล {nameSortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      </th>
                       <th scope="col">สถานะ</th>
                     </tr>
                   </thead>

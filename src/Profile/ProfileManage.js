@@ -15,6 +15,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Layout from '../Layout';
 import { UserContext } from '../UserContext';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 function ProfileManage() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ function ProfileManage() {
   const [selectFillter,setSelectFillter] = useState('');
   const [position,setPosition] = useState('');
   const [name,setName] = useState('');
+  const [sortOrderName, setSortOrderName] = useState('asc'); // Track sorting order for names
 
   const [positionOptions, setPositionOptions] = useState([]);
   const { account, companyId } = useContext(UserContext);
@@ -141,6 +143,18 @@ function ProfileManage() {
     setShowFillter(false)
   };
 
+  // Sorting function for names
+  const sortByName = () => {
+    const newOrder = sortOrderName === 'asc' ? 'desc' : 'asc';
+    setSortOrderName(newOrder);
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      return newOrder === 'asc' ? (nameA < nameB ? -1 : 1) : (nameA > nameB ? -1 : 1);
+    });
+    setFilteredUsers(sortedUsers);
+  };
+
   return (
     
       <div className="dashboard">
@@ -175,7 +189,9 @@ function ProfileManage() {
                 <thead>
                   <tr>
                     <th scope="col">ลำดับ</th>
-                    <th scope="col">ชื่อ-สกุล</th>
+                    <th scope="col" onClick={sortByName} style={{ cursor: 'pointer' }}>
+                      ชื่อ-สกุล {sortOrderName === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                    </th>
                     <th scope="col">ตำแหน่ง</th>
                     <th scope="col"></th>
                   </tr>

@@ -10,11 +10,12 @@ import firestore from './Firebase/Firestore';
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 function Home() {
-  const { setCurrentUser, companyId } = useContext(UserContext);
+  const { setCurrentUser, companyId, userData } = useContext(UserContext);
   const [workplaceUserData, setWorkplaceUserData] = useState([]);
 
   useEffect(() => {
     // Fetch workplace user count data
+    console.log(userData.position)
     firestore.getWorkplaceUserCounts(
       companyId,
       (data) => setWorkplaceUserData(data),  // On success, set the state
@@ -146,21 +147,24 @@ function Home() {
           </div>
         </div>
 
-        {/* Third Row: Two Bar Charts */}
+        {/* Third Row: First Bar Chart */}
         <div className="chart-row">
-          <div className="chart-container">
+          <div className="chart-container bar-chart-fullwidth">
             <Bar
               data={barData1}
               options={{ maintainAspectRatio: false }}
-              style={{ width: '400px', height: '250px' }} // Direct control of width and height
+              style={{ width: '800px', height: '250px' }} // Set width to be wider
             />
           </div>
+        </div>
 
-          <div className="chart-container">
+        {/* Fourth Row: Second Bar Chart */}
+        <div className="chart-row">
+          <div className="chart-container bar-chart-fullwidth">
             <Bar
               data={barData2}
               options={{ maintainAspectRatio: false }}
-              style={{ width: '400px', height: '250px' }} // Direct control of width and height
+              style={{ width: '800px', height: '250px' }} // Set width to be wider
             />
           </div>
         </div>

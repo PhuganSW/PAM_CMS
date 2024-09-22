@@ -12,6 +12,7 @@ import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 
 function OTRequest() {
@@ -36,7 +37,8 @@ function OTRequest() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const [sortOrder, setSortOrder] = useState('desc'); // State for date sorting order
+  const [nameSortOrder, setNameSortOrder] = useState('asc');
 
 
   const getAllOTSuccess=(doc)=>{
@@ -47,7 +49,7 @@ function OTRequest() {
         ots.push({id: item.id,date:item.date, name: item.name,time:item.time, state:item.state});
       });
       setAllOT(ots);
-      setFilteredUsers(ots);
+      sortData(sortOrder, setFilteredUsers, ots);
     }
   }
 
@@ -115,6 +117,45 @@ function OTRequest() {
     setFilteredUsers(filtered);
   };
 
+   // Convert date string (dd/MM/yyyy) to Date object for sorting
+   const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  // Sort data by date
+  const sortData = (order, setData, data) => {
+    const sortedData = [...data].sort((a, b) => {
+      const dateA = parseDate(a.date);
+      const dateB = parseDate(b.date);
+      return order === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    setData(sortedData);
+  };
+
+  // Sort data by name
+  const sortByName = (order, setData, data) => {
+    const sortedData = [...data].sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      return order === 'asc' ? (nameA < nameB ? -1 : 1) : (nameA > nameB ? -1 : 1);
+    });
+    setData(sortedData);
+  };
+
+  // Toggle date sorting order
+  const toggleSortOrder = () => {
+    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newOrder);
+    sortData(newOrder, setFilteredUsers, allOT);
+  };
+
+  // Toggle name sorting order
+  const toggleNameSortOrder = () => {
+    const newOrder = nameSortOrder === 'asc' ? 'desc' : 'asc';
+    setNameSortOrder(newOrder);
+    sortByName(newOrder, setFilteredUsers, allOT);
+  };
 
   return (
     
@@ -148,9 +189,12 @@ function OTRequest() {
                   <thead>
                     <tr>
                       <th scope="col">ลำดับ</th>
-                      <th scope="col">วันที่</th>
-                      <th scope="col">ชื่อ-สกุล</th>
-                      {/* <th scope="col">เวลา</th> */}
+                      <th onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
+                        วันที่ {sortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      </th>
+                      <th onClick={toggleNameSortOrder} style={{ cursor: 'pointer' }}>
+                        ชื่อ-สกุล {nameSortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      </th>
                       <th scope='col'>สถานะ</th>
                     </tr>
                   </thead>

@@ -17,12 +17,13 @@ const Login = () => {
   const [password, setPassword] = useState('');
   // const [currentUser,setCurrentUser] = useState(null)
   const [showPassword, setShowPassword] = useState(false); // Track password visibility
-  const { setCurrentUser, companyId } = useContext(UserContext);
+  const { setCurrentUser, setCompanyId, companyId, setUserData } = useContext(UserContext);
 
   const getAccountS = (data) => {
     // Save companyId to local storage to persist across refreshes
     console.log(data)
-    localStorage.setItem('companyId', companyId);
+    setUserData(data);
+    localStorage.setItem('userData', JSON.stringify(data));
     navigate("/home");
   };
 

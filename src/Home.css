@@ -56,10 +56,10 @@ body {
   
   .chart-row {
     display: flex;
-    justify-content: space-between; /* Ensure space between the charts */
-    align-items: center; /* Vertically align */
-    flex-wrap: wrap; /* Allow wrapping for small screens */
-  }
+    justify-content: space-between; /* Ensure equal space between charts */
+    align-items: center; /* Align items vertically */
+    flex-wrap: wrap; /* Allow wrapping */
+}
   
   .chart-container {
     background: #BEBEBE;
@@ -78,21 +78,43 @@ body {
     font-size: 28px; /* Increase font size */
   }
   
-  .pie-chart-container {
+  .pie-chart-container, 
+.chart-container {
+    width: calc(50% - 40px); /* 50% width minus margins for equal spacing */
+    min-width: 300px; /* Adjust minimum width if needed */
+    height: 350px;
+    margin: 20px; /* Ensure margin between charts */
     background: #BEBEBE;
     padding: 20px;
     border-radius: 6px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-    width: 45%; /* Adjusted width for pie chart */
-    min-width: 250px;
-    height: 350px; /* Adjusted height for pie chart container */
-    margin: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 28px; /* Increase font size */
+    font-size: 28px;
+}
+
+  .chart-container.bar-chart-fullwidth {
+    width: 45%; /* Adjust this based on how much space you want them to take */
+    min-width: 300px;
+    height: 350px; /* Adjusted height for consistency */
+    margin: 20px;
+    background: #BEBEBE;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
   }
+  
+  .chart-container.bar-chart-fullwidth {
+    width: calc(100% - 40px); /* Full width for the bar chart rows */
+    height: 400px;
+}
   
   /* Add space at the bottom of the pie chart */
   .pie-chart-container canvas {
