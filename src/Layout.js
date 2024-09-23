@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Route, Switch, Link, useNavigate, useLocation 
 import './Layout.css';
 import auth from './Firebase/Auth';
 import { UserContext } from './UserContext';
+import firestore from './Firebase/Firestore';
 
 const Layout = ({ children }) => {
   // const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024); // Default: open on large screens, closed on small screens
   // const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1024); // Check if it's mobile view
   const navigate = useNavigate();
   const location = useLocation();
-  const { companyId, setCurrentUser, setCompanyId,setUserData,userData } = useContext(UserContext);
+  const { companyId, setCurrentUser, setCompanyId,setUserData,userData,newLeaveRequests, setNewLeaveRequests } = useContext(UserContext);
 
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const savedSidebarState = localStorage.getItem('sidebarOpen');
@@ -40,6 +41,30 @@ const Layout = ({ children }) => {
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    // Listen for new leave requests from Firestore
+    const unsubscribe = firestore.getAllLeave(companyId, (allLeave) => {
+      // Check if there are any requests with state === true
+      const hasNewRequests = allLeave.some(leave => leave.state === false);
+
+      if (hasNewRequests) {
+        setNewLeaveRequests(true); // Set notification flag to true when new requests are detected
+      } else {
+        setNewLeaveRequests(false); // Set it to false if there are no new requests
+      }
+    }, console.error);
+
+    return () => unsubscribe(); // Unsubscribe from Firestore when the component unmounts
+  }, [companyId, setNewLeaveRequests]);
+
+  useEffect(() => {
+    // Reset `newLeaveRequests` when "คำขอลางาน" page is active
+    if (location.pathname === '/leave_request' && newLeaveRequests) {
+      console.log('Resetting newLeaveRequests to false');
+      setNewLeaveRequests(false); // Reset flag when user navigates to the leave request page
+    }
+  }, [location.pathname, newLeaveRequests, setNewLeaveRequests]);
 
   const toggleSidebar = () => {
     const newSidebarState = !sidebarOpen;
@@ -116,6 +141,7 @@ const Layout = ({ children }) => {
                 <Link to="/leave_request">
                   <i className="fas fa-suitcase"></i> {/* Suitcase Icon */}
                   <span>คำขอลางาน</span>
+                  {newLeaveRequests && <span className="notification-dot"></span>}
                 </Link>
               </li>
               <li className={isActive("/ot_request") ? "active" : ""}>

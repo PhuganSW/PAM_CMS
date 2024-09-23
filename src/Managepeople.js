@@ -150,8 +150,8 @@ function ManagePeople() {
       if (workplaceDoc.exists()) {
         const imageUrl = workplaceDoc.data().imageUrl || null;
         setWorkplaceImageUrl(imageUrl); // Set the image URL
-        setLat(workplaceDoc.data().lat)
-        setLon(workplaceDoc.data().lon)
+        setLat(workplaceDoc.data().lat || '')
+        setLon(workplaceDoc.data().lon || '')
         console.log("Fetched imageUrl:", imageUrl); // Debug log
       } else {
         setWorkplaceImageUrl(null); // Clear if no image

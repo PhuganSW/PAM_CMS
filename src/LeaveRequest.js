@@ -34,7 +34,7 @@ function LeaveRequest() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const [imageURLs, setImageURLs] = useState([]);
-  const { setCurrentUser, companyId } = useContext(UserContext);
+  const { setCurrentUser, companyId,setNewLeaveRequests,newLeaveRequests } = useContext(UserContext);
 
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order for dates
   const [nameSortOrder, setNameSortOrder] = useState('asc');
@@ -101,12 +101,26 @@ function LeaveRequest() {
   }
 
   useEffect(() => {
+    // Reset the new leave requests notification when entering this component
+    if (newLeaveRequests) {
+      console.log('check state')
+      setNewLeaveRequests(false);
+    }
+  }, []);
+
+  useEffect(() => {
     // Fetch all leave data from Firestore
     firestore.getAllLeave(companyId, (data) => {
       setAllLeave(data);
       sortData(sortOrder, setFilteredUsers, data); // Initially sort by date
+      if (data.length > 0  && data.state == false) {
+        console.log('check state')
+        setNewLeaveRequests(true);  // Only set to true if there are new requests
+      }
     }, console.error);
-  }, [companyId, sortOrder]);
+
+    
+  }, [companyId, sortOrder,]);
 
   const onNext = () => {
     setStartIndex(startIndex + 10); // Increment the start index by 5
@@ -327,7 +341,9 @@ function LeaveRequest() {
           <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black',fontSize:20 }} onClick={onAllow}>
             Allow
           </Button>
-          <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={handleClose}>
+          <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={()=>{
+            firestore.updateLeave(companyId,selectID,{state:false,state1:false},handleClose,(e)=>console.log(e))
+          }}>
             Deny
           </Button>
         </Modal.Footer>

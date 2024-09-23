@@ -23,6 +23,8 @@ import { Label } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import { UserContext } from '../UserContext';
 import { count } from 'firebase/firestore';
+import Modal from 'react-bootstrap/Modal'; // Import Bootstrap modal
+import Button from 'react-bootstrap/Button'; // Import Bootstrap button
 
 function ProfileAdd() {
   const navigate = useNavigate();
@@ -60,6 +62,7 @@ function ProfileAdd() {
   const [blood_type,setBlood_type] = useState('');
   const [Ldrug,setLdrug] = useState('');
   const [wealthHos,setWealthHos] = useState('');
+  const [department,setDepartment] =useState('');
 
   const [prefixThOptions, setPrefixThOptions] = useState([]);
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
@@ -73,6 +76,10 @@ function ProfileAdd() {
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPasswordInModal, setShowPasswordInModal] = useState(false);
 
   const levelOptions = [
     {label:'Employee',value:'employee'},
@@ -86,7 +93,8 @@ function ProfileAdd() {
   };
 
   const addUsernameSuc=()=>{
-    navigate('/profile')
+    //navigate('/profile')
+    alert('Save data success!!')
   }
 
   const addUsernameUnsuc=(e)=>{
@@ -128,6 +136,7 @@ function ProfileAdd() {
 
 
   const addUserSuccess=async(id)=>{
+    setUid(id)
     let pass = await hashPass(password);
     setPassword(pass)
     let user={
@@ -239,9 +248,98 @@ function ProfileAdd() {
     }
   };
 
+  const getUsernameSuc=(data)=>{
+    setUsername(data.username)
+    // setOriginalUsername(data.username); 
+    setLevel(data.level)
+  }
+
+  const getUsernameUnsuc =(err) => console.log(err);
+
+  const getUserSuccess = (data) => {
+    setPrefixTh(data.prefixth);
+    setPrefixEn(data.prefixEn);
+    setEmID(data.emID);
+    setName(data.name + " " + data.lastname);
+    setNameEng(data.FName + " " + data.LName);
+    setSex(data.sex);
+    setPosition(data.position);
+    setFirstDay(data.workstart);
+    setAddress(data.address);
+    setEmail(data.email);
+    setPhone(data.phone);
+    setLevel(data.level);
+    setImage_Off(data.image_off);
+    setNat_ID(data.nat_id);
+    setPersonal_Status(data.personal_status);
+    setChild(data.child);
+    setBank(data.bank);
+    setBank_type(data.bank_type);
+    setBank_ID(data.bank_id);
+    setEmer_Name(data.emer_name);
+    setEmer_Relate(data.emer_relate);
+    setEmer_Phone(data.emer_phone);
+    setAddress_Off(data.address_off);
+    setDisease(data.disease);
+    setBlood_type(data.blood_type);
+    setLdrug(data.Ldrug);
+    // setWealthHos(data.wealthHos);
+    // setSalary(data.salary);
+    // setSub(data.sub);
+    // setOT(data.ot);
+    // setAllowance(data.allowance);
+    // setVenhicle(data.venhicle);
+    // setWelth(data.welth);
+    // setBonus(data.bonus);
+    // setCostL(data.costL);
+    // setInsurance(data.insurance);
+    // setLate(data.late);
+    // setWithdraw(data.withdraw);
+    // setBorrow(data.borrow);
+    // setMissing(data.missing);
+    // setTax(data.tax);
+    // setJobDesc(data.jobDesc);
+    // setDuty(data.duty);
+    // setAllDeposit(data.allDeposit)
+    // setAllInsurance(data.allInsurance)
+    setDepartment(data.department)
+  };
+
+  const getUserUnsuccess = (e) => {
+    console.log('f edit' + e);
+  };
+
   useEffect(() => {
+    if (location.state && location.state.uid) {
+      setUid(location.state.uid);
+      firestore.getUser(companyId,location.state.uid, getUserSuccess, getUserUnsuccess);
+      firestore.getUsername(companyId,location.state.uid, getUsernameSuc, getUsernameUnsuc)
+    } else {
+      console.warn('No ID found in location state');
+    }
     fetchDropdownOptions();
-  }, []);
+  }, [location.state]);
+
+  const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
+
+  const handlePasswordSubmit = () => {
+    if (inputPassword === '123456') {
+      setShowPasswordModal(false);
+      setPasswordError('');
+      navigate('/profile_salary', { state: { action: 'add',uid:uid} });
+    } else {
+      setPasswordError('Incorrect password, please try again.');
+    }
+  };
+
+  const handleSalaryClick = () => {
+    if(uid){
+      setShowPasswordModal(true);
+    }else{
+      alert('Please input data to complete and save data.')
+    }
+    
+  };
 
   return (
     
@@ -504,6 +602,18 @@ function ProfileAdd() {
                     onChange={(e) => setLdrug(e.target.value)}
                   />
               </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+              <TextField
+                    className="form-field"
+                    label="แผนก"
+                    variant="filled"
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                  />
+              </div>
               <div className="form-row" style={{ display: 'flex',}}>
                 <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>
@@ -641,12 +751,50 @@ function ProfileAdd() {
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
-                <button style={{width:120,height:50,borderRadius:5,backgroundColor:'#BEBEBE'}} onClick={()=>navigate('/profile_salary',{state:{action:'add'}})}>ข้อมูลเงินเดือน</button>
+                <button style={{ width: 120, height: 50, borderRadius: 5, backgroundColor: '#BEBEBE' }} onClick={handleSalaryClick}>ข้อมูลเงินเดือน</button>
               </div>
 
             </div>
           </div>
         </main>
+        {/* Password Modal */}
+      <Modal show={showPasswordModal} onHide={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <TextField
+            label="Password"
+            variant="filled"
+            type={showPasswordInModal ? 'text' : 'password'}
+            value={inputPassword}
+            onChange={(e) => setInputPassword(e.target.value)}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPasswordInModal}
+                    edge="end"
+                  >
+                    {showPasswordInModal ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handlePasswordSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
       </div>
       
     

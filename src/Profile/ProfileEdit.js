@@ -15,6 +15,8 @@ import FilledInput from '@mui/material/FilledInput';
 import InputLabel from '@mui/material/InputLabel';
 import { sha256 } from 'crypto-hash';
 import { UserContext } from '../UserContext';
+import Modal from 'react-bootstrap/Modal'; // Import Bootstrap modal
+import Button from 'react-bootstrap/Button'; // Import Bootstrap button
 
 function ProfileEdit() {
   const navigate = useNavigate();
@@ -71,6 +73,7 @@ function ProfileEdit() {
   const [withdraw, setWithdraw] = useState(0); // เงินเบิกล่วงหน้า
   const [allDeposit,setAllDeposit] = useState(0); //รายได้สะสม
   const [allInsurance,setAllInsurance] = useState(0); //ประกันสังคมสะสม
+  const [department,setDepartment] =useState('');
 
   const [prefixThOptions, setPrefixThOptions] = useState([]);
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
@@ -83,6 +86,11 @@ function ProfileEdit() {
   const [showPassword, setShowPassword] = useState(false);
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
   const { setCurrentUser, companyId } = useContext(UserContext);
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPasswordInModal, setShowPasswordInModal] = useState(false);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -149,6 +157,7 @@ function ProfileEdit() {
     setDuty(data.duty);
     setAllDeposit(data.allDeposit)
     setAllInsurance(data.allInsurance)
+    setDepartment(data.department)
   };
 
   const getUserUnsuccess = (e) => {
@@ -156,7 +165,8 @@ function ProfileEdit() {
   };
 
   const updateSuccess = () => {
-    navigate('/profile');
+    //navigate('/profile');
+    alert('Update data success!!')
   };
 
   const updateUnsuccess = (error) => {
@@ -300,6 +310,22 @@ function ProfileEdit() {
     }
     fetchDropdownOptions();
   }, [location.state]);
+
+  const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
+
+  const handlePasswordSubmit = () => {
+    if (inputPassword === '123456') {
+      setShowPasswordModal(false);
+      setPasswordError('');
+      navigate('/profile_salary', { state: { action: 'edit', uid: uid } });
+    } else {
+      setPasswordError('Incorrect password, please try again.');
+    }
+  };
+
+  const handleSalaryClick = () => {
+    setShowPasswordModal(true);
+  };
 
   return (
     <div className="dashboard">
@@ -557,6 +583,18 @@ function ProfileEdit() {
                   onChange={(e) => setLdrug(e.target.value)}
                 />
             </div>
+            <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+              <TextField
+                    className="form-field"
+                    label="แผนก"
+                    variant="filled"
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                  />
+              </div>
             <div className="form-row" style={{ display: 'flex',}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>
@@ -693,12 +731,50 @@ function ProfileEdit() {
             <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
-              <button style={{width:120,height:50,borderRadius:5,backgroundColor:'#BEBEBE'}} onClick={()=>navigate('/profile_salary',{state:{action:'edit',uid:uid}})}>ข้อมูลเงินเดือน</button>
+              <button style={{ width: 120, height: 50, borderRadius: 5, backgroundColor: '#BEBEBE' }} onClick={handleSalaryClick}>ข้อมูลเงินเดือน</button>
             </div>
 
           </div>
         </div>
       </main>
+      {/* Password Modal */}
+      <Modal show={showPasswordModal} onHide={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <TextField
+            label="Password"
+            variant="filled"
+            type={showPasswordInModal ? 'text' : 'password'}
+            value={inputPassword}
+            onChange={(e) => setInputPassword(e.target.value)}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPasswordInModal}
+                    edge="end"
+                  >
+                    {showPasswordInModal ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handlePasswordSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
