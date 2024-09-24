@@ -18,7 +18,7 @@ import Layout from './Layout';
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import { UserContext } from './UserContext';
-
+import LocationPickerMap from './LocationPickerMap';
 
 function ManagePeople() {
   const navigate = useNavigate();
@@ -48,7 +48,10 @@ function ManagePeople() {
   const [workplaceImageUrl, setWorkplaceImageUrl] = useState(null);
 
   const handleClose = () => setShow(false);
-  const handleCloseWP = () => setShowManageWp(false);
+  const handleCloseWP = () => {
+    setShowManageWp(false);
+    setWorkplace('')
+  }
   const handleShow = (user) =>{
     setSelectedUser(user);
     setShow(true);
@@ -222,6 +225,11 @@ function ManagePeople() {
     }
   };
 
+  const onLocationSelect = (lat, lon) => {
+    setLat(lat);
+    setLon(lon);
+  };
+
   return (
     
       <div className="dashboard">
@@ -383,7 +391,21 @@ function ManagePeople() {
                   ))}
                 </Select>
               </FormControl>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1" style={{marginTop:15}}>
+              <div style={{ marginTop: '15px' }}>
+                <Form.Label>พิกัด (Latitude, Longitude)</Form.Label>
+                <LocationPickerMap lat={lat} lon={lon} onLocationSelect={onLocationSelect} />
+              </div>
+
+              {/* Display the current latitude and longitude */}
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1" style={{ marginTop: 15 }}>
+                <Form.Label>พิกัด Latitude</Form.Label>
+                <Form.Control value={lat} onChange={(e) => setLat(e.target.value)} readOnly />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>พิกัด Longitude</Form.Label>
+                <Form.Control value={lon} onChange={(e) => setLon(e.target.value)} readOnly />
+              </Form.Group>
+              {/* <Form.Group className="mb-3" controlId="exampleForm.ControlInput1" style={{marginTop:15}}>
               <Form.Label>พิกัด latitude</Form.Label>
               <Form.Control
                 
@@ -398,7 +420,7 @@ function ManagePeople() {
                   value={lon}
                   onChange={(e) => setLon(e.target.value)}
                 />
-              </Form.Group>
+              </Form.Group> */}
 
               {/* If workplaceImageUrl exists, show the image */}
               {workplaceImageUrl && (
