@@ -24,10 +24,10 @@ function Home() {
   }, [companyId]);
 
   const pieData1 = {
-    labels: ['เข้างาน', 'ลางาน', 'เข้าสาย', 'อื่นๆ'],
+    labels: ['ช่าง', 'บัญชี', 'ฝ่ายบุคคล', 'วิศวกร'],
     datasets: [
       {
-        label: 'จำนวนคนเข้าทำงาน',
+        label: 'จำนวนพนักงาน',
         data: [10, 15, 20, 50],
         backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#3f51b5'],
         hoverBackgroundColor: ['#66bb6a', '#ffb74d', '#e57373', '#5c6bc0'],
@@ -36,13 +36,13 @@ function Home() {
   };
 
   const pieData2 = {
-    labels: ['ออกงาน', 'ลาออก', 'ปลดออก'],
+    labels: ['เข้างาน', 'ลากิจ', 'ลาป่วย','ลาพักร้อน'],
     datasets: [
       {
-        label: 'จำนวนคนออกงาน',
-        data: [5, 10, 15],
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
-        hoverBackgroundColor: ['#66bb6a', '#ffb74d', '#e57373'],
+        label: 'สรุปประจำวัน',
+        data: [5, 10, 15,10],
+        backgroundColor: ['#4caf50', '#ff9800', '#f44336','#E7F7F7'],
+        hoverBackgroundColor: ['#66bb6a', '#ffb74d', '#e57373','#E2F2F2'],
       },
     ],
   };
@@ -110,7 +110,7 @@ function Home() {
         {/* First Row: Two Pie Charts */}
         <div className="chart-row">
           <div className="pie-chart-container">
-            <p style={{marginBottom:-10}}>จำนวนคนเข้าทำงาน</p>
+            <p style={{marginBottom:-10}}>จำนวนพนักงาน</p>
             <Pie
               data={pieData1}
               options={{ maintainAspectRatio: false }}
@@ -119,7 +119,7 @@ function Home() {
           </div>
           
           <div className="pie-chart-container">
-            <p style={{marginBottom:-10}}>จำนวนคนออกงาน</p>
+            <p style={{marginBottom:-10}}>สรุปประจำวัน</p>
             <Pie
               data={pieData2}
               options={{ maintainAspectRatio: false }}

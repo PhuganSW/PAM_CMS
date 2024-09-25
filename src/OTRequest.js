@@ -46,7 +46,7 @@ function OTRequest() {
     if (allOT.length === 0) {
         
       doc.forEach((item) => {
-        ots.push({id: item.id,date:item.date, name: item.name,time:item.time, state:item.state});
+        ots.push({id: item.id,date:item.date, name: item.name,time:item.time, state:item.state1});
       });
       setAllOT(ots);
       sortData(sortOrder, setFilteredUsers, ots);
@@ -69,7 +69,7 @@ function OTRequest() {
     setAmount(data.amount)
     setDetail(data.detail)
     
-    if(data.status){
+    if(data.status1){
       setStatus("Allowed")
     }else{
       setStatus("Not allowed")
@@ -81,13 +81,22 @@ function OTRequest() {
   const onAllow=()=>{
     setStatus(true)
     let item={
-      status:true
+      status1:true
     }
     firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
   }
 
   const getOTUnsuc =(error)=>{
 
+  }
+
+  const onCancel=()=>{
+    setStatus(false)
+    let item={
+      status:false,
+      status1:false,
+    }
+    firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
   }
 
   const getOT=(id)=>{
@@ -316,8 +325,8 @@ function OTRequest() {
         <Button style={{backgroundColor:'#000000', fontSize:20}} onClick={onAllow}>
            Allow
           </Button>
-          <Button style={{ fontSize: '20px' }} variant="secondary" onClick={handleClose}>
-            Close
+          <Button style={{ fontSize: '20px' }} variant="secondary" onClick={onCancel}>
+            Deny
           </Button>
           
         </Modal.Footer>

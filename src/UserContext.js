@@ -11,6 +11,7 @@ export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null); // Store Firestore user data
   const [loading, setLoading] = useState(true);  // Set loading to true initially
   const [newLeaveRequests, setNewLeaveRequests] = useState(false);
+  const [newOtRequests, setNewOtRequests] = useState(false);
 
   useEffect(() => {
     // Listen for Firebase authentication changes
@@ -45,7 +46,8 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, companyId, setCompanyId,userData, setUserData, loading, newLeaveRequests, setNewLeaveRequests }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, companyId, setCompanyId,userData, setUserData,
+                                   loading, newLeaveRequests, setNewLeaveRequests, newOtRequests, setNewOtRequests }}>
       {children}
     </UserContext.Provider>
   );

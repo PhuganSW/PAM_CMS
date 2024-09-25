@@ -19,6 +19,7 @@ function LeaveRequest() {
   const [show, setShow] = useState(false);
   const [allLeave, setAllLeave] = useState([]);
   const [selectID,setSelectID] = useState('');
+  const [uid,setUid] = useState('');
   const [name,setName] = useState('');
   const [type,setType] = useState('');
   const [detail,setDetail] = useState('');
@@ -44,7 +45,7 @@ function LeaveRequest() {
     if (allLeave.length === 0) {
       console.log(doc)
       doc.forEach((item) => {
-        leaves.push({id: item.id,date:item.date, name: item.name, state:item.state});
+        leaves.push({id: item.id,date:item.date, name: item.name, state1:item.state1});
       });
       setAllLeave(leaves);
       setFilteredUsers(leaves);
@@ -62,6 +63,8 @@ function LeaveRequest() {
   } 
 
   const getLeaveSuc=(data)=>{
+    let user = data.user.substring(3)
+    setUid(user)
     setName(data.name)
     setType(data.types)
     setDetail(data.detail)
@@ -92,13 +95,99 @@ function LeaveRequest() {
 
   }
 
-  const onAllow=()=>{
-    setState(true)
-    let item={
-      state:true
+  const onAllow = async (leaveId, userId, leaveType, leaveAmount) => {
+    try {
+      const welthfareData = await fetchWelthfare(userId);
+  
+      let remainingDays = 0;
+      let updatedData = {};
+  
+      switch (leaveType) {
+        case 'ลากิจ':
+          remainingDays = welthfareData.absenceR - leaveAmount;
+          if (remainingDays < 0) {
+            alert("ไม่เหลือวันลากิจ");
+            return;
+          }
+          updatedData.absenceR = remainingDays;
+          break;
+        case 'ลาป่วย':
+          remainingDays = welthfareData.sickR - leaveAmount;
+          if (remainingDays < 0) {
+            alert("ไม่เหลือวันลาป่วย");
+            return;
+          }
+          updatedData.sickR = remainingDays;
+          break;
+        case 'ลาพักร้อน':
+          remainingDays = welthfareData.holidayR - leaveAmount;
+          if (remainingDays < 0) {
+            alert("ไม่เหลือวันลาพักร้อน");
+            return;
+          }
+          updatedData.holidayR = remainingDays;
+          break;
+        case 'ลาคลอด':
+          remainingDays = welthfareData.maternityR - leaveAmount;
+          if (remainingDays < 0) {
+            alert("ไม่เหลือวันลาคลอด");
+            return;
+          }
+          updatedData.maternityR = remainingDays;
+          break;
+        case 'ลาบวช':
+          remainingDays = welthfareData.kamaR - leaveAmount;
+          if (remainingDays < 0) {
+            alert("ไม่เหลือวันลาบวช");
+            return;
+          }
+          updatedData.kamaR = remainingDays;
+          break;
+        default:
+          remainingDays = welthfareData.otherR - leaveAmount;
+          if (remainingDays < 0) {
+            alert("ไม่เหลือวันลาประเภทอื่น");
+            return;
+          }
+          updatedData.otherR = remainingDays;
+          break;
+      }
+  
+      // Proceed with updating leave and welthfare if leave days are available
+      console.log(updatedData)
+      await updateLeaveAndWelthfare(leaveId, userId, updatedData);
+    } catch (error) {
+      console.error("Error processing leave request:", error);
     }
-    firestore.updateLeave(companyId,selectID,item,allowSuc,allowUnsuc)
-  }
+  };
+
+  const updateLeaveAndWelthfare = async (leaveId, userId, updatedWelthData) => {
+    try {
+      // First, update the leave request status
+      await firestore.updateLeave(companyId, leaveId, { state1: true },allowSuc,allowUnsuc);
+  
+      // Then, update the user's remaining leave days in the welthfare collection
+      await firestore.updateWelth(companyId, userId, updatedWelthData,allowUnsuc);
+  
+      alert("Leave approved and remaining days updated successfully!");
+    } catch (error) {
+      console.error("Error updating leave and welthfare:", error);
+      alert("Error processing leave request.");
+    }
+  };
+
+  const fetchWelthfare = async (userId) => {
+    console.log("companyId: ", companyId, "userId: ", userId);  // Log companyId and userId
+    return new Promise((resolve, reject) => {
+      firestore.getWelth(companyId, userId, (data) => {
+        console.log("Fetched welthfare data: ", data);  // Log fetched data
+        resolve(data);  // Resolve the promise with fetched data
+      }, (error) => {
+        console.error("Error fetching welthfare data: ", error);
+        reject(error);
+      });
+    });
+  };
 
   useEffect(() => {
     // Reset the new leave requests notification when entering this component
@@ -113,7 +202,7 @@ function LeaveRequest() {
     firestore.getAllLeave(companyId, (data) => {
       setAllLeave(data);
       sortData(sortOrder, setFilteredUsers, data); // Initially sort by date
-      if (data.length > 0  && data.state == false) {
+      if (data.length > 0  && data.state1 == false) {
         console.log('check state')
         setNewLeaveRequests(true);  // Only set to true if there are new requests
       }
@@ -232,7 +321,7 @@ function LeaveRequest() {
                         {item.date}
                       </td>
                       <td>{item.name}</td>
-                      {item.state ? (
+                      {item.state1 ? (
                         <td>allowed</td>
                       ) : (
                         <td>not allowed</td>
@@ -338,7 +427,7 @@ function LeaveRequest() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black',fontSize:20 }} onClick={onAllow}>
+          <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black',fontSize:20 }} onClick={()=>onAllow(selectID,uid,type,amount)}>
             Allow
           </Button>
           <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={()=>{

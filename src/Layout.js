@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   // const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1024); // Check if it's mobile view
   const navigate = useNavigate();
   const location = useLocation();
-  const { companyId, setCurrentUser, setCompanyId,setUserData,userData,newLeaveRequests, setNewLeaveRequests } = useContext(UserContext);
+  const { companyId, setCurrentUser, setCompanyId,setUserData,userData,newLeaveRequests, setNewLeaveRequests,newOtRequests,setNewOtRequests } = useContext(UserContext);
 
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const savedSidebarState = localStorage.getItem('sidebarOpen');
@@ -46,7 +46,7 @@ const Layout = ({ children }) => {
     // Listen for new leave requests from Firestore
     const unsubscribe = firestore.getAllLeave(companyId, (allLeave) => {
       // Check if there are any requests with state === true
-      const hasNewRequests = allLeave.some(leave => leave.state === false);
+      const hasNewRequests = allLeave.some(leave => leave.state1 === false);
 
       if (hasNewRequests) {
         setNewLeaveRequests(true); // Set notification flag to true when new requests are detected
@@ -65,6 +65,30 @@ const Layout = ({ children }) => {
       setNewLeaveRequests(false); // Reset flag when user navigates to the leave request page
     }
   }, [location.pathname, newLeaveRequests, setNewLeaveRequests]);
+
+  useEffect(() => {
+    // Listen for new leave requests from Firestore
+    const unsubscribe = firestore.getAllOT(companyId, (allOt) => {
+      // Check if there are any requests with state === true
+      const hasNewRequests = allOt.some(ot => ot.state1 === false);
+
+      if (hasNewRequests) {
+        setNewOtRequests(true); // Set notification flag to true when new requests are detected
+      } else {
+        setNewOtRequests(false); // Set it to false if there are no new requests
+      }
+    }, console.error);
+
+    return () => unsubscribe(); // Unsubscribe from Firestore when the component unmounts
+  }, [companyId, setNewOtRequests]);
+
+  useEffect(() => {
+    // Reset `newLeaveRequests` when "คำขอลางาน" page is active
+    if (location.pathname === '/ot_request' && newOtRequests) {
+      //console.log('Resetting newLeaveRequests to false');
+      setNewOtRequests(false); // Reset flag when user navigates to the leave request page
+    }
+  }, [location.pathname, newOtRequests, setNewOtRequests]);
 
   const toggleSidebar = () => {
     const newSidebarState = !sidebarOpen;
@@ -148,6 +172,7 @@ const Layout = ({ children }) => {
                 <Link to="/ot_request">
                   <i className="fas fa-hourglass-half"></i> {/* Hourglass Icon */}
                   <span>คำขอทำ OT</span>
+                  {newOtRequests && <span className="notification-dot"></span>}
                 </Link>
               </li>
               <li className={isActive("/welthfare") ? "active" : ""}>

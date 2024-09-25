@@ -125,17 +125,6 @@ function WelthfareManage() {
               <p style={{fontSize:28,marginLeft:15,marginTop:20}}>ชื่อ - นามสกุล: {name}</p>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
                 <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
-
-                  <TextField
-                    label="ลากิจ"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'25%',marginRight:'1%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={absence}
-                    onChange={(e) => handleNumberInput(e) && setAbsence(e.target.value)}
-                  />
                   <TextField
                     label="สิทธิ์ลากิจที่เหลือ"
                     className="form-field"
@@ -147,38 +136,37 @@ function WelthfareManage() {
                     onChange={(e) => handleNumberInput(e) && setAbsenceR(e.target.value)}
                   />
                   <TextField
-                    label="ลาป่วย"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'24%',marginRight:'1%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={sick}
-                    onChange={(e) => handleNumberInput(e) && setSick(e.target.value)}
-                  />
-                  <TextField
-                    label="สิทธิ์ลาป่วยที่เหลือ"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'23%',}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={sickR}
-                    onChange={(e) => handleNumberInput(e) && setSickR(e.target.value)}
-                  />
-                  
-                </div>
-                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
-                <TextField
-                    label="ลาพักร้อน"
+                    label="ลากิจ"
                     className="form-field"
                     variant="filled"
                     style={{width:'25%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={holiday}
-                    onChange={(e) => handleNumberInput(e) && setHoliday(e.target.value)}
+                    value={absence}
+                    onChange={(e) => handleNumberInput(e) && setAbsence(e.target.value)}
                   />
+                  <TextField
+                    label="สิทธิ์ลาป่วยที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'23%',marginRight:'1%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={sickR}
+                    onChange={(e) => handleNumberInput(e) && setSickR(e.target.value)}
+                  />
+                  <TextField
+                    label="ลาป่วย"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'24%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={sick}
+                    onChange={(e) => handleNumberInput(e) && setSick(e.target.value)}
+                  />    
+                </div>
+                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
                   <TextField
                     label="สิทธิ์ลาพักร้อนที่เหลือ"
                     className="form-field"
@@ -190,38 +178,37 @@ function WelthfareManage() {
                     onChange={(e) => handleNumberInput(e) && setHolidayR(e.target.value)}
                   />
                   <TextField
-                    label="ลาคลอด"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'24%',marginRight:'1%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={maternity}
-                    onChange={(e) => handleNumberInput(e) && setMaternity(e.target.value)}
-                  />
-                   <TextField
-                    label="สิทธิ์ลาคลอดที่เหลือ"
-                    className="form-field"
-                    variant="filled"
-                    style={{width:'23%',}}
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={maternityR}
-                    onChange={(e) => handleNumberInput(e) && setMaternityR(e.target.value)}
-                  />
-                  
-                </div>
-                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
-                <TextField
-                    label="ลาบวช"
+                    label="ลาพักร้อน"
                     className="form-field"
                     variant="filled"
                     style={{width:'25%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={kama}
-                    onChange={(e) => handleNumberInput(e) && setKama(e.target.value)}
+                    value={holiday}
+                    onChange={(e) => handleNumberInput(e) && setHoliday(e.target.value)}
                   />
+                  <TextField
+                    label="สิทธิ์ลาคลอดที่เหลือ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'23%',marginRight:'1%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={maternityR}
+                    onChange={(e) => handleNumberInput(e) && setMaternityR(e.target.value)}
+                  />
+                  <TextField
+                    label="ลาคลอด"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'24%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={maternity}
+                    onChange={(e) => handleNumberInput(e) && setMaternity(e.target.value)}
+                  />
+                </div>
+                <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
                   <TextField
                     label="สิทธิ์ลาบวชที่เหลือ"
                     className="form-field"
@@ -233,24 +220,34 @@ function WelthfareManage() {
                     onChange={(e) => handleNumberInput(e) && setKamaR(e.target.value)}
                   />
                   <TextField
-                    label="ลาด้วยสิทธิ์อื่นๆ"
+                    label="ลาบวช"
                     className="form-field"
                     variant="filled"
-                    style={{width:'24%',marginRight:'1%'}}
+                    style={{width:'25%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={other}
-                    onChange={(e) => handleNumberInput(e) && setOther(e.target.value)}
+                    value={kama}
+                    onChange={(e) => handleNumberInput(e) && setKama(e.target.value)}
                   />
                   <TextField
                     label="จำนวนวันลาด้วยสิทธิ์อื่นๆ ที่เหลือ"
                     className="form-field"
                     variant="filled"
-                    style={{width:'23%',}}
+                    style={{width:'23%',marginRight:'1%'}}
                     InputLabelProps={{ style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={otherR}
                     onChange={(e) => handleNumberInput(e) && setOtherR(e.target.value)}
+                  />
+                  <TextField
+                    label="ลาด้วยสิทธิ์อื่นๆ"
+                    className="form-field"
+                    variant="filled"
+                    style={{width:'24%'}}
+                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    value={other}
+                    onChange={(e) => handleNumberInput(e) && setOther(e.target.value)}
                   />
                 </div>
               </div>

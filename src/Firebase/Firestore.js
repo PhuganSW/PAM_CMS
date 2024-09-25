@@ -447,12 +447,15 @@ class FireStore{
       const allLeave = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        allLeave.push({
-          id:doc.id,
-          date: data.dateStart,
-          name: data.name,
-          state: data.state,
-        });
+        if(data.state){
+          allLeave.push({
+            id:doc.id,
+            date: data.dateStart,
+            name: data.name,
+            state: data.state,
+            state1:data.state1,
+          });
+        }
       });
       success(allLeave);
     }, (error) => {
@@ -492,20 +495,21 @@ class FireStore{
     }
   }
 
-
-
   getAllOT = (companyId,success, unsuccess) => {
     const unsubscribe = onSnapshot(query(collection(this.db, "companies", companyId, "otRequest"),orderBy('date','desc')), (querySnapshot) => {
       const allOT = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        allOT.push({
-          id:doc.id,
-          date: data.date,
-          name: data.name,
-          time:data.timeStart+"-"+data.timeEnd ,
-          state: data.status,
-        });
+        if(data.status){
+          allOT.push({
+            id:doc.id,
+            date: data.date,
+            name: data.name,
+            time:data.timeStart+"-"+data.timeEnd ,
+            state: data.status,
+            state1:data.status1
+          });
+        }
       });
       
       success(allOT);
@@ -544,6 +548,16 @@ class FireStore{
     }
   }
 
+  updateWelth = async (companyId, userId, updatedData,unsuccess) => {
+    try {
+      const welthRef = doc(this.db, "companies", companyId, "wealthfare", userId);
+      console.log(updatedData)
+      await updateDoc(welthRef, updatedData);
+      //success();
+    } catch (error) {
+      unsuccess(error);
+    }
+  };
 
   addBill=async(companyId,item,success,unsuccess)=>{
     try{

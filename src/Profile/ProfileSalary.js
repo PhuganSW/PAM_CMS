@@ -95,6 +95,9 @@ function ProfileSalary() {
     if(action=='edit'){
         firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);
     }
+    else{
+
+    }
   }
     
 
@@ -129,6 +132,7 @@ function ProfileSalary() {
             firestore.getUser(companyId,location.state.uid, getUserSuccess, getUserUnsuccess);
         }else{
           setUid(location.state.uid)
+          firestore.getUser(companyId,location.state.uid, getUserSuccess, getUserUnsuccess)
           console.log(uid)
         }
       } else {

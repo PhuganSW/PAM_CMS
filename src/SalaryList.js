@@ -170,7 +170,7 @@ function SalaryList() {
                         {item.date}
                       </td>
                       <td style={{textAlign:'center'}}><button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date,item.id)}>ดูและแก้ไข</button>
-                          <button className='Add-button' style={{height:'20%'}} onClick={()=>onConfirm(item.id)}>Submit</button>
+                          <button className='Add-button' style={{height:'30%',width:'35%'}} onClick={()=>onConfirm(item.id)}>Submit</button>
                       </td>
                     </tr>
                   ))}
