@@ -1,91 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
-import 'leaflet-geosearch/dist/geosearch.css'; // Import CSS for geosearch
+import React, { useState, useEffect, useCallback } from 'react';
+import { GoogleMap, Marker, useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
-// Fix the default marker icon
-import L from 'leaflet';
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-});
+const containerStyle = {
+  width: '100%',
+  height: '300px'
+};
+
+const center = {
+  lat: 13.7563,  // Default: Bangkok
+  lng: 100.5018
+};
 
 const LocationPickerMap = ({ lat, lon, onLocationSelect }) => {
-  const [position, setPosition] = useState([lat || 13.7563, lon || 100.5018]); // Default: Bangkok
-
-  const provider = new OpenStreetMapProvider();
-
-  const LocationMarker = () => {
-    const map = useMap(); // Access the map instance
-
-    useEffect(() => {
-      // When position changes, move the map view to the new position with zoom
-      if (position) {
-        map.setView(position, 16); // Set view to new position with zoom level 16
-      }
-    }, [position, map]);
-
-    useMapEvents({
-      click(e) {
-        const { lat, lng } = e.latlng;
-        setPosition([lat, lng]);
-        onLocationSelect(lat, lng); // Pass selected location back to parent
-      },
-    });
-
-    return position ? <Marker position={position}></Marker> : null;
-  };
-
-  const MapWithSearch = () => {
-    const map = useMap();
-
-    useEffect(() => {
-      const searchControl = new GeoSearchControl({
-        provider: provider,
-        style: 'bar', // You can also use 'button' style
-        autoComplete: true,
-        autoCompleteDelay: 250,
-        showMarker: false, // Prevent map from automatically showing markers
-        retainZoomLevel: false, // Retain zoom level after searching
-      });
-
-      map.addControl(searchControl);
-
-      map.on('geosearch/showlocation', (result) => {
-        const { x: lon, y: lat } = result.location;
-        setPosition([lat, lon]); // Update the position
-        onLocationSelect(lat, lon);
-        map.setView([lat, lon], 16); // Move to the searched location and zoom in
-      });
-
-      return () => {
-        map.removeControl(searchControl);
-      };
-    }, [map]);
-
-    return null;
-  };
+  const [position, setPosition] = useState({ lat: lat || center.lat, lng: lon || center.lng });
+  const [autocomplete, setAutocomplete] = useState(null);
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyCqKdSanrwR9l0ElL8EfAEJ02yzl8ipzxw',  // Replace with your API key
+    libraries: ['places'],  // For search autocomplete functionality
+  });
 
   useEffect(() => {
-    // Update position if lat and lon props change
     if (lat && lon) {
-      setPosition([lat, lon]);
+      setPosition({ lat, lng: lon });
     }
   }, [lat, lon]);
 
-  return (
-    <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: '300px', width: '100%' }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <LocationMarker />
-      <MapWithSearch />
-    </MapContainer>
-  );
+  const onMapClick = useCallback((e) => {
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setPosition({ lat, lng });
+    onLocationSelect(lat, lng); // Pass selected location back to parent
+  }, [onLocationSelect]);
+
+  const onLoad = (autocompleteInstance) => {
+    setAutocomplete(autocompleteInstance);
+  };
+
+  const onPlaceChanged = () => {
+    if (autocomplete !== null) {
+      const place = autocomplete.getPlace();
+      if (place.geometry && place.geometry.location) {
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        setPosition({ lat, lng });
+        onLocationSelect(lat, lng);
+      } else {
+        console.log('No geometry or location available for the selected place.');
+      }
+    } else {
+      console.log('Autocomplete is not loaded yet!');
+    }
+  };
+
+  return isLoaded ? (
+    <>
+      {/* Search Input for Places Autocomplete */}
+      <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+        <input
+          type="text"
+          placeholder="Enter address"
+          style={{
+            boxSizing: 'border-box',
+            border: '1px solid transparent',
+            width: '100%',
+            height: '40px',
+            padding: '0 12px',
+            borderRadius: '5px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+            fontSize: '16px',
+            outline: 'none',
+            textOverflow: 'ellipses'
+          }}
+        />
+      </Autocomplete>
+
+      {/* Google Map Component */}
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={position}
+        zoom={16}
+        onClick={onMapClick}
+      >
+        <Marker position={position} />
+      </GoogleMap>
+    </>
+  ) : <></>;
 };
 
 export default LocationPickerMap;

@@ -13,6 +13,14 @@ function Home() {
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
   const [workplaceUserData, setWorkplaceUserData] = useState([]);
 
+  const generateColors = (length) => {
+    // Define a base color palette
+    const baseColors = ['#4caf50', '#ff9800', '#f44336', '#3f51b5', '#9c27b0', '#00acc1', '#8bc34a', '#cddc39', '#ff5722', '#607d8b'];
+    
+    // If the length of data exceeds the base colors, cycle through the array
+    return Array.from({ length }, (_, i) => baseColors[i % baseColors.length]);
+  };
+
   useEffect(() => {
     // Fetch workplace user count data
     console.log(userData.position)
@@ -54,29 +62,29 @@ function Home() {
       {
         label: 'จำนวนคนตามพื้นที่ทำงาน',
         data: workplaceUserData.map((workplace) => workplace.count), // Number of users in each workplace
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#3f51b5', '#9c27b0'],  // Add more colors if needed
-        hoverBackgroundColor: ['#66bb6a', '#ffb74d', '#e57373', '#5c6bc0', '#d05ce3'],
+        backgroundColor: generateColors(workplaceUserData.length),
+        hoverBackgroundColor: generateColors(workplaceUserData.length),
       },
     ],
   };
 
   const barData1 = {
-    labels: ['group A', 'group B', 'group C'],
+    labels: ['group A', 'group B', 'group C','group D','group E','group F','group G','group H','group I','group J'],
     datasets: [
       {
         label: 'Dataset 1',
         backgroundColor: '#4caf50',
-        data: [4, 3, 5],
+        data: [4, 3, 5,8,1,5,3,1,4,2],
       },
       {
         label: 'Dataset 2',
         backgroundColor: '#ff9800',
-        data: [1, 6, 3],
+        data: [1, 6, 3,2,2,5,3,1,4,2],
       },
       {
         label: 'Dataset 3',
         backgroundColor: '#f44336',
-        data: [2, 5, 6],
+        data: [2, 5, 6,2,2,5,3,1,4,2],
       },
     ],
   };

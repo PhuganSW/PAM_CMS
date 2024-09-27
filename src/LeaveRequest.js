@@ -431,7 +431,7 @@ function LeaveRequest() {
             Allow
           </Button>
           <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={()=>{
-            firestore.updateLeave(companyId,selectID,{state:false,state1:false},handleClose,(e)=>console.log(e))
+            firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true},handleClose,(e)=>console.log(e))
           }}>
             Deny
           </Button>

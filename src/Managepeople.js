@@ -42,6 +42,9 @@ function ManagePeople() {
   const [lon,setLon] = useState(null);
   const [unsubscribe, setUnsubscribe] = useState(null);
   const { setCurrentUser, companyId } = useContext(UserContext);
+  const [leader,setLeader] = useState('');
+  const [leaderId,setLeaderId] = useState('');
+  const [leaders, setLeaders] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
   const [uploading, setUploading] = useState(false);  // State to handle uploading status
@@ -72,7 +75,7 @@ function ManagePeople() {
   };
 
   const onAssign = async () => {
-    if (selectedUser && showWorkPlace) {
+    if (selectedUser && showWorkPlace && leader) {
 
         firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
             username: selectedUser.name,
@@ -83,8 +86,9 @@ function ManagePeople() {
         }, (error) => {
             alert("Error assigning workplace: " + error);
         });
+        firestore.addLeader(companyId,selectedUser.id,{leadId:leaderId,name:leader})
     } else {
-        alert("Please select a workplace.");
+        alert("Please select a workplace and leader.");
     }
   };
 
@@ -179,6 +183,22 @@ function ManagePeople() {
       }
     };
   }, [unsubscribe]);
+
+  useEffect(() => {
+    const getLeadersSuccess = (leaders) => {
+      setLeaders(leaders); // Store the leaders in state
+    };
+  
+    const getLeadersUnsuccess = (error) => {
+      console.error("Error fetching leaders: ", error);
+    };
+  
+    const unsubscribeLeaders = firestore.getAllLeaders(companyId, getLeadersSuccess, getLeadersUnsuccess);
+  
+    return () => {
+      unsubscribeLeaders(); // Cleanup on unmount
+    };
+  }, [companyId]);
 
   const onNext = () => {
     setStartIndex(startIndex + 5); // Increment the start index by 5
@@ -347,7 +367,7 @@ function ManagePeople() {
         {/* assignWP */}
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>การมอบหมายงาน</Modal.Title>
+            <Modal.Title>การมอบหมายงาน: {selectedUser?selectedUser.name:''}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -361,6 +381,26 @@ function ManagePeople() {
                   ))}
                 </Select>
               </FormControl>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างาน</Form.Label>
+                <FormControl variant="filled" fullWidth>
+                  <InputLabel>หัวหน้างาน</InputLabel>
+                  <Select
+                    value={leaderId} // Set value to leaderId for tracking
+                    onChange={(e) => {
+                      const selectedLeader = leaders.find((leader) => leader.id === e.target.value);
+                      setLeader(selectedLeader?.name || ''); // Set the leader's name
+                      setLeaderId(selectedLeader?.id || ''); // Set the leader's id
+                    }}
+                  >
+                    {leaders.map((leader, index) => (
+                      <MenuItem key={index} value={leader.id}>
+                        {leader.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>

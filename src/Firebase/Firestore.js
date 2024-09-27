@@ -265,6 +265,7 @@ class FireStore{
             name: doc.data().name + " " + doc.data().lastname,
             position: doc.data().position,
             image_off: doc.data().image_off,
+            level:doc.data().level,
           });
         });
         success(users);
@@ -986,6 +987,39 @@ class FireStore{
       })
       .catch((error) => unsuccess(error));
   };
+
+  getAllLeaders = (companyId, success, unsuccess) => {
+    const usersCollection = collection(this.db, "companies", companyId, "users");
+    const leadersQuery = query(usersCollection, where("level", "==", "leader"), orderBy("name", "asc")); // Filter for leaders
+  
+    const unsubscribe = onSnapshot(
+      leadersQuery,
+      (querySnapshot) => {
+        const leaders = [];
+        querySnapshot.forEach((doc) => {
+          leaders.push({
+            id: doc.id,
+            name: doc.data().name + " " + doc.data().lastname, // Combine first name and last name
+          });
+        });
+        success(leaders);
+      },
+      (error) => {
+        unsuccess(error);
+      }
+    );
+  
+    return unsubscribe;
+  };
+
+  addLeader=(companyId,userId,item)=>{
+    try{
+      const docRef = setDoc(doc(this.db, "companies", companyId, "users", userId,"extend","leader"), item);
+      //success();
+    }catch(e){
+      //unsuccess(e);
+    }
+  }
 
 }
 
