@@ -17,6 +17,7 @@ import { sha256 } from 'crypto-hash';
 import { UserContext } from '../UserContext';
 import Modal from 'react-bootstrap/Modal'; // Import Bootstrap modal
 import Button from 'react-bootstrap/Button'; // Import Bootstrap button
+import { AiFillWarning,AiOutlineMan,AiOutlineWoman } from "react-icons/ai";
 
 function ProfileEdit() {
   const navigate = useNavigate();
@@ -91,6 +92,10 @@ function ProfileEdit() {
   const [inputPassword, setInputPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPasswordInModal, setShowPasswordInModal] = useState(false);
+
+  const warningImg = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%A2%E0%B9%80%E0%B8%95%E0%B8%B7%E0%B8%AD%E0%B8%99%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%87%E0%B8%81%E0%B8%B2%E0%B8%A2%E0%B8%AA%E0%B8%B8%E0%B8%A0%E0%B8%B2%E0%B8%9E.jpg?alt=media&token=e704f682-cf3c-4e6f-97c8-4ad7e6fdbefe"
+  const defaultMen = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/333.png?alt=media&token=f5b9e3a6-8644-417e-a366-c4cddac12007"
+  const defaultWm = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/222.png?alt=media&token=97664b5e-3970-4805-a7b4-9fbd43baf2c4"
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -350,6 +355,17 @@ function ProfileEdit() {
               <label htmlFor="imagePicker" style={{ cursor: 'pointer', color: '#007bff' }}>
                 <p>Click to upload image</p>
               </label>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                <button style={{ borderRadius: 10 }} onClick={() => setImage_Off(warningImg)}>
+                  <AiFillWarning />
+                </button>
+                <button style={{ borderRadius: 10 }} onClick={() => setImage_Off(defaultMen)}>
+                  <AiOutlineMan />
+                </button>
+                <button style={{ borderRadius: 10 }} onClick={() => setImage_Off(defaultWm)}>
+                  <AiOutlineWoman />
+                </button>
+              </div>
             </div>
             <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
 

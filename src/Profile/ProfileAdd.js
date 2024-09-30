@@ -25,6 +25,7 @@ import { UserContext } from '../UserContext';
 import { count } from 'firebase/firestore';
 import Modal from 'react-bootstrap/Modal'; // Import Bootstrap modal
 import Button from 'react-bootstrap/Button'; // Import Bootstrap button
+import { AiFillWarning,AiOutlineMan,AiOutlineWoman } from "react-icons/ai";
 
 function ProfileAdd() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ function ProfileAdd() {
   const [level,setLevel] = useState('employee');
   const [username,setUsername] = useState('');
   const [password,setPassword] = useState('');
-  const [image_off,setImage_Off] = useState(null);
+  const [image_off,setImage_Off] = useState("https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/333.png?alt=media&token=f5b9e3a6-8644-417e-a366-c4cddac12007");
   const [imagePreview, setImagePreview] = useState('');
   const [nat_id,setNat_ID] = useState('');
   const [personal_status,setPersonal_Status] = useState('');
@@ -85,6 +86,10 @@ function ProfileAdd() {
     {label:'Employee',value:'employee'},
     {label:'Leader',value:'leader'}
   ]
+
+  const defaultMen = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/333.png?alt=media&token=f5b9e3a6-8644-417e-a366-c4cddac12007"
+  const defaultWm = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/222.png?alt=media&token=97664b5e-3970-4805-a7b4-9fbd43baf2c4"
+
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -357,7 +362,7 @@ function ProfileAdd() {
             </div>
             <div className="main-contain">
               <div className='block_img'>
-                <img src={imagePreview || 'https://i.postimg.cc/YChjY7Pc/image-10.png'} width={150} height={150} alt="Profile" />
+                <img src={imagePreview || image_off} width={150} height={150} alt="Profile" />
                 <input
                   type="file"
                   accept="image/*"
@@ -368,6 +373,14 @@ function ProfileAdd() {
                 <label htmlFor="imagePicker" style={{ cursor: 'pointer', color: '#007bff' }}>
                   <p>Click to upload image</p>
                 </label>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                  <button style={{ borderRadius: 10 }} onClick={() => setImage_Off(defaultMen)}>
+                    <AiOutlineMan />
+                  </button>
+                  <button style={{ borderRadius: 10 }} onClick={() => setImage_Off(defaultWm)}>
+                    <AiOutlineWoman />
+                  </button>
+                </div>
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'101%',

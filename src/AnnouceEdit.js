@@ -70,6 +70,7 @@ function AnnouceEdit() {
   }
 
   const updateAnnouceSuc=()=>{
+    firestore.addAnnouceState(companyId,type)
     navigate('/annouce')
   }
 

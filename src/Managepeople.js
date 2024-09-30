@@ -159,7 +159,7 @@ function ManagePeople() {
         setWorkplaceImageUrl(imageUrl); // Set the image URL
         setLat(workplaceDoc.data().lat || '')
         setLon(workplaceDoc.data().lon || '')
-        console.log("Fetched imageUrl:", imageUrl); // Debug log
+        console.log("Fetched imageUrl:", workplaceDoc.data().lat,workplaceDoc.data().lon); // Debug log
       } else {
         setWorkplaceImageUrl(null); // Clear if no image
         console.log("No image URL found for this workplace.");

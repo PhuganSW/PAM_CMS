@@ -919,9 +919,12 @@ class FireStore{
   
         // Reference to the specific document in 'extend/annouceAct'
         const annouceRef = doc(this.db, 'companies', companyId, 'users', userDoc.id, 'extend', 'annouceAct');
-  
-        // Use computed property name to dynamically create the field name
-        await setDoc(annouceRef, { annouceState: false, [type]: false }, { merge: true });
+        if(type == 3){
+          await setDoc(annouceRef, { annouceState: false, [type]: false,acknow:false }, { merge: true });
+        }else{
+          // Use computed property name to dynamically create the field name
+          await setDoc(annouceRef, { annouceState: false, [type]: false }, { merge: true });
+        }
       });
     } catch (error) {
       console.error('Error addAnnouceState:', error);

@@ -90,22 +90,22 @@ function Home() {
   };
 
   const barData2 = {
-    labels: ['group D', 'group E', 'group F'],
+    labels: ['group A', 'group B', 'group C','group D','group E','group F','group G','group H','group I','group J'],
     datasets: [
       {
         label: 'Dataset 1',
         backgroundColor: '#3f51b5',
-        data: [5, 2, 4],
+        data: [4, 3, 5,8,1,5,3,1,4,2],
       },
       {
         label: 'Dataset 2',
         backgroundColor: '#ffeb3b',
-        data: [3, 5, 6],
+        data: [1, 6, 3,2,2,5,3,1,4,2],
       },
       {
         label: 'Dataset 3',
         backgroundColor: '#9c27b0',
-        data: [4, 3, 7],
+        data: [2, 5, 6,2,2,5,3,1,4,2],
       },
     ],
   };
