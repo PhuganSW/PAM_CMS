@@ -433,7 +433,7 @@ function ManagePeople() {
               </FormControl>
               <div style={{ marginTop: '15px' }}>
                 <Form.Label>พิกัด (Latitude, Longitude)</Form.Label>
-                <LocationPickerMap lat={lat} lon={lon} onLocationSelect={onLocationSelect} />
+                <LocationPickerMap lat={lat} lon={lon} showSearch={true} onLocationSelect={onLocationSelect} />
               </div>
 
               {/* Display the current latitude and longitude */}

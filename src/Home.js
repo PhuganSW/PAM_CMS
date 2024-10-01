@@ -72,17 +72,17 @@ function Home() {
     labels: ['group A', 'group B', 'group C','group D','group E','group F','group G','group H','group I','group J'],
     datasets: [
       {
-        label: 'Dataset 1',
+        label: 'ขาดงาน',
         backgroundColor: '#4caf50',
         data: [4, 3, 5,8,1,5,3,1,4,2],
       },
       {
-        label: 'Dataset 2',
+        label: 'ลาป่วย',
         backgroundColor: '#ff9800',
         data: [1, 6, 3,2,2,5,3,1,4,2],
       },
       {
-        label: 'Dataset 3',
+        label: 'ลากิจ',
         backgroundColor: '#f44336',
         data: [2, 5, 6,2,2,5,3,1,4,2],
       },
@@ -93,17 +93,17 @@ function Home() {
     labels: ['group A', 'group B', 'group C','group D','group E','group F','group G','group H','group I','group J'],
     datasets: [
       {
-        label: 'Dataset 1',
+        label: 'ขาดงาน',
         backgroundColor: '#3f51b5',
         data: [4, 3, 5,8,1,5,3,1,4,2],
       },
       {
-        label: 'Dataset 2',
+        label: 'ลาป่วย',
         backgroundColor: '#ffeb3b',
         data: [1, 6, 3,2,2,5,3,1,4,2],
       },
       {
-        label: 'Dataset 3',
+        label: 'ลากิจ',
         backgroundColor: '#9c27b0',
         data: [2, 5, 6,2,2,5,3,1,4,2],
       },

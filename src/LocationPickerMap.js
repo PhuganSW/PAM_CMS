@@ -11,7 +11,7 @@ const defaultCenter = {
   lng: 100.5018
 };
 
-const LocationPickerMap = ({ lat, lon, onLocationSelect }) => {
+const LocationPickerMap = ({ lat, lon, onLocationSelect, showSearch = true }) => {
   const [position, setPosition] = useState({ lat: lat || defaultCenter.lat, lng: lon || defaultCenter.lng });
   const [autocomplete, setAutocomplete] = useState(null);
   const mapRef = useRef(null);  // Reference to the map
@@ -103,25 +103,27 @@ const LocationPickerMap = ({ lat, lon, onLocationSelect }) => {
 
   return isLoaded ? (
     <>
-      {/* Search Input for Places Autocomplete */}
-      <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-        <input
-          type="text"
-          placeholder="Enter address"
-          style={{
-            boxSizing: 'border-box',
-            border: '1px solid transparent',
-            width: '100%',
-            height: '40px',
-            padding: '0 12px',
-            borderRadius: '5px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
-            fontSize: '16px',
-            outline: 'none',
-            textOverflow: 'ellipses'
-          }}
-        />
-      </Autocomplete>
+      {/* Conditionally render search input based on the showSearch prop */}
+      {showSearch && (
+        <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+          <input
+            type="text"
+            placeholder="Enter address"
+            style={{
+              boxSizing: 'border-box',
+              border: '1px solid transparent',
+              width: '100%',
+              height: '40px',
+              padding: '0 12px',
+              borderRadius: '5px',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+              fontSize: '16px',
+              outline: 'none',
+              textOverflow: 'ellipses'
+            }}
+          />
+        </Autocomplete>
+      )}
 
       {/* Google Map Component */}
       <GoogleMap
@@ -129,8 +131,7 @@ const LocationPickerMap = ({ lat, lon, onLocationSelect }) => {
         center={position}
         zoom={16}
         onClick={onMapClick}
-        onLoad={(map) => (mapRef.current = map)}  
-        
+        onLoad={(map) => (mapRef.current = map)}
       >
         <Marker position={position} />
       </GoogleMap>

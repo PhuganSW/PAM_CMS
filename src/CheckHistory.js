@@ -17,6 +17,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material'
+import LocationPickerMap from './LocationPickerMap';
 
 function CheckHistory() {
 
@@ -29,6 +30,9 @@ function CheckHistory() {
   const [date,setDate] = useState('');
   const [time,setTime] = useState('');
   const [late,setLate] = useState('');
+  const [lat,setLat] = useState('');
+  const [lon,setLon] = useState('');
+  const [isInvalidArea,setIsInvalidArea] = useState(false)
   const [id,setID] = useState('');
   const [allIN,setAllIn] = useState('');
   const [allOut,setAllOut] = useState('');
@@ -47,12 +51,15 @@ function CheckHistory() {
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
-  const handleShow = (uid,date,time,workplace,isCheckin) =>{
-    
+  const handleShow = (uid,date,time,workplace,isCheckin,data) =>{
+    console.log(data)
     setUid(uid);
     setDate(date)
     setTime(time)
     setWorkplace(workplace)
+    setLat(data.lat)
+    setLon(data.lon)
+    setIsInvalidArea(data.isInvalidArea)
     setIsCheckin(isCheckin);
     setShow(true);
   } 
@@ -215,14 +222,16 @@ function CheckHistory() {
                   <tbody>
                   {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => ( */}
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
-                      <tr key={item.id}>
+                      <tr key={item.id} style={{
+                        color: (item.late || item.isInvalidArea) ? 'red' : 'black'
+                      }}>
                         <th scope="row">{item.date}</th>
                         <td>
-                          {item.name}
+                          {item.late?'*'+item.name:item.name}
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, true)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, true,item)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -249,14 +258,16 @@ function CheckHistory() {
                   </thead>
                   <tbody>
                   {filteredOut.slice(outStartIndex, outEndIndex).map((item, index) => (
-                      <tr key={item.id}>
+                      <tr key={item.id} style={{
+                        color: (item.late || item.isInvalidArea) ? 'red' : 'black'
+                      }}>
                         <th scope="row">{item.date}</th>
                         <td>
                           {item.name}
                         </td>
                         <td>{item.time}</td>
                         <td>{item.workplace}</td>
-                        <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, false)}><AiOutlineEdit /></button></td>
+                        <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, false,item)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
                   </tbody>
@@ -272,55 +283,70 @@ function CheckHistory() {
           </div>
         </main>
         <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title style={{ fontSize: '24px' }}>ข้อมูลเข้าออกงาน</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="date">
-              <Form.Label style={{fontSize:22}}>วันที่</Form.Label>
-              <Form.Control
-                type="text"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                style={{fontSize:20,marginBottom:20}}
-              />
-            </Form.Group>
+          <Modal.Header closeButton>
+            <Modal.Title style={{ fontSize: '24px' }}>ข้อมูลเข้าออกงาน</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="date">
+                <Form.Label style={{fontSize:22}}>วันที่</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  style={{fontSize:20,marginBottom:20}}
+                />
+              </Form.Group>
 
-            <Form.Group controlId="time">
-              <Form.Label style={{fontSize:22}}>เวลา</Form.Label>
-              <Form.Control
-                type="text"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                style={{fontSize:20,marginBottom:30}}
-              />
-            </Form.Group>
-          <FormControl variant="filled" fullWidth>
-              <InputLabel>พื้นที่ทำงาน</InputLabel>
-              <Select
-                value={workplace}
-                onChange={(e) => setWorkplace(e.target.value)}
-              >
-                {workplaces.map((option,index) => (
-                  <MenuItem key={index} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Form>
-          
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} onClick={handleSave}>
-            Allow
-          </Button>
-          <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>
-            Deny
-          </Button>
-        </Modal.Footer>
-      </Modal>
+              <Form.Group controlId="time">
+                <Form.Label style={{fontSize:22}}>เวลา</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  style={{fontSize:20,marginBottom:30}}
+                />
+              </Form.Group>
+              <FormControl variant="filled" fullWidth>
+                <InputLabel>พื้นที่ทำงาน</InputLabel>
+                <Select
+                  value={workplace}
+                  onChange={(e) => setWorkplace(e.target.value)}
+                >
+                  {workplaces.map((option,index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {isInvalidArea && (
+                <div style={{ marginTop: '20px' }}>
+                  <h5 style={{ marginBottom: '10px', color: 'red' }}>Invalid Location Detected:</h5>
+                  {/* Hide the search bar for this use case */}
+                  <LocationPickerMap
+                    lat={lat}
+                    lon={lon}
+                    showSearch={false} // Hides the search input in this instance
+                    onLocationSelect={(lat, lon) => {
+                      setLat(lat);
+                      setLon(lon);
+                    }}
+                  />
+                </div>
+              )}
+            </Form>
+            
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} onClick={handleSave}>
+              Allow
+            </Button>
+            <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>
+              Deny
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
       
     

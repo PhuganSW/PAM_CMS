@@ -29,6 +29,7 @@ function SalaryList() {
   const [search, setSearch] = useState('');
   const [allBill,setAllBill] = useState([])
   const [allBillCF,setAllBillCF] = useState([])
+  const [addAble,setAddAble] = useState(null)
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const getUserSuccess=(data)=>{
@@ -61,6 +62,13 @@ function SalaryList() {
     // Sort the bills array by date in descending order
     bills.sort((a, b) => b.dateObj - a.dateObj);
     billsCF.sort((a, b) => b.dateObj - a.dateObj);
+
+    if(bills.length < 1){
+      setAddAble(true)
+    }else{
+      setAddAble(false)
+    }
+
   
     setAllBill(bills);
     setAllBillCF(billsCF);
@@ -71,8 +79,12 @@ function SalaryList() {
   }
 
   const calSalary=(id)=>{
-    let act = "cal";
-    navigate('/salary_cal',{state:{uid,act:id,act}})
+    if(addAble){
+      let act = "cal";
+      navigate('/salary_cal',{state:{uid,act:id,act}})
+    }else{
+      alert('You create bill already.')
+    }
   }
 
   const toEdit=(date,id)=>{
