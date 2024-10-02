@@ -26,6 +26,7 @@ import { count } from 'firebase/firestore';
 import Modal from 'react-bootstrap/Modal'; // Import Bootstrap modal
 import Button from 'react-bootstrap/Button'; // Import Bootstrap button
 import { AiFillWarning,AiOutlineMan,AiOutlineWoman } from "react-icons/ai";
+import { hashPassword } from '../hashPassword';
 
 function ProfileAdd() {
   const navigate = useNavigate();
@@ -74,13 +75,14 @@ function ProfileAdd() {
   const [statusOptions, setStatusOptions] = useState([]);
   const [positions, setPositions] = useState([]);
   const [levels, setLevels] = useState([]);
-  const { setCurrentUser, companyId } = useContext(UserContext);
+  const { setCurrentUser, companyId,userData } = useContext(UserContext);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [inputPassword, setInputPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPasswordInModal, setShowPasswordInModal] = useState(false);
+  
 
   const levelOptions = [
     {label:'Employee',value:'employee'},
@@ -327,8 +329,9 @@ function ProfileAdd() {
 
   const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
 
-  const handlePasswordSubmit = () => {
-    if (inputPassword === '123456') {
+  const handlePasswordSubmit = async () => {
+    const hashedPass = await hashPassword(inputPassword)
+    if (hashedPass === userData.password) {
       setShowPasswordModal(false);
       setPasswordError('');
       navigate('/profile_salary', { state: { action: 'add',uid:uid} });

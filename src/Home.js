@@ -23,7 +23,7 @@ function Home() {
 
   useEffect(() => {
     // Fetch workplace user count data
-    console.log(userData.position)
+    //console.log(userData.position)
     firestore.getWorkplaceUserCounts(
       companyId,
       (data) => setWorkplaceUserData(data),  // On success, set the state

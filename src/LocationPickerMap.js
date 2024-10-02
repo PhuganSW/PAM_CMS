@@ -17,7 +17,7 @@ const LocationPickerMap = ({ lat, lon, onLocationSelect, showSearch = true }) =>
   const mapRef = useRef(null);  // Reference to the map
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyCqKdSanrwR9l0ElL8EfAEJ02yzl8ipzxw',  // Replace with your API key
+    googleMapsApiKey: 'AIzaSyCJvrGYnyxTM4Qbd5bJRLoO139XiHO_8T0',  // Replace with your API key
     libraries: ['places'],  // For search autocomplete functionality
   });
 

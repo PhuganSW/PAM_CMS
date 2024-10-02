@@ -96,7 +96,7 @@ function ProfileSalary() {
         firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);
     }
     else{
-
+      firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);
     }
   }
     

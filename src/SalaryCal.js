@@ -228,6 +228,11 @@ function SalaryCal() {
     // setAllDeposit(total2)
   };
 
+  const formatCurrency = (value) => {
+    //return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(value || 0);
+    return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+  };
+
   const validateNumberInput = (input) => {
     const number = Number(input);
     if (isNaN(number)) {
@@ -386,9 +391,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={salary}
+                    value={formatCurrency(salary)}
                     onChange={(e) => setSalary(validateNumberInput(e.target.value))}
                   />
                   <TextField
@@ -396,9 +401,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={sub}
+                    value={formatCurrency(sub)}
                     onChange={(e) => setSub(validateNumberInput(e.target.value))}
                   />
                   <TextField
@@ -407,9 +412,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={ot}
+                    value={formatCurrency(ot)}
                     onChange={(e) => setOT(validateNumberInput(e.target.value))}
                   />
                   <TextField
@@ -417,9 +422,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={allowance}
+                    value={formatCurrency(allowance)}
                     onChange={(e) => setAllowance(validateNumberInput(e.target.value))}
                   >
                   </TextField>
@@ -428,9 +433,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={venhicle}
+                    value={formatCurrency(venhicle)}
                     onChange={(e) => setVenhicle(validateNumberInput(e.target.value))}
                   />
                 </div>
@@ -442,9 +447,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={welth}
+                    value={formatCurrency(welth)}
                     onChange={(e) => setWelth(validateNumberInput(e.target.value))}
                   />
                    <TextField
@@ -452,9 +457,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={bonus}
+                    value={formatCurrency(bonus)}
                     onChange={(e) => setBonus(validateNumberInput(e.target.value))}
                       />
                   <TextField
@@ -462,9 +467,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={costL}
+                    value={formatCurrency(costL)}
                     onChange={(e) => setCostL(validateNumberInput(e.target.value))}
                   />
                   {/* <TextField
@@ -497,10 +502,10 @@ function SalaryCal() {
                     variant="filled"
                     className="form-field"
                     style={{width:'100%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ readOnly: true,style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={deposit}
-                    onChange={(e) => setDeposit(e.target.value)}
+                    value={formatCurrency(deposit||0)}
+                    // onChange={(e) => setDeposit(e.target.value)}
                   />
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
@@ -509,9 +514,9 @@ function SalaryCal() {
                     variant="filled"
                     className="form-field"
                     style={{width:'100%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={allDeposit}
+                    value={formatCurrency(allDeposit)}
                     onChange={(e) => setAllDeposit(validateNumberInput(e.target.value))}
                   />
                 </div>
@@ -524,9 +529,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={insurance}
+                    value={formatCurrency(insurance)}
                     onChange={(e) => setInsurance(validateNumberInput(e.target.value))}
                   />
                   <TextField
@@ -534,9 +539,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={late}
+                    value={formatCurrency(late)}
                     onChange={(e) => setLate(validateNumberInput(e.target.value))}
                   />
                   <TextField
@@ -545,9 +550,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={withdraw}
+                    value={formatCurrency(withdraw)}
                     onChange={(e) => setWithdraw(validateNumberInput(e.target.value))}
                   />
                   <TextField
@@ -555,9 +560,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={borrow}
+                    value={formatCurrency(borrow)}
                     onChange={(e) => setBorrow(validateNumberInput(e.target.value))}
                   >
                   </TextField>
@@ -566,9 +571,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={missing}
+                    value={formatCurrency(missing)}
                     onChange={(e) => setMissing(validateNumberInput(e.target.value))}
                   />
                 </div>
@@ -578,9 +583,9 @@ function SalaryCal() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={tax}
+                    value={formatCurrency(tax)}
                     onChange={(e) => setTax(validateNumberInput(e.target.value))}
                   />
                 </div>
@@ -592,9 +597,9 @@ function SalaryCal() {
                     variant="filled"
                     className="form-field"
                     style={{width:'100%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ readOnly: true,style: { color: '#000', backgroundColor: '#fff' } }}
-                    value={allWithdraw}
+                    value={formatCurrency(allWithdraw || 0)}
                     onChange={(e) => setAllWithdraw(e.target.value)}
                   />
                 </div>
@@ -606,9 +611,9 @@ function SalaryCal() {
                     variant="filled"
                     className="form-field"
                     style={{width:'100%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
-                    value={allInsurance}
+                    value={formatCurrency(allInsurance)}
                     onChange={(e) => setAllInsurance(validateNumberInput(e.target.value))}
                   />
                 </div>
@@ -620,9 +625,9 @@ function SalaryCal() {
                     variant="filled"
                     className="form-field"
                     style={{width:'100%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{style: { color: '#000', backgroundColor: '#fff' },readOnly: true }}
-                    value={amount}
+                    value={formatCurrency(amount || 0)}
                     onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>

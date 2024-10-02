@@ -13,6 +13,13 @@ import { IoSearchOutline, IoArrowDown, IoArrowUp } from "react-icons/io5";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import { TextField} from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import { hashPassword } from './hashPassword';
+
 
 function LeaveRequest() {
   const navigate = useNavigate();
@@ -35,10 +42,15 @@ function LeaveRequest() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const [imageURLs, setImageURLs] = useState([]);
-  const { setCurrentUser, companyId,setNewLeaveRequests,newLeaveRequests } = useContext(UserContext);
+  const { setCurrentUser, companyId,setNewLeaveRequests,newLeaveRequests,userData } = useContext(UserContext);
 
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order for dates
   const [nameSortOrder, setNameSortOrder] = useState('asc');
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPasswordInModal, setShowPasswordInModal] = useState(false);
 
   const getAllLeaveSuccess=(doc)=>{
     let leaves = []
@@ -270,6 +282,23 @@ function LeaveRequest() {
     sortByName(newOrder, setFilteredUsers, allLeave);
   };
 
+  const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
+
+  const handlePasswordSubmit = async() => {
+    const hashedPass = await hashPassword(inputPassword)
+    if (hashedPass === userData.password) {
+      firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true},handleClose,(e)=>console.log(e))
+      setShowPasswordModal(false);
+      setPasswordError('');
+    } else {
+      setPasswordError('Incorrect password, please try again.');
+    }
+  };
+
+  const handleClick = () => {
+    setShowPasswordModal(true);
+  };
+
   return (
     
       <div className="dashboard">
@@ -427,13 +456,53 @@ function LeaveRequest() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black',fontSize:20 }} onClick={()=>onAllow(selectID,uid,type,amount)}>
+          <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black',fontSize:20 }} 
+          disabled={state1} onClick={()=>onAllow(selectID,uid,type,amount)}>
             Allow
           </Button>
-          <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={()=>{
-            firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true},handleClose,(e)=>console.log(e))
-          }}>
+          <Button variant="secondary" style={{ backgroundColor: '#343434',fontSize:20, }} onClick={
+            handleClick
+            // firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true},handleClose,(e)=>console.log(e))
+          }>
             Deny
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showPasswordModal} onHide={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <TextField
+            label="Password"
+            variant="filled"
+            type={showPasswordInModal ? 'text' : 'password'}
+            value={inputPassword}
+            onChange={(e) => setInputPassword(e.target.value)}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPasswordInModal}
+                    edge="end"
+                  >
+                    {showPasswordInModal ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handlePasswordSubmit}>
+            Submit
           </Button>
         </Modal.Footer>
       </Modal>

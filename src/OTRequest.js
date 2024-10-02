@@ -13,6 +13,12 @@ import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import { TextField} from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import { hashPassword } from './hashPassword';
 
 
 function OTRequest() {
@@ -33,12 +39,16 @@ function OTRequest() {
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
-  const { setCurrentUser, companyId } = useContext(UserContext);
+  const { setCurrentUser, companyId, userData } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [sortOrder, setSortOrder] = useState('desc'); // State for date sorting order
   const [nameSortOrder, setNameSortOrder] = useState('asc');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPasswordInModal, setShowPasswordInModal] = useState(false);
 
 
   const getAllOTSuccess=(doc)=>{
@@ -88,15 +98,6 @@ function OTRequest() {
 
   const getOTUnsuc =(error)=>{
 
-  }
-
-  const onCancel=()=>{
-    setStatus(false)
-    let item={
-      status:false,
-      status1:false,
-    }
-    firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
   }
 
   const getOT=(id)=>{
@@ -164,6 +165,27 @@ function OTRequest() {
     const newOrder = nameSortOrder === 'asc' ? 'desc' : 'asc';
     setNameSortOrder(newOrder);
     sortByName(newOrder, setFilteredUsers, allOT);
+  };
+
+  const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
+
+  const handlePasswordSubmit = async() => {
+    const hashedPass = await hashPassword(inputPassword)
+    if (hashedPass === userData.password) {
+      let item={
+        status:false,
+        status1:false,
+      }
+      firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
+      setShowPasswordModal(false);
+      setPasswordError('');
+    } else {
+      setPasswordError('Incorrect password, please try again.');
+    }
+  };
+
+  const handleClick = () => {
+    setShowPasswordModal(true);
   };
 
   return (
@@ -325,10 +347,47 @@ function OTRequest() {
         <Button style={{backgroundColor:'#000000', fontSize:20}} onClick={onAllow}>
            Allow
           </Button>
-          <Button style={{ fontSize: '20px' }} variant="secondary" onClick={onCancel}>
+          <Button style={{ fontSize: '20px' }} variant="secondary" onClick={handleClick}>
             Deny
           </Button>
           
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showPasswordModal} onHide={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <TextField
+            label="Password"
+            variant="filled"
+            type={showPasswordInModal ? 'text' : 'password'}
+            value={inputPassword}
+            onChange={(e) => setInputPassword(e.target.value)}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPasswordInModal}
+                    edge="end"
+                  >
+                    {showPasswordInModal ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setShowPasswordModal(false); setInputPassword(''); }}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handlePasswordSubmit}>
+            Submit
+          </Button>
         </Modal.Footer>
       </Modal>
       </div>

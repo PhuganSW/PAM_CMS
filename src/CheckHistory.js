@@ -343,7 +343,7 @@ function CheckHistory() {
               Allow
             </Button>
             <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>
-              Deny
+              Close
             </Button>
           </Modal.Footer>
         </Modal>
