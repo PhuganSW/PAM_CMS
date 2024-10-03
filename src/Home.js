@@ -12,13 +12,45 @@ Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEleme
 function Home() {
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
   const [workplaceUserData, setWorkplaceUserData] = useState([]);
+  const [departmentData, setDepartmentData] = useState({});
+  const [leaveData, setLeaveData] = useState({ working: 0, leave: { 'ลากิจ': 0, 'ป่วย': 0, 'พักร้อน': 0 } });
+  const [employeeLeaveData, setEmployeeLeaveData] = useState([]);
+  const [barData1, setBarData1] = useState({});
+  const [barData2, setBarData2] = useState({}); 
+
 
   const generateColors = (length) => {
     // Define a base color palette
     const baseColors = ['#4caf50', '#ff9800', '#f44336', '#3f51b5', '#9c27b0', '#00acc1', '#8bc34a', '#cddc39', '#ff5722', '#607d8b'];
-    
-    // If the length of data exceeds the base colors, cycle through the array
-    return Array.from({ length }, (_, i) => baseColors[i % baseColors.length]);
+  
+    // If length is less than or equal to baseColors, return the base colors slice
+    if (length <= baseColors.length) {
+      return baseColors.slice(0, length);
+    }
+  
+    // Otherwise, generate additional random colors to fill the gap
+    const randomColors = Array.from({ length: length - baseColors.length }, () => {
+      // Generate random hex color
+      return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    });
+  
+    // Concatenate base colors with the newly generated random colors
+    return [...baseColors, ...randomColors];
+  };
+
+  const countEmployeesByDepartment = (employees) => {
+    const departmentCounts = {};
+    employees.forEach((user) => {
+      const department = user.department?.trim() || "อื่นๆ"; // Handle undefined, null, or empty department
+      departmentCounts[department] = (departmentCounts[department] || 0) + 1;
+    });
+    // Check if "อื่นๆ" exists and move it to the end
+    if (departmentCounts['อื่นๆ']) {
+      const othersCount = departmentCounts['อื่นๆ'];
+      delete departmentCounts['อื่นๆ']; // Remove it from its original position
+      departmentCounts['อื่นๆ'] = othersCount; // Add it to the end
+    }
+    return departmentCounts;
   };
 
   useEffect(() => {
@@ -29,28 +61,157 @@ function Home() {
       (data) => setWorkplaceUserData(data),  // On success, set the state
       (error) => console.error('Error fetching workplace data:', error) // On error
     );
+    firestore.getAllUser(
+      companyId,
+      (users) => {
+        const counts = countEmployeesByDepartment(users);
+        setDepartmentData(counts); // Set the department counts in state
+      },
+      (error) => {
+        console.error('Error fetching employee data:', error);
+      }
+    );
+    firestore.getWorkAndLeaveDataForCurrentDate(
+      companyId,
+      (data) => {
+        //console.log("Fetched leave data: ", data); 
+        setLeaveData(data); // On success, set the data
+      },
+      (error) => console.error('Error fetching work and leave data:', error) // Handle error
+    );
+  }, [companyId]);
+
+  useEffect(() => {
+    // Fetch all users and then fetch their leave data from wealthfare collection
+    firestore.getAllUser(
+      companyId,
+      (users) => {
+        console.log("Fetched users:", users);
+
+        const leaveDataPromises = users.map((user) =>
+          new Promise((resolve, reject) => {
+            firestore.getAllLeaveDataMtoL(companyId, user.id, (leaveData) => {
+              // Ensure values are not negative
+              const absenceUsed = Math.max(0, leaveData.absence - leaveData.absenceR);
+              const sickUsed = Math.max(0, leaveData.sick - leaveData.sickR);
+              const holidayUsed = Math.max(0, leaveData.holiday - leaveData.holidayR);
+
+              resolve({
+                name: user.name,
+                image: user.image_off,
+                absenceUsed,
+                sickUsed,
+                holidayUsed,
+                totalLeaveUsed: absenceUsed + sickUsed + holidayUsed, // For sorting later
+              });
+            }, reject);
+          })
+        );
+
+        // Process barData1 (Most to Least)
+        Promise.all(leaveDataPromises).then((leaveDataResults) => {
+          const top10LeaveData = leaveDataResults
+            .sort((a, b) => b.totalLeaveUsed - a.totalLeaveUsed)  // Sort by total leave used (most to least)
+            .slice(0, 10);
+
+          setEmployeeLeaveData(top10LeaveData);
+
+          if (top10LeaveData.length > 0) {
+            const labels = top10LeaveData.map((employee) => employee.name);
+            const absenceData = top10LeaveData.map((employee) => employee.absenceUsed);
+            const sickData = top10LeaveData.map((employee) => employee.sickUsed);
+            const holidayData = top10LeaveData.map((employee) => employee.holidayUsed);
+
+            // Set solid colors for each dataset in barData1
+            setBarData1({
+              labels,
+              datasets: [
+                {
+                  label: 'ขาดงาน(null)',
+                  backgroundColor: '#3f51b5',  // Solid blue for 'ขาดงาน'
+                  data: holidayData,
+                },
+                {
+                  label: 'ลาป่วย',
+                  backgroundColor: '#ffeb3b',  // Solid yellow for 'ลาป่วย'
+                  data: sickData,
+                },
+                {
+                  label: 'ลากิจ',
+                  backgroundColor: '#9c27b0',  // Solid purple for 'ลากิจ'
+                  data: absenceData,
+                },
+              ],
+            });
+          }
+        });
+
+        // Process barData2 (Least to Most)
+        Promise.all(leaveDataPromises).then((leaveDataResults) => {
+          const bottom10LeaveData = leaveDataResults
+            .sort((a, b) => a.totalLeaveUsed - b.totalLeaveUsed)  // Sort by total leave used (least to most)
+            .slice(0, 10);
+
+          if (bottom10LeaveData.length > 0) {
+            const labels = bottom10LeaveData.map((employee) => employee.name);
+            const absenceData = bottom10LeaveData.map((employee) => employee.absenceUsed);
+            const sickData = bottom10LeaveData.map((employee) => employee.sickUsed);
+            const holidayData = bottom10LeaveData.map((employee) => employee.holidayUsed);
+
+            // Set solid colors for each dataset in barData2
+            setBarData2({
+              labels,
+              datasets: [
+                {
+                  label: 'ขาดงาน(null)',
+                  backgroundColor: '#3f51b5',  // Solid blue for 'ขาดงาน'
+                  data: holidayData,
+                },
+                {
+                  label: 'ลาป่วย',
+                  backgroundColor: '#ffeb3b',  // Solid yellow for 'ลาป่วย'
+                  data: sickData,
+                },
+                {
+                  label: 'ลากิจ',
+                  backgroundColor: '#9c27b0',  // Solid purple for 'ลากิจ'
+                  data: absenceData,
+                },
+              ],
+            });
+          }
+        });
+      },
+      (error) => console.error('Error fetching users:', error)
+    );
   }, [companyId]);
 
   const pieData1 = {
-    labels: ['ช่าง', 'บัญชี', 'ฝ่ายบุคคล', 'วิศวกร'],
+    labels: Object.keys(departmentData),
     datasets: [
       {
         label: 'จำนวนพนักงาน',
-        data: [10, 15, 20, 50],
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#3f51b5'],
-        hoverBackgroundColor: ['#66bb6a', '#ffb74d', '#e57373', '#5c6bc0'],
+        data: Object.values(departmentData),
+        backgroundColor: generateColors(Object.keys(departmentData).length),
+        hoverBackgroundColor: generateColors(Object.keys(departmentData).length),
       },
     ],
   };
 
+  const pieData2Labels = ['เข้าทำงาน', 'ลากิจ', 'ลาป่วย', 'ลาพักร้อน'];
   const pieData2 = {
-    labels: ['เข้างาน', 'ลากิจ', 'ลาป่วย','ลาพักร้อน'],
+    labels: pieData2Labels,
     datasets: [
       {
         label: 'สรุปประจำวัน',
-        data: [5, 10, 15,10],
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336','#E7F7F7'],
-        hoverBackgroundColor: ['#66bb6a', '#ffb74d', '#e57373','#E2F2F2'],
+        data: [
+          leaveData.working,
+          leaveData.leave['ลากิจ'],
+          leaveData.leave['ลาป่วย'],
+          leaveData.leave['ลาพักร้อน'],
+        ],
+        backgroundColor: generateColors(pieData2Labels.length),
+        hoverBackgroundColor: generateColors(pieData2Labels.length),
       },
     ],
   };
@@ -64,48 +225,6 @@ function Home() {
         data: workplaceUserData.map((workplace) => workplace.count), // Number of users in each workplace
         backgroundColor: generateColors(workplaceUserData.length),
         hoverBackgroundColor: generateColors(workplaceUserData.length),
-      },
-    ],
-  };
-
-  const barData1 = {
-    labels: ['group A', 'group B', 'group C','group D','group E','group F','group G','group H','group I','group J'],
-    datasets: [
-      {
-        label: 'ขาดงาน',
-        backgroundColor: '#4caf50',
-        data: [4, 3, 5,8,1,5,3,1,4,2],
-      },
-      {
-        label: 'ลาป่วย',
-        backgroundColor: '#ff9800',
-        data: [1, 6, 3,2,2,5,3,1,4,2],
-      },
-      {
-        label: 'ลากิจ',
-        backgroundColor: '#f44336',
-        data: [2, 5, 6,2,2,5,3,1,4,2],
-      },
-    ],
-  };
-
-  const barData2 = {
-    labels: ['group A', 'group B', 'group C','group D','group E','group F','group G','group H','group I','group J'],
-    datasets: [
-      {
-        label: 'ขาดงาน',
-        backgroundColor: '#3f51b5',
-        data: [4, 3, 5,8,1,5,3,1,4,2],
-      },
-      {
-        label: 'ลาป่วย',
-        backgroundColor: '#ffeb3b',
-        data: [1, 6, 3,2,2,5,3,1,4,2],
-      },
-      {
-        label: 'ลากิจ',
-        backgroundColor: '#9c27b0',
-        data: [2, 5, 6,2,2,5,3,1,4,2],
       },
     ],
   };
@@ -158,22 +277,30 @@ function Home() {
         {/* Third Row: First Bar Chart */}
         <div className="chart-row">
           <div className="chart-container bar-chart-fullwidth">
-            <Bar
-              data={barData1}
-              options={{ maintainAspectRatio: false }}
-              style={{ width: '800px', height: '250px' }} // Set width to be wider
-            />
+            {barData1 && barData1.labels ? (
+              <Bar
+                data={barData1}
+                options={{ maintainAspectRatio: false }}
+                style={{ width: '800px', height: '400px' }}
+              />
+            ) : (
+              <p>Loading bar chart...</p>
+            )}
           </div>
         </div>
 
         {/* Fourth Row: Second Bar Chart */}
         <div className="chart-row">
           <div className="chart-container bar-chart-fullwidth">
-            <Bar
-              data={barData2}
-              options={{ maintainAspectRatio: false }}
-              style={{ width: '800px', height: '250px' }} // Set width to be wider
-            />
+            {barData2 && barData2.labels ? (
+              <Bar
+                data={barData2}
+                options={{ maintainAspectRatio: false }}
+                style={{ width: '800px', height: '400px' }}
+              />
+            ) : (
+              <p>Loading bar chart...</p>
+            )}
           </div>
         </div>
       </main>

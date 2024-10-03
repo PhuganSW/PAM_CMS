@@ -263,6 +263,7 @@ function ProfileEdit() {
       blood_type: blood_type || '',
       Ldrug: Ldrug || '',
       wealthHos: wealthHos || '',
+      department:department || '',
     };
   
     firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);

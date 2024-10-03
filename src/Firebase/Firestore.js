@@ -266,6 +266,7 @@ class FireStore{
             position: doc.data().position,
             image_off: doc.data().image_off,
             level:doc.data().level,
+            department:doc.data().department,
           });
         });
         success(users);
@@ -1023,6 +1024,124 @@ class FireStore{
       //unsuccess(e);
     }
   }
+
+  getWorkAndLeaveDataForCurrentDate = (companyId, success, unsuccess) => {
+    // Format the current date as dd/mm/yyyy
+    const currentDate = new Date();
+    const day = String(currentDate.getDate()).padStart(2, '0');  // Ensure day is 2 digits
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');  // Ensure month is 2 digits
+    const year = currentDate.getFullYear();
+    const currentDateStr = `${day}/${month}/${year}`;  // Format: dd/mm/yyyy
+
+    const checkinRef = collection(this.db, "companies", companyId, "checkin");
+    const leaveRequestRef = collection(this.db, "companies", companyId, "leaveRequest");
+
+    const workingEmployees = new Set();
+    const leaveCounts = {
+      'ลากิจ': new Set(),
+      'ลาป่วย': new Set(),
+      'ลาพักร้อน': new Set(),
+    };
+
+    // Get checkin data for the current date
+    const checkinQuery = query(checkinRef, where('date', '==', currentDateStr));
+    const checkinPromise = getDocs(checkinQuery).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const { user } = doc.data();
+            workingEmployees.add(user);  // Add employee UID to the working set
+        });
+    });
+
+    // Get leave requests that overlap the current date
+    const leaveQuery = query(leaveRequestRef, where('state', '==', true), where('state1', '==', true));
+    const leavePromise = getDocs(leaveQuery).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const uid = data.user.slice(3);  // Extract user's uid
+            const { dateStart, dateEnd, types } = data;
+
+            // Convert date strings from dd/mm/yyyy to Date objects
+            const [startDay, startMonth, startYear] = dateStart.split('/');
+            const startDate = new Date(startYear, startMonth - 1, startDay);
+            let endDate = startDate;  // Default to one day if no dateEnd
+
+            if (dateEnd) {
+                const [endDay, endMonth, endYear] = dateEnd.split('/');
+                endDate = new Date(endYear, endMonth - 1, endDay);  // Month is 0-based
+            }
+
+            const currentDateObj = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+            //console.log("Checking Leave Request:", { uid, types, startDate, endDate, currentDateObj });
+            if (currentDateObj >= startDate && currentDateObj <= endDate) {
+              //console.log('Leave Data:', data);
+
+              // Check if the leave type exists in leaveCounts
+              if (leaveCounts[types]) {
+                  leaveCounts[types].add(uid);  // Add the user to the respective leave type
+              } else {
+                  console.warn(`Unknown leave type encountered: ${types}`);
+              }
+            }
+        });
+    });
+
+    Promise.all([checkinPromise, leavePromise])
+        .then(() => {
+            // Remove users from working set if they are on leave
+            Object.values(leaveCounts).forEach((leaveSet) => {
+                leaveSet.forEach(uid => workingEmployees.delete(uid));
+            });
+
+            // console.log("Working employees count: ", workingEmployees);
+            // console.log("Leave counts: ", leaveCounts);
+
+            success({
+                working: workingEmployees.size,
+                leave: {
+                  'ลากิจ': leaveCounts['ลากิจ']?.size || 0,
+                  'ลาป่วย': leaveCounts['ลาป่วย']?.size || 0,
+                  'ลาพักร้อน': leaveCounts['ลาพักร้อน']?.size || 0
+                }
+            });
+        })
+        .catch((error) => unsuccess(error));
+  };
+
+  getAllLeaveDataMtoL = (companyId, userId, success, unsuccess) => {
+    // Reference the wealthfare document using the userId as the document ID
+    const docRef = doc(this.db, "companies", companyId, "wealthfare", userId);
+
+    getDoc(docRef)
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+
+          // Extract the values for absence, sick, and holiday along with their remaining days
+          const absence = parseInt(data.absence || 0, 10);
+          const absenceR = parseInt(data.absenceR || 0, 10);
+
+          const sick = parseInt(data.sick || 0, 10);
+          const sickR = parseInt(data.sickR || 0, 10);
+
+          const holiday = parseInt(data.holiday || 0, 10);
+          const holidayR = parseInt(data.holidayR || 0, 10);
+
+          // Success callback with the calculated values
+          success({
+            absence,
+            absenceR,
+            sick,
+            sickR,
+            holiday,
+            holidayR,
+          });
+        } else {
+          unsuccess("No wealthfare document found for this user.");
+        }
+      })
+      .catch((error) => unsuccess(error));
+  };
 
 }
 
