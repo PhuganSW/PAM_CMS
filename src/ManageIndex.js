@@ -34,6 +34,7 @@ function ManageIndex() {
     {label:'คำนำหน้าภาษาอังกฤษ',value:'prefixEn'},
     {label:'เพศ',value:'sex'},
     {label:'ตำแหน่ง',value:'position'},
+    {label:'แผนก',value:'department'},
     {label:'สถานภาพ',value:'status_per'},
     {label:'บัญชีธนาคาร',value:'bank'},
     {label:'พื้นที่ปฏิบัติงาน',value:'workplace'},

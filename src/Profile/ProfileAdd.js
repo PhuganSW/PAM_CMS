@@ -70,6 +70,7 @@ function ProfileAdd() {
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   // const [levelOptions, setLevelOptions] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -244,6 +245,9 @@ function ProfileAdd() {
       const positionOptions = await firestore.getDropdownOptions(companyId,'position');
       console.log(positionOptions)
       setPositionOptions(positionOptions.map(option => option.name));
+      const departmentOptions = await firestore.getDropdownOptions(companyId,'department');
+      console.log(departmentOptions)
+      setDepartmentOptions(departmentOptions.map(option => option.name));
       // const levelOptions = await firestore.getDropdownOptions('level');
       // setLevelOptions(levelOptions.map(option => option.name));
       const bankOptions = await firestore.getDropdownOptions(companyId,'bank')
@@ -494,6 +498,25 @@ function ProfileAdd() {
                 </TextField>
                 
               </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+                  <TextField
+                    className="form-field"
+                    select
+                    label="แผนก"
+                    variant="filled"
+                    //InputLabelProps={{ style: { color: '#000' } }}
+                    //InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                    style={{ width: '35%', marginRight:'1%' }}
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                  >
+                    {departmentOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+              </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
               <TextField
                   className="form-field"
@@ -616,18 +639,6 @@ function ProfileAdd() {
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={Ldrug}
                     onChange={(e) => setLdrug(e.target.value)}
-                  />
-              </div>
-              <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
-              <TextField
-                    className="form-field"
-                    label="แผนก"
-                    variant="filled"
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    style={{ width: '35%', marginRight:'1%' }}
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
                   />
               </div>
               <div className="form-row" style={{ display: 'flex',}}>

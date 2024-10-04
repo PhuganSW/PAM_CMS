@@ -2,12 +2,13 @@
 import app from './Config'
 import {getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
         , sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth";
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 class Auth {
     constructor(){
         this.auth = getAuth(app)
         this.functions = getFunctions(app);
+
        /* this.admin = require('firebase-admin');
         this.serviceAccount = require('./pamproject-a57c5-firebase-adminsdk-mh5a3-5ea1082565.json');
 
@@ -77,18 +78,18 @@ class Auth {
             });
     }
 
-      deleteUser = (uid, success, unsuccess) => {
-        const deleteUserFunction = httpsCallable(this.functions, 'deleteUser');
-        deleteUserFunction({ uid })
-            .then((result) => {
-                console.log(result.data.message);
-                success();
-            })
-            .catch((error) => {
-                console.error('Error deleting user:', error);
-                unsuccess(error);
-            });
-    }
+    deleteUser = (uid, success, unsuccess) => {
+      const deleteUserFunction = httpsCallable(this.functions, 'deleteUser');
+      deleteUserFunction({ uid })
+        .then((result) => {
+          console.log(result.data.message);
+          success();
+        })
+        .catch((error) => {
+          console.error('Error deleting user:', error);
+          unsuccess(error);
+        });
+    };
 }
 
 const auth = new Auth()

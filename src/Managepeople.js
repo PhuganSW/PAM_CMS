@@ -55,7 +55,11 @@ function ManagePeople() {
     setShowManageWp(false);
     setWorkplace('')
   }
-  const handleShow = (user) =>{
+  const handleShow = async (user) =>{
+    let Leader = []
+    await firestore.getLeader(companyId,user.id,(data)=>Leader.push(data))
+    
+    setLeaderId(Leader[0].leadId)
     setSelectedUser(user);
     setShow(true);
   } 

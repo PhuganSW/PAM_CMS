@@ -22,42 +22,58 @@ const logger = require("firebase-functions/logger");
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
+// Initialize the Firebase Admin SDK
 admin.initializeApp();
 
-exports.deleteUser = functions.https.onCall((data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
-  }
+// Define a callable function to delete a user by UID
+exports.deleteUser = functions.https.onCall(async (data, context) => {
+    const { uid } = data;
 
-  const uid = data.uid;
+    // Only allow authenticated users with admin privileges to delete users
+    if (!context.auth || !context.auth.token.admin) {
+        throw new functions.https.HttpsError('permission-denied', 'Must be an administrative user to delete a user.');
+    }
 
-  return admin.auth().deleteUser(uid)
-    .then(() => {
-      return { message: `Successfully deleted user with UID: ${uid}` };
-    })
-    .catch((error) => {
-      throw new functions.https.HttpsError('unknown', `Error deleting user: ${error.message}`);
-    });
+    try {
+        await admin.auth().deleteUser(uid);
+        return { message: 'User deleted successfully' };
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        throw new functions.https.HttpsError('internal', 'Unable to delete user');
+    }
+});
+
+exports.addAdminRole = functions.https.onCall(async (data, context) => {
+    const uid = data.uid;
+
+    // Only allow authenticated users with admin privileges to set admin roles
+    if (!context.auth || !context.auth.token.admin) {
+        throw new functions.https.HttpsError('permission-denied', 'Must be an administrative user to assign roles.');
+    }
+
+    try {
+        // Set the custom admin claim
+        await admin.auth().setCustomUserClaims(uid, { admin: true });
+        return { message: `Admin role assigned to user with UID: ${uid}` };
+    } catch (error) {
+        console.error('Error setting admin claim:', error);
+        throw new functions.https.HttpsError('internal', 'Unable to assign admin role');
+    }
 });
 
 exports.resetUserPassword = functions.https.onCall(async (data, context) => {
-  const { uid, newPassword } = data;
+    const { uid, newPassword } = data;
 
-  try {
-      // Ensure the request is authenticated
-      if (!context.auth) {
-          throw new functions.https.HttpsError(
-              'failed-precondition',
-              'The function must be called while authenticated.'
-          );
-      }
+    // Check if the requester is authenticated and has admin privileges
+    if (!context.auth || !context.auth.token.admin) {
+        throw new functions.https.HttpsError('permission-denied', 'Must be an administrative user to reset passwords.');
+    }
 
-      // Update the user's password
-      await admin.auth().updateUser(uid, { password: newPassword });
-
-      return { message: 'Password reset successful' };
-  } catch (error) {
-      console.error('Error resetting user password:', error);
-      throw new functions.https.HttpsError('unknown', error.message, error);
-  }
+    try {
+        await admin.auth().updateUser(uid, { password: newPassword });
+        return { message: 'Password reset successfully' };
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        throw new functions.https.HttpsError('internal', 'Unable to reset password');
+    }
 });

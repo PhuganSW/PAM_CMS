@@ -81,6 +81,7 @@ function ProfileEdit() {
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
   const [sexOptions, setSexOptions] = useState([]);
   const [positionOptions, setPositionOptions] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   // const [levelOptions, setLevelOptions] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -287,20 +288,23 @@ function ProfileEdit() {
 
   const fetchDropdownOptions = async () => {
     try {
-      const prefixThOptions = await firestore.getDropdownOptions("miscible",'prefixTh');
+      const prefixThOptions = await firestore.getDropdownOptions(companyId,'prefixTh');
       setPrefixThOptions(prefixThOptions.map(option => option.name));
-      const prefixEnOptions = await firestore.getDropdownOptions("miscible",'prefixEn');
+      const prefixEnOptions = await firestore.getDropdownOptions(companyId,'prefixEn');
       setPrefixEnOptions(prefixEnOptions.map(option => option.name));
-      const sexOptions = await firestore.getDropdownOptions("miscible",'sex');
+      const sexOptions = await firestore.getDropdownOptions(companyId,'sex');
       setSexOptions(sexOptions.map(option => option.name));
-      const positionOptions = await firestore.getDropdownOptions("miscible",'position');
+      const positionOptions = await firestore.getDropdownOptions(companyId,'position');
       console.log(positionOptions);
       setPositionOptions(positionOptions.map(option => option.name));
+      const departmentOptions = await firestore.getDropdownOptions(companyId,'department');
+      console.log(departmentOptions)
+      setDepartmentOptions(departmentOptions.map(option => option.name));
       // const levelOptions = await firestore.getDropdownOptions('level');
       // setLevelOptions(levelOptions.map(option => option.name));
-      const bankOptions = await firestore.getDropdownOptions("miscible",'bank');
+      const bankOptions = await firestore.getDropdownOptions(companyId,'bank');
       setBankOptions(bankOptions.map(option => option.name));
-      const statusOptions = await firestore.getDropdownOptions("miscible",'status_per');
+      const statusOptions = await firestore.getDropdownOptions(companyId,'status_per');
       setStatusOptions(statusOptions.map(option => option.name));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);
@@ -603,17 +607,24 @@ function ProfileEdit() {
                 />
             </div>
             <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
-              <TextField
-                    className="form-field"
-                    label="แผนก"
-                    variant="filled"
-                    InputLabelProps={{ style: { color: '#000' } }}
-                    InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                    style={{ width: '35%', marginRight:'1%' }}
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                  />
-              </div>
+                <TextField
+                  className="form-field"
+                  select
+                  label="แผนก"
+                  variant="filled"
+                  //InputLabelProps={{ style: { color: '#000' } }}
+                  //InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  style={{ width: '35%', marginRight:'1%' }}
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                >
+                  {departmentOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+            </div>
             <div className="form-row" style={{ display: 'flex',}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>บัญชีธนาคาร :</p>

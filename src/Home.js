@@ -113,71 +113,75 @@ function Home() {
           const top10LeaveData = leaveDataResults
             .sort((a, b) => b.totalLeaveUsed - a.totalLeaveUsed)  // Sort by total leave used (most to least)
             .slice(0, 10);
-
+        
+          console.log("Top 10 Leave Data:", top10LeaveData); // Add this line to debug
+        
           setEmployeeLeaveData(top10LeaveData);
-
+        
           if (top10LeaveData.length > 0) {
             const labels = top10LeaveData.map((employee) => employee.name);
             const absenceData = top10LeaveData.map((employee) => employee.absenceUsed);
             const sickData = top10LeaveData.map((employee) => employee.sickUsed);
             const holidayData = top10LeaveData.map((employee) => employee.holidayUsed);
-
-            // Set solid colors for each dataset in barData1
+        
             setBarData1({
               labels,
               datasets: [
                 {
-                  label: 'ขาดงาน(null)',
-                  backgroundColor: '#3f51b5',  // Solid blue for 'ขาดงาน'
+                  label: 'ลาพักร้อน',
+                  backgroundColor: '#508C9B',  // Solid blue for 'ลาพักร้อน'
                   data: holidayData,
                 },
                 {
                   label: 'ลาป่วย',
-                  backgroundColor: '#ffeb3b',  // Solid yellow for 'ลาป่วย'
+                  backgroundColor: '#134B70',  // Solid yellow for 'ลาป่วย'
                   data: sickData,
                 },
                 {
                   label: 'ลากิจ',
-                  backgroundColor: '#9c27b0',  // Solid purple for 'ลากิจ'
+                  backgroundColor: '#201E43',  // Solid purple for 'ลากิจ'
                   data: absenceData,
                 },
               ],
+              users: top10LeaveData, // This array should match the length of the labels array
             });
           }
         });
-
+        
         // Process barData2 (Least to Most)
         Promise.all(leaveDataPromises).then((leaveDataResults) => {
           const bottom10LeaveData = leaveDataResults
             .sort((a, b) => a.totalLeaveUsed - b.totalLeaveUsed)  // Sort by total leave used (least to most)
             .slice(0, 10);
-
+        
+          console.log("Bottom 10 Leave Data:", bottom10LeaveData); // Add this line to debug
+        
           if (bottom10LeaveData.length > 0) {
             const labels = bottom10LeaveData.map((employee) => employee.name);
             const absenceData = bottom10LeaveData.map((employee) => employee.absenceUsed);
             const sickData = bottom10LeaveData.map((employee) => employee.sickUsed);
             const holidayData = bottom10LeaveData.map((employee) => employee.holidayUsed);
-
-            // Set solid colors for each dataset in barData2
+        
             setBarData2({
               labels,
               datasets: [
                 {
-                  label: 'ขาดงาน(null)',
-                  backgroundColor: '#3f51b5',  // Solid blue for 'ขาดงาน'
+                  label: 'ลาพักร้อน',
+                  backgroundColor: '#D5DEF5',  // Solid blue for 'ลาพักร้อน'
                   data: holidayData,
                 },
                 {
                   label: 'ลาป่วย',
-                  backgroundColor: '#ffeb3b',  // Solid yellow for 'ลาป่วย'
+                  backgroundColor: '#8594E4',  // Solid yellow for 'ลาป่วย'
                   data: sickData,
                 },
                 {
                   label: 'ลากิจ',
-                  backgroundColor: '#9c27b0',  // Solid purple for 'ลากิจ'
+                  backgroundColor: '#6643B5',  // Solid purple for 'ลากิจ'
                   data: absenceData,
                 },
               ],
+              users: bottom10LeaveData, // This array should match the length of the labels array
             });
           }
         });
@@ -185,6 +189,31 @@ function Home() {
       (error) => console.error('Error fetching users:', error)
     );
   }, [companyId]);
+
+  const customTooltipPlugin = {
+    id: 'customTooltipPlugin',
+    beforeDraw: (chart) => {
+      const ctx = chart.ctx;
+      const users = chart.config.data.users || [];
+      const meta = chart.getDatasetMeta(0);
+
+      meta.data.forEach((bar, index) => {
+        const user = users[index];
+        if (user) {
+          const image = new Image();
+          image.src = user.image;
+          const x = bar.x - 15;
+          const y = chart.chartArea.bottom + 10;
+
+          image.onload = () => {
+            ctx.drawImage(image, x, y, 30, 30);
+          };
+        }
+      });
+    },
+  };
+
+  Chart.register(customTooltipPlugin);
 
   const pieData1 = {
     labels: Object.keys(departmentData),
@@ -267,7 +296,7 @@ function Home() {
           </div>
           
           <div className="chart-container">
-            <p>Custom Container</p>
+            <p>Data Visualization</p>
             <div style={{ backgroundColor: '#f5f5f5', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               Custom content here
             </div>
@@ -281,6 +310,7 @@ function Home() {
               <Bar
                 data={barData1}
                 options={{ maintainAspectRatio: false }}
+                plugins={[customTooltipPlugin]} // Register image plugin
                 style={{ width: '800px', height: '400px' }}
               />
             ) : (
@@ -296,7 +326,8 @@ function Home() {
               <Bar
                 data={barData2}
                 options={{ maintainAspectRatio: false }}
-                style={{ width: '800px', height: '400px' }}
+                plugins={[customTooltipPlugin]} // Register image plugin
+                style={{ width: '800px', height: '1000px' }}
               />
             ) : (
               <p>Loading bar chart...</p>

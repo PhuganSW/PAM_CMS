@@ -51,6 +51,16 @@ class FireStore{
     }
   }
 
+  updateAccount = async (companyId, id, data, success, unsuccess) => {
+    try {
+      const docRef = doc(this.db, "companies", companyId, "account_cms", id);
+      await updateDoc(docRef, data);
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+
   deleteAccount= async (companyId,id)=>{
     await deleteDoc(doc(this.db, "companies", companyId, "account_cms", id));
   }
@@ -1024,6 +1034,25 @@ class FireStore{
       //unsuccess(e);
     }
   }
+
+  getLeader = async (companyId, userId, leadData) => {
+    const userRef = doc(this.db, "companies", companyId, "users",userId,'extend','leader');
+  
+    try{
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        leadData(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+        leadData(null)
+      }
+    }catch(e){
+      //unsuccess(e)
+    }
+  };
 
   getWorkAndLeaveDataForCurrentDate = (companyId, success, unsuccess) => {
     // Format the current date as dd/mm/yyyy

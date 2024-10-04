@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import './addProfile.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
-import { IoTrashBin } from "react-icons/io5";
+import { IoTrashBin,IoPencil } from "react-icons/io5";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -17,6 +17,7 @@ import { UserContext } from './UserContext';
 import ReactSelect from 'react-select';
 import CryptoJS from 'crypto-js';
 import { IoEyeOff, IoEye } from "react-icons/io5";
+import { hashPassword } from './hashPassword';
 
 
 function ManageAccount() {
@@ -34,6 +35,7 @@ function ManageAccount() {
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(10);
     const { setCurrentUser, companyId } = useContext(UserContext);
+    const [isEditing, setIsEditing] = useState(false);
 
     const levels = [
       { label: 'Administrator', value: 0 },
@@ -65,13 +67,33 @@ function ManageAccount() {
     }, []);
   
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+      setSelectID('');
+      setEmail('');
+      setName('');
+      setPosition('');
+      setLevel(''); 
+      setShow(false);
+      setIsEditing(false);
+    }
     const handleShow = () => setShow(true);
     const handleDelClose = () => setShowDel(false);
-    const handleDelShow = (id) => {
+    const handleDelShow = (id,email) => {
+      setEmail(email)
       setSelectID(id)
       setShowDel(true);
     }
+
+    const handleEditShow = (account) => {
+      console.log(account)
+      setIsEditing(true); // Set editing mode to true
+      setSelectID(account.id);
+      setEmail(account.email);
+      setName(account.name);
+      setPosition(account.position);
+      setLevel(levels.find(l => l.label === account.level)?.value || ''); // Match level to its value
+      setShow(true);
+    };
 
     const createSuccess=async(user)=>{
       //const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
@@ -102,11 +124,51 @@ function ManageAccount() {
 
     }
 
-    const onSave=(e)=>{
-      e.preventDefault()
-      auth.createAccount(email,password,createSuccess,createUnsuccess)
-      
-    }
+    const onSave = async (e) => {
+      e.preventDefault();
+      if (isEditing) {
+        // Edit existing account
+        const updatedData = {
+          email,
+          name,
+          position,
+          level
+        };
+        if (password) {
+          const hashedPassword = await hashPassword(password); // Hash password if provided
+          updatedData.password = hashedPassword;
+        }
+        firestore.updateAccount(companyId, selectID, updatedData, () => {
+          alert("Account updated successfully!");
+          handleClose();
+          // Reload accounts if necessary
+        }, (error) => {
+          console.error("Error updating account:", error);
+        });
+      } else {
+        // Create a new account
+        auth.createAccount(email, password, async (user) => {
+          const hashedPassword = await hashPassword(password);
+          let item = {
+            email,
+            name,
+            position,
+            level,
+            password: hashedPassword
+          };
+          firestore.addAccount(companyId, user.uid, item)
+            .then(() => {
+              alert("Account created successfully!");
+              handleClose();
+            })
+            .catch((error) => {
+              console.error("Error adding account to Firestore", error);
+            });
+        }, (error) => {
+          console.error("Error creating account:", error);
+        });
+      }
+    };
 
     const delSuc =()=>{
 
@@ -117,11 +179,19 @@ function ManageAccount() {
     }
     
     const Delete =()=>{
-      firestore.deleteAccount(companyId,selectID)
-      //auth.deleteUser(selectID,delSuc,delUnsuc)
-      console.log('Del'+selectID)
-      console.log(auth.currentUser)
-      handleDelClose()
+      auth.deleteUser(selectID, () => {
+        // After successfully deleting from Firebase Authentication, delete from Firestore
+        firestore.deleteAccount(companyId, selectID)
+          .then(() => {
+            alert(`User with email ${email} deleted successfully!`);
+            handleDelClose();
+          })
+          .catch((error) => {
+            console.error('Error deleting user from Firestore:', error);
+          });
+      }, (error) => {
+        console.error('Error deleting user from Firebase Authentication:', error);
+      });
     }
 
     const onNext = () => {
@@ -186,7 +256,10 @@ function ManageAccount() {
                           {item.position}
                         </td>
                         <td>{item.level}</td>
-                        <td style={{textAlign: 'center'}}><IoTrashBin size={28} onClick={()=>handleDelShow(item.id)} /></td>
+                        <td style={{textAlign: 'center'}}>
+                          <IoPencil size={24} onClick={() => handleEditShow(item)} style={{ marginRight: 10 }} />
+                          <IoTrashBin size={24} onClick={()=>handleDelShow(item.id,item.email)} />
+                        </td>
                       </tr>
                     ))}
                   </tbody> 
@@ -203,7 +276,7 @@ function ManageAccount() {
         </main>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>เพิ่มบัญชีผู้ใช้</Modal.Title>
+          <Modal.Title>{isEditing ? 'แก้ไขบัญชีผู้ใช้' : 'เพิ่มบัญชีผู้ใช้'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -213,6 +286,7 @@ function ManageAccount() {
                 type="email"
                 placeholder="name@example.com"
                 autoFocus
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
@@ -223,6 +297,7 @@ function ManageAccount() {
                   type={showPassword ? 'text' : 'password'}  // Change input type based on visibility state
                   placeholder="Enter password"
                   onChange={(e) => setPassword(e.target.value)}
+                  value={password}
                   style={{ paddingRight: '2.5rem' }}  // Adjust padding to prevent text overlaying the icon
                 />
                 <button
@@ -247,6 +322,7 @@ function ManageAccount() {
               <Form.Control
                 type="name"
                 autoFocus
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </Form.Group>
@@ -255,6 +331,7 @@ function ManageAccount() {
               <Form.Control
                 type="name"
                 autoFocus
+                value={position}
                 onChange={(e) => setPosition(e.target.value)}
               />
             </Form.Group>
@@ -287,7 +364,7 @@ function ManageAccount() {
         </Modal.Body>
         <Modal.Footer>
         <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={onSave}>
-            Save Changes
+            {isEditing ? 'Save Changes' : 'Create Account'}
           </Button>
           <Button variant="secondary" style={{backgroundColor:'#343434',width:'20%'}} onClick={handleClose}>
             Close
@@ -297,7 +374,7 @@ function ManageAccount() {
       </Modal>
       <Modal show={showDel} onHide={handleDelClose}>
         <Modal.Header closeButton>
-          <Modal.Title>ลบบัญชีผู้ใช้</Modal.Title>
+          <Modal.Title>ลบบัญชีผู้ใช้: {email}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h5>ยืนยันจะลบบัญชีผู้ใช้หรือไม่</h5>
