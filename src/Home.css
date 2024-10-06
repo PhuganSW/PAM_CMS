@@ -65,7 +65,7 @@ body {
     background: #BEBEBE;
     padding: 20px;
     border-radius: 6px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     width: 45%;
     min-width: 250px; /* Set a minimum width for smaller screens */
     height: 350px;

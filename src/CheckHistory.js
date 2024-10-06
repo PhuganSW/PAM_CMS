@@ -48,11 +48,12 @@ function CheckHistory() {
   const [isCheckin, setIsCheckin] = useState(true);
 
   const [workplaces,setWorkplaces] = useState([]);
+  const [item,setItem] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = (uid,date,time,workplace,isCheckin,data) =>{
-    console.log(data)
+    setItem(data)
     setUid(uid);
     setDate(date)
     setTime(time)
@@ -88,8 +89,8 @@ function CheckHistory() {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
     setSearchQuery(query);
-    const filtered = allIN.filter(user => user.name.toLowerCase().includes(query));
-    const filtered1 = allOut.filter(user => user.name.toLowerCase().includes(query));
+    const filtered = allIN.filter(user =>user.name?.toLowerCase().includes(query));
+    const filtered1 = allOut.filter(user => user.name?.toLowerCase().includes(query));
     setFilteredUsers(filtered);
     setFilteredOut(filtered1);
   };
@@ -118,6 +119,47 @@ function CheckHistory() {
     }
 
     setShow(false);
+  };
+
+  const handleMove = async (item) => {
+    try {
+      const updatedData = {
+        name:item.name,
+        date: date,
+        time: time,
+        workplace: workplace || '',
+        lat:item.lat,
+        lon:item.lon,
+        isInvalidArea:item.isInvalidArea,
+        late:item.late || null,
+        user:item.user,
+      };
+
+      if (isCheckin) {
+        // Move data from check-in to check-out
+        await firestore.updateCheckout(
+          companyId,
+          uid,
+          updatedData,
+          () => alert('Moved to check-out successfully!'),
+          (error) => console.error('Error moving to check-out:', error)
+        );
+        firestore.deleteCheckin(companyId, uid, () => console.log('Check-in deleted successfully'), console.error);
+      } else {
+        // Move data from check-out to check-in
+        await firestore.updateCheckin(
+          companyId,
+          uid,
+          updatedData,
+          () => alert('Moved to check-in successfully!'),
+          (error) => console.error('Error moving to check-in:', error)
+        );
+        firestore.deleteCheckout(companyId, uid, () => console.log('Check-out deleted successfully'), console.error);
+      }
+      setShow(false);
+    } catch (error) {
+      console.error('Error moving data:', error);
+    }
   };
 
   const fetchDropdownOptions = async () => {
@@ -340,7 +382,10 @@ function CheckHistory() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} onClick={handleSave}>
-              Allow
+              Save
+            </Button>
+            <Button style={{ backgroundColor: '#BEBEBE', color: 'black', fontSize: 20 }} onClick={()=>handleMove(item)}>
+              Move
             </Button>
             <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>
               Close

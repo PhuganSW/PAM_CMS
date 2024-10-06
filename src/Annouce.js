@@ -46,6 +46,11 @@ function Annouce() {
   const [filterHoliday,setFilterHoliday] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
   const getAllAnnouceSuc=(doc)=>{
     
     let annouces = []
@@ -78,6 +83,12 @@ function Annouce() {
         }
         
       });
+      annouces.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      news.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      rules.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      generals.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      campaigns.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      holidays.sort((a, b) => parseDate(b.date) - parseDate(a.date));
       setAllAnnouce(annouces);
       setNewsAnnouce(news)
       setRuleAnnouce(rules)

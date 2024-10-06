@@ -99,14 +99,14 @@ body {
 
   .sidebar-content nav ul li a:hover {
     font-weight: bold;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     color: #69f9f9;
   }
   
   .sidebar-content nav ul li.active a {
     /*background: #a39e9ef8; /* slightly lighter shade for active link */
     font-weight: bold;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     padding-top: 5px;
   }
 

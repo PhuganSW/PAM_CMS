@@ -344,6 +344,26 @@ class FireStore{
     }
   };
 
+  deleteCheckin = async (companyId, uid, success, unsuccess) => {
+    try {
+      const checkinRef = doc(this.db, "companies", companyId, "checkin", uid);
+      await deleteDoc(checkinRef);
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+  
+  deleteCheckout = async (companyId, uid, success, unsuccess) => {
+    try {
+      const checkoutRef = doc(this.db, "companies", companyId, "checkout", uid);
+      await deleteDoc(checkoutRef);
+      success();
+    } catch (e) {
+      unsuccess(e);
+    }
+  };
+
   removeUserFromAllWorkplaces = async (companyId, userId) => {
     try {
         // Fetch the current workplace of the user from the 'extend' sub-collection

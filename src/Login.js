@@ -77,7 +77,8 @@ const Login = () => {
         <div className='Main'>
           <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={200} height={200} alt="Logo" />
           <form onSubmit={onLogin}>
-            <input type="email" style={{marginTop:10}} className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} autoFocus={true} required />
+            <p>กรุณาใส่ User ในรูปแบบของอีเมล์</p>
+            <input type="email" className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} autoFocus={true} required />
             <div className="password-input-wrapper" style={{ position: 'relative' }}>
               <input
                 type={showPassword ? "text" : "password"}

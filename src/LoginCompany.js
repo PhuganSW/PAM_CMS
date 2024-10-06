@@ -42,17 +42,18 @@ const LoginCompany = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <div className='Main' style={{height:450}}>
+        <div className='Main'>
           <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={200} height={200} alt="Logo" />
           <form onSubmit={onLogin}>
             <input
-              style={{ marginTop: 20 }}
+              style={{ marginTop: 50, textAlign: companyId ? 'left' : 'center'}}
               className="input-field"
-              placeholder="CompanyId"
+              placeholder="Company ID"
+              value={companyId}
               onChange={(e) => setCompanyId(e.target.value)}
               required
             />
-            <button type="submit" className="login-button">Next</button>
+            <button type="submit" className="login-button" style={{marginTop:30}}>Next</button>
           </form>
         </div>
       </header>
