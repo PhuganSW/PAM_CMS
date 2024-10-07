@@ -8,6 +8,11 @@ import firestore from './Firebase/Firestore';
 import { IoSearchOutline } from "react-icons/io5";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { hashPassword } from './hashPassword';
 
 function Salary() {
   const navigate = useNavigate();
@@ -18,7 +23,13 @@ function Salary() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
-  const { setCurrentUser, companyId } = useContext(UserContext);
+  const { setCurrentUser, companyId, userData } = useContext(UserContext);
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPasswordInModal, setShowPasswordInModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const getAllUsersSuccess=(doc)=>{
     let users = []
@@ -41,7 +52,8 @@ function Salary() {
   }
 
   useEffect(() => {
-    firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
+    setShowPasswordModal(true);
+    //firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
   }, []);
 
   const onNext = () => {
@@ -62,6 +74,23 @@ function Salary() {
     setFilteredUsers(filtered);
   };
 
+  const handlePasswordSubmit = async () => {
+    const hashedInputPassword = await hashPassword(inputPassword); // Hash the entered password
+    if (hashedInputPassword === userData.password) {
+      setPasswordError('');
+      setShowPasswordModal(false); // Close modal on correct password
+      firestore.getAllUser(companyId, getAllUsersSuccess, getAllUsersUnsuccess);
+    } else {
+      setPasswordError('Incorrect password, please try again.');
+    }
+  };
+
+  const handleClickShowPasswordInModal = () => setShowPasswordInModal(!showPasswordInModal);
+
+  const handleCloseModal = () => {
+    setShowPasswordModal(false);
+    navigate(-1); // Redirect to the previous page
+  };
 
   return (
     
@@ -123,6 +152,44 @@ function Salary() {
             </div>
           </div>
         </main>
+        {/* Password Modal */}
+        <Modal show={showPasswordModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Enter Password</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <TextField
+              label="Password"
+              variant="filled"
+              type={showPasswordInModal ? 'text' : 'password'}
+              value={inputPassword}
+              onChange={(e) => setInputPassword(e.target.value)}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPasswordInModal}
+                      edge="end"
+                    >
+                      {showPasswordInModal ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handlePasswordSubmit}>
+              Submit
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
       
     

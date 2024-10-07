@@ -482,6 +482,25 @@ function ProfileEdit() {
               </TextField>
               
             </div>
+            <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
+                <TextField
+                  className="form-field"
+                  select
+                  label="แผนก"
+                  variant="filled"
+                  //InputLabelProps={{ style: { color: '#000' } }}
+                  //InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  style={{ width: '35%', marginRight:'1%' }}
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                >
+                  {departmentOptions.map((option, index) => (
+                    <MenuItem key={index} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+            </div>
             <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
             <TextField
                 className="form-field"
@@ -605,25 +624,6 @@ function ProfileEdit() {
                   value={Ldrug}
                   onChange={(e) => setLdrug(e.target.value)}
                 />
-            </div>
-            <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
-                <TextField
-                  className="form-field"
-                  select
-                  label="แผนก"
-                  variant="filled"
-                  //InputLabelProps={{ style: { color: '#000' } }}
-                  //InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  style={{ width: '35%', marginRight:'1%' }}
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                >
-                  {departmentOptions.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
             </div>
             <div className="form-row" style={{ display: 'flex',}}>
               <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',

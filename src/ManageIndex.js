@@ -27,6 +27,8 @@ function ManageIndex() {
   const [newItem, setNewItem] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [editingItem, setEditingItem] = useState(null);
+  const [showDel, setShowDel] = useState(false);
+  const [selectID, setSelectID] = useState();
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const cate =[
@@ -40,6 +42,11 @@ function ManageIndex() {
     {label:'พื้นที่ปฏิบัติงาน',value:'workplace'},
   ]
   
+  const handleDelClose = () => setShowDel(false);
+  const handleDelShow = (id) => {
+    setSelectID(id)
+    setShowDel(true);
+  }
 
   useEffect(() => {
     // Fetch categories from Firestore
@@ -110,9 +117,11 @@ function ManageIndex() {
     );
   };
 
-  const handleDeleteItem = async (itemId) => {
-    firestore.deleteItemFromCategory(companyId,selectedCategory, itemId)
-      .then(() => setItems(items.filter(item => item.id !== itemId)))
+  const handleDeleteItem = async () => {
+    firestore.deleteItemFromCategory(companyId,selectedCategory, selectID)
+      .then(() => {setItems(items.filter(item => item.id !== selectID))
+        setSelectedCategory('')
+        handleDelClose()})
       .catch((error) => console.error("Error deleting item: ", error));
   };
 
@@ -127,7 +136,7 @@ function ManageIndex() {
           <div className="main">
           <div className='header-page'>
           <header>
-            <h1 >จัดการข้อมูล Index</h1>
+            <h1>การตั้งค่าพื้นฐาน</h1>
             {/* Add user profile and logout here */}
           </header>
           </div>
@@ -188,7 +197,7 @@ function ManageIndex() {
                       <div style={{width:'100%',display:'flex',flexDirection:'row',}}>{item.name}</div>
                       <div style={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                         <button className='Edit-button' onClick={() => handleEditItem(item)}>แก้ไข</button>
-                        <button className='Delete-button' onClick={() => handleDeleteItem(item.id)}>ลบ</button>
+                        <button className='Delete-button' onClick={() => handleDelShow(item.id)}>ลบ</button>
                       </div>
                     </li>
                   ))}
@@ -199,6 +208,22 @@ function ManageIndex() {
             </div>
             </div>
           </div>
+          <Modal show={showDel} onHide={handleDelClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>ลบข้อมูล</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <h5>ยืนยันจะลบข้อมูล หรือไม่</h5>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black'}} onClick={handleDeleteItem}>
+                OK
+              </Button>
+              <Button variant="secondary" style={{backgroundColor:'#343434'}} onClick={handleDelClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </main>
       
       

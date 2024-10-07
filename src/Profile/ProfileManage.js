@@ -165,7 +165,7 @@ function ProfileManage() {
           <div className="main">
           <div className='header-page'>
           <header>
-            <h1 >จัดการประวัติพนักงาน</h1>
+            <h1 >การจัดการข้อมูลพนักงาน</h1>
             {/* Add user profile and logout here */}
           </header>
           </div>

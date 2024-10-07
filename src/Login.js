@@ -76,9 +76,10 @@ const Login = () => {
       <header className="App-header">
         <div className='Main'>
           <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={200} height={200} alt="Logo" />
-          <form onSubmit={onLogin}>
-            <p>กรุณาใส่ User ในรูปแบบของอีเมล์</p>
+          <div style={{flex:1}}>
+            <p style={{color:'black',fontSize:24,marginBottom:0,textAlign:'left',marginLeft:-5}}>กรุณาใส่ User ในรูปแบบของอีเมล</p>
             <input type="email" className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} autoFocus={true} required />
+            <p style={{color:'black',fontSize:24,marginBottom:0,textAlign:'left',marginLeft:-5}}>กรุณาใส่ Password</p>
             <div className="password-input-wrapper" style={{ position: 'relative' }}>
               <input
                 type={showPassword ? "text" : "password"}
@@ -96,8 +97,8 @@ const Login = () => {
               </div>
             </div>
             <div className="forgotPass" onClick={forgotPassword}>forgot password?</div>
-            <button type="submit" className="login-button">LOGIN</button>
-          </form>
+            <button type="submit" className="login-button" onClick={onLogin}>LOGIN</button>
+          </div>
         </div>
       </header>
     </div>

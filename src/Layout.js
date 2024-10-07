@@ -128,19 +128,37 @@ const Layout = ({ children }) => {
               <li className={isActive("/home") ? "active" : ""}>
                 <Link to="/home">
                   <i className="fas fa-home"></i> {/* Home Icon */}
-                  <span>Dashboard</span>
+                  <span>สรุปภาพรวมข้อมูล</span>
                 </Link>
               </li>
               <li className={isActive("/manageIndex") ? "active" : ""}>
                 <Link to="/manageIndex">
                   <i className="fas fa-database"></i> {/* Database Icon */}
-                  <span>จัดการ Index</span>
+                  <span>การตั้งค่าพื้นฐาน</span>
                 </Link>
               </li>
               <li className={isActive("/profile") ? "active" : ""}>
                 <Link to="/profile">
                   <i className="fas fa-user"></i> {/* User Icon */}
-                  <span>จัดการประวัติพนักงาน</span>
+                  <span>การจัดการข้อมูลพนักงาน</span>
+                </Link>
+              </li>
+              <li className={isActive("/welthfare") ? "active" : ""}>
+                <Link to="/welthfare">
+                  <i className="fas fa-calendar-check"></i> {/* Calendar Check Icon */}
+                  <span>การจัดการสิทธิ์และวันหยุด</span>
+                </Link>
+              </li>
+              <li className={isActive("/managment") ? "active" : ""}>
+                <Link to="/managment">
+                  <i className="fas fa-users"></i> {/* Users Icon */}
+                  <span>การบริหารพื้นที่ปฏิบัติการ</span>
+                </Link>
+              </li>
+              <li className={isActive("/salary") ? "active" : ""}>
+                <Link to="/salary">
+                  <i className="fas fa-money-bill-wave"></i> {/* Money Icon */}
+                  <span>การจัดการเงินเดือน</span>
                 </Link>
               </li>
               <li className={isActive("/checkin_history") ? "active" : ""}>
@@ -149,66 +167,49 @@ const Layout = ({ children }) => {
                   <span>ประวัติการเข้า-ออกงาน</span>
                 </Link>
               </li>
-              <li className={isActive("/managment") ? "active" : ""}>
-                <Link to="/managment">
-                  <i className="fas fa-users"></i> {/* Users Icon */}
-                  <span>จัดการกำลังคน</span>
-                </Link>
-              </li>
-              <li className={isActive("/network") ? "active" : ""}>
-                <Link to="/network">
-                  <i className="fas fa-network-wired"></i> {/* Network Icon */}
-                  <span>Network</span>
-                </Link>
-              </li>
               <li className={isActive("/leave_request") ? "active" : ""}>
                 <Link to="/leave_request">
                   <i className="fas fa-suitcase"></i> {/* Suitcase Icon */}
-                  <span>คำขอลางาน</span>
+                  <span>การขอลางาน</span>
                   {newLeaveRequests && <span className="notification-dot"></span>}
                 </Link>
               </li>
               <li className={isActive("/ot_request") ? "active" : ""}>
                 <Link to="/ot_request">
                   <i className="fas fa-hourglass-half"></i> {/* Hourglass Icon */}
-                  <span>คำขอทำ OT</span>
+                  <span>การขอทำงานล่วงเวลา</span>
                   {newOtRequests && <span className="notification-dot"></span>}
-                </Link>
-              </li>
-              <li className={isActive("/welthfare") ? "active" : ""}>
-                <Link to="/welthfare">
-                  <i className="fas fa-calendar-check"></i> {/* Calendar Check Icon */}
-                  <span>จัดการสิทธิ์และวันหยุด</span>
-                </Link>
-              </li>
-              <li className={isActive("/salary") ? "active" : ""}>
-                <Link to="/salary">
-                  <i className="fas fa-money-bill-wave"></i> {/* Money Icon */}
-                  <span>ทำเรื่องเงินเดือน</span>
                 </Link>
               </li>
               <li className={isActive("/annouce") ? "active" : ""}>
                 <Link to="/annouce">
                   <i className="fas fa-bullhorn"></i> {/* Announcement Icon */}
-                  <span>ลงประกาศ</span>
+                  <span>การประกาศข่าวสาร</span>
                 </Link>
               </li>
+              <li className={isActive("/network") ? "active" : ""}>
+                <Link to="/network">
+                  <i className="fas fa-network-wired"></i> {/* Network Icon */}
+                  <span>เครือข่ายภายใน</span>
+                </Link>
+              </li>
+              
               <li className={isActive("/calendar") ? "active" : ""}>
                 <Link to="/calendar">
                   <i className="fas fa-calendar"></i> {/* Calendar Icon */}
-                  <span>ปฏิทิน</span>
+                  <span>ปฏิทินบันทึกโน้ต</span>
                 </Link>
               </li>
               <li className={isActive("/manage_account") ? "active" : ""}>
                 <Link to="/manage_account">
                   <i className="fas fa-cogs"></i> {/* Settings Icon */}
-                  <span>จัดการผู้ใช้</span>
+                  <span>การจัดการผู้ใช้งาน</span>
                 </Link>
               </li>
               <li className={isActive("/contact") ? "active" : ""}>
                 <Link to="/contact">
                   <i className="fas fa-envelope"></i> {/* Envelope Icon */}
-                  <span>ติดต่อผู้พัฒนา</span>
+                  <span>ติดต่อผู้พัฒนาโปรแกรม</span>
                 </Link>
               </li>
             </ul>
@@ -216,7 +217,7 @@ const Layout = ({ children }) => {
           <div className='logout-button'> 
           <button style={{ fontSize: 22 }} onClick={logout}>
               <i className="fas fa-sign-out-alt"></i> {/* Sign Out Icon */}
-              {sidebarOpen && "Sign Out"}
+              {sidebarOpen && "ออกจากระบบ"}
             </button>
           </div>
         </div>

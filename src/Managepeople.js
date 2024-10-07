@@ -53,12 +53,14 @@ function ManagePeople() {
   const handleClose = () => setShow(false);
   const handleCloseWP = () => {
     setShowManageWp(false);
-    setWorkplace('')
+    setShowWorkPlace('')
   }
   const handleShow = async (user) =>{
     let Leader = []
-    await firestore.getLeader(companyId,user.id,(data)=>Leader.push(data))
-    
+    let WP = ''
+    await firestore.getLeader(companyId,user.id,(data,wp)=>{Leader.push(data)
+    WP = wp.workplace})
+    setShowWorkPlace(WP)
     setLeaderId(Leader[0].leadId)
     setSelectedUser(user);
     setShow(true);
@@ -222,16 +224,21 @@ function ManagePeople() {
     setFilteredUsers(filtered);
   };
 
-  const handleWorkplaceChange = async (event) => {
+  const handleWorkplaceChange = async (event,{ updateWorkplace = false, updateShowWorkPlace = false }) => {
     const selectedWorkplace = event.target.value;
-    setShowWorkPlace(selectedWorkplace);
-    setWorkplace(selectedWorkplace)
-  
+    if (updateWorkplace) {
+      setWorkplace(selectedWorkplace);
+    }
+    if (updateShowWorkPlace) {
+      setShowWorkPlace(selectedWorkplace);
+    }
+   
     if (unsubscribe) {
         unsubscribe();
     }
   
-    const unsubscribeFn = firestore.getUsersByWorkplace(
+    if(updateWorkplace){
+      const unsubscribeFn = firestore.getUsersByWorkplace(
         companyId,
         selectedWorkplace,
         getUsersByWorkplaceSuccess,
@@ -239,6 +246,8 @@ function ManagePeople() {
     );
   
     setUnsubscribe(() => unsubscribeFn);
+    }
+    
     await fetchWorkplaceImage(selectedWorkplace); 
   };
 
@@ -311,12 +320,12 @@ function ManagePeople() {
                 </tbody>
               </TableBootstrap>
                 <div>
-                  <button className='Previous-button' onClick={onPrevious}>Previous</button>
+                  <button className='Previous-button' style={{marginLeft:0}} onClick={onPrevious}>Previous</button>
                   <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px',marginTop:20 }} >
                   
-                    <Button style={{textAlign: 'center',width:'20%',marginRight:'1%' }} onClick={()=>handleShowWP()} >
+                    <Button style={{textAlign: 'center',width:'20%',marginRight:'0.5%',fontSize:20 }} onClick={()=>handleShowWP()} >
                       จัดการพื้นที่
                     </Button>
                   
@@ -328,7 +337,7 @@ function ManagePeople() {
                     variant="filled"
                     style={{ width: '79%' }}
                     value={workplace}
-                    onChange={handleWorkplaceChange}
+                    onChange={(e) => handleWorkplaceChange(e, { updateWorkplace: true })}
                   >
                     {workplaces.map((option,index) => (
                   <MenuItem key={index} value={option}>
@@ -344,7 +353,7 @@ function ManagePeople() {
                     <th scope="col">ลำดับ</th>
                     <th scope="col">ชื่อ-สกุล</th>
                     <th scope="col">ตำแหน่ง</th>
-                    <th scope="col"></th>
+                    {/* <th scope="col"></th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -353,9 +362,9 @@ function ManagePeople() {
                         <th scope="row">{index + 1}</th>
                         <td>{user.username}</td>
                         <td>{user.position}</td>
-                        <td style={{width:'30%',textAlign:'center'}}>
-                          {/* Additional actions can go here */}
-                        </td>
+                        {/* <td style={{width:'30%',textAlign:'center'}}>
+                          
+                        </td> */}
                       </tr>
                     ))}
                 </tbody>
@@ -408,10 +417,10 @@ function ManagePeople() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black' }} onClick={onAssign} disabled={uploading}>
-             Allow
+             Assign
             </Button>
             <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={handleClose}>
-              Deny
+              Close
             </Button>
           </Modal.Footer>
         </Modal>
@@ -426,7 +435,7 @@ function ManagePeople() {
               <FormControl variant="filled" fullWidth>
                 <InputLabel>พื้นที่ทำงาน</InputLabel>
                 {/* On changing the workplace, handleWorkplaceChange is called */}
-                <Select value={showWorkPlace} onChange={handleWorkplaceChange}>
+                <Select value={showWorkPlace} onChange={(e) => handleWorkplaceChange(e, { updateShowWorkPlace: true })}>
                   {workplaces.map((option, index) => (
                     <MenuItem key={index} value={option}>
                       {option}
@@ -490,10 +499,10 @@ function ManagePeople() {
               disabled={uploading}
               onClick={onManageWP}
             >
-              {uploading ? 'กำลังอัพโหลด...' : 'Allow'}
+              {uploading ? 'กำลังอัพโหลด...' : 'Save'}
             </Button>
             <Button variant="secondary" style={{ backgroundColor: '#343434' }} onClick={handleCloseWP}>
-              Deny
+              Close
             </Button>
           </Modal.Footer>
         </Modal>

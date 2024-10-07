@@ -1057,13 +1057,15 @@ class FireStore{
 
   getLeader = async (companyId, userId, leadData) => {
     const userRef = doc(this.db, "companies", companyId, "users",userId,'extend','leader');
+    const WPRef = doc(this.db, "companies", companyId, "users",userId,'extend','workplace');
   
     try{
       const docSnap = await getDoc(userRef);
+      const WPSnap = await getDoc(WPRef)
 
       if (docSnap.exists()) {
         //console.log("Document data:", docSnap.data());
-        leadData(docSnap.data())
+        leadData(docSnap.data(),WPSnap.data())
       } else {
         // docSnap.data() will be undefined in this case
         console.log("No such document!");
