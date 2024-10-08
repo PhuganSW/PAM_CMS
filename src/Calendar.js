@@ -139,7 +139,7 @@ function CalendarPage() {
         <div className="calendar-main">
           <div className="calendar-header-page">
             <header>
-              <h1>ปฏิทิน</h1>
+              <h1>ปฏิทินบันทึกโน้ต</h1>
             </header>
           </div>
           <div className="calendar-main-contain">

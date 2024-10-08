@@ -181,7 +181,8 @@ function ManageAccount() {
     const Delete =()=>{
       auth.deleteUser(selectID, () => {
         // After successfully deleting from Firebase Authentication, delete from Firestore
-        firestore.deleteAccount(companyId, selectID)
+        //firestore.deleteAccount(companyId, selectID)
+        console.log('Del')
           .then(() => {
             alert(`User with email ${email} deleted successfully!`);
             handleDelClose();
@@ -218,7 +219,7 @@ function ManageAccount() {
           <div class="main">
             <div className='header-page'>
             <header>
-              <h1>จัดการผู้ใช้</h1>
+              <h1>การจัดการผู้ใช้งาน</h1>
               {/* Add user profile and logout here */}
             </header>
             </div>

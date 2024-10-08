@@ -62,6 +62,7 @@ function ManagePeople() {
     WP = wp.workplace})
     setShowWorkPlace(WP)
     setLeaderId(Leader[0].leadId)
+    setLeader(Leader[0].name)
     setSelectedUser(user);
     setShow(true);
   } 
@@ -81,6 +82,7 @@ function ManagePeople() {
   };
 
   const onAssign = async () => {
+    console.log(showWorkPlace,' ',leader)
     if (selectedUser && showWorkPlace && leader) {
 
         firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
@@ -272,7 +274,7 @@ function ManagePeople() {
           <div className="main">
           <div className='header-page'>
           <header>
-            <h1 >จัดการกำลังคน</h1>
+            <h1>การบริหารพื้นที่ปฏิบัติการ</h1>
             {/* Add user profile and logout here */}
           </header>
           </div>

@@ -175,6 +175,8 @@ function OTRequest() {
       let item={
         status:false,
         status1:false,
+        deny:true,
+        exp:new Date()
       }
       firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
       setShowPasswordModal(false);
@@ -198,7 +200,7 @@ function OTRequest() {
           <div class="main">
           <div className='header-page'>
           <header>
-            <h1>คำขอทำ OT</h1>
+            <h1>การขอทำงานล่วงเวลา</h1>
             {/* Add user profile and logout here */}
           </header>
           </div>

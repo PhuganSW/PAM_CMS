@@ -76,7 +76,7 @@ function Welthfare() {
           <div class="main">
           <div className='header-page'>
             <header>
-              <h1>จัดการสิทธิ์และวันหยุด</h1>
+              <h1>การจัดการสิทธิ์และวันหยุด</h1>
               {/* Add user profile and logout here */}
             </header>
             </div>

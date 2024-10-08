@@ -218,7 +218,7 @@ function Annouce() {
           <div className="main">
             <div className='header-page'>
               <header>
-                <h1>ประกาศ</h1>
+                <h1>การประกาศข่าวสาร</h1>
                 {/* Add user profile and logout here */}
               </header>
             </div>

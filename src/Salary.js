@@ -102,7 +102,7 @@ function Salary() {
           <div class="main">
             <div className='header-page'>
             <header>
-              <h1>ทำเรื่องเงินเดือน</h1>
+              <h1>การจัดการเงินเดือน</h1>
               {/* Add user profile and logout here */}
             </header>
             </div>

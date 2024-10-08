@@ -43,7 +43,7 @@ function Network() {
           <div className="main">
             <div className='header-page'>
               <header>
-                <h1>Network</h1>
+                <h1>เครือข่ายภายใน</h1>
                 {/* Add user profile and logout here */}
               </header>
             </div>

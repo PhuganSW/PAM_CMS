@@ -287,7 +287,7 @@ function LeaveRequest() {
   const handlePasswordSubmit = async() => {
     const hashedPass = await hashPassword(inputPassword)
     if (hashedPass === userData.password) {
-      firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true},handleClose,(e)=>console.log(e))
+      firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true,exp:new Date()},handleClose,(e)=>console.log(e))
       setShowPasswordModal(false);
       setPasswordError('');
     } else {
@@ -309,7 +309,7 @@ function LeaveRequest() {
           <div class="main">
           <div className='header-page'>
           <header>
-            <h1>คำขอลางาน</h1>
+            <h1>การขอลางาน</h1>
             {/* Add user profile and logout here */}
           </header>
           </div>

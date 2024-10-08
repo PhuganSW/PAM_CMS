@@ -322,23 +322,6 @@ function ProfileEdit() {
     fetchDropdownOptions();
   }, [location.state]);
 
-  const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
-
-  const handlePasswordSubmit = async () => {
-    const hashedPass = await hashPassword(inputPassword)
-    if (hashedPass === userData.password) {
-      setShowPasswordModal(false);
-      setPasswordError('');
-      navigate('/profile_salary', { state: { action: 'edit', uid: uid } });
-    } else {
-      setPasswordError('Incorrect password, please try again.');
-    }
-  };
-
-  const handleSalaryClick = () => {
-    setShowPasswordModal(true);
-  };
-
   return (
     <div className="dashboard">
       <Layout />
@@ -761,50 +744,12 @@ function ProfileEdit() {
             <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
-              <button style={{ width: 120, height: 50, borderRadius: 5, backgroundColor: '#BEBEBE' }} onClick={handleSalaryClick}>ข้อมูลเงินเดือน</button>
+              
             </div>
 
           </div>
         </div>
       </main>
-      {/* Password Modal */}
-      <Modal show={showPasswordModal} onHide={() => { setShowPasswordModal(false); setInputPassword(''); }}>
-        <Modal.Header closeButton>
-          <Modal.Title>Enter Password</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <TextField
-            label="Password"
-            variant="filled"
-            type={showPasswordInModal ? 'text' : 'password'}
-            value={inputPassword}
-            onChange={(e) => setInputPassword(e.target.value)}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPasswordInModal}
-                    edge="end"
-                  >
-                    {showPasswordInModal ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => { setShowPasswordModal(false); setInputPassword(''); }}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handlePasswordSubmit}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 }
