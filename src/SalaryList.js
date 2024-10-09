@@ -78,6 +78,10 @@ function SalaryList() {
     console.log(error)
   }
 
+  const addSalary=(id)=>{
+    navigate('/profile_salary', { state: { action: 'edit', uid: uid } })
+  }
+
   const calSalary=(id)=>{
     if(addAble){
       let act = "cal";
@@ -159,7 +163,8 @@ function SalaryList() {
                 <button className="search-button" ><IoSearchOutline size={24} /></button>
               </div> */}
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
-              <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
+                <button className='Edit-button' style={{fontSize:16}} onClick={()=> addSalary(uid)}>เพิ่มข้อมูลเงินเดือน</button>
+                <button className='Add-button' style={{fontSize:16}} onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
               </div>
       
               <div style={{width:'95%',alignSelf:'center',marginTop:20}}>

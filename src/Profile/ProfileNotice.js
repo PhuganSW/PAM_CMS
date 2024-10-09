@@ -73,7 +73,7 @@ function ProfileNotice() {
           <div className="main">
             <div className='header-page'>
               <header>
-                <h1></h1>
+                <h1>การแจ้งเตือน</h1>
                 {/* Add user profile and logout here */}
               </header>
             </div>

@@ -65,7 +65,7 @@ function ProfileSalary() {
   }
 
   const updateSuccess = () => {
-    navigate('/profile_edit',{state:{uid:uid}});
+    navigate('/salary_list',{state:{uid:uid}})
   };
 
   const updateUnsuccess = (error) => {
@@ -341,8 +341,7 @@ function ProfileSalary() {
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>{
-                    action == 'add'?navigate('/profile_add',{state:{uid:uid}}):navigate('/profile_edit',{state:{uid:uid}})}}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>{navigate('/salary_list',{state:{uid:uid}})}}>ยกเลิก</button>
               </div>
 
             </div>

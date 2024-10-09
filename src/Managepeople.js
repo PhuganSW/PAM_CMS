@@ -19,6 +19,7 @@ import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import { UserContext } from './UserContext';
 import LocationPickerMap from './LocationPickerMap';
+import { name } from 'dayjs/locale/th';
 
 function ManagePeople() {
   const navigate = useNavigate();
@@ -44,6 +45,8 @@ function ManagePeople() {
   const { setCurrentUser, companyId } = useContext(UserContext);
   const [leader,setLeader] = useState('');
   const [leaderId,setLeaderId] = useState('');
+  const [leader1,setLeader1] = useState('');
+  const [leaderId1,setLeaderId1] = useState('');
   const [leaders, setLeaders] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
@@ -54,6 +57,10 @@ function ManagePeople() {
   const handleCloseWP = () => {
     setShowManageWp(false);
     setShowWorkPlace('')
+    setLeaderId('')
+    setLeader('')
+    setLeaderId1('')
+    setLeader1('')
   }
   const handleShow = async (user) =>{
     let Leader = []
@@ -63,6 +70,8 @@ function ManagePeople() {
     setShowWorkPlace(WP)
     setLeaderId(Leader[0].leadId)
     setLeader(Leader[0].name)
+    setLeaderId1(Leader[0].leadId1)
+    setLeader1(Leader[0].name1)
     setSelectedUser(user);
     setShow(true);
   } 
@@ -72,6 +81,10 @@ function ManagePeople() {
     setLat('');
     setLon('');
     setWorkplaceImageUrl(null)
+    setLeaderId('')
+    setLeader('')
+    setLeaderId1('')
+    setLeader1('')
     setShowManageWp(true);
   } 
 
@@ -83,7 +96,7 @@ function ManagePeople() {
 
   const onAssign = async () => {
     console.log(showWorkPlace,' ',leader)
-    if (selectedUser && showWorkPlace && leader) {
+    if (selectedUser && showWorkPlace && leader && leader1) {
 
         firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
             username: selectedUser.name,
@@ -94,7 +107,7 @@ function ManagePeople() {
         }, (error) => {
             alert("Error assigning workplace: " + error);
         });
-        firestore.addLeader(companyId,selectedUser.id,{leadId:leaderId,name:leader})
+        firestore.addLeader(companyId,selectedUser.id,{leadId:leaderId,name:leader,leadId1:leaderId1,name1:leader1})
     } else {
         alert("Please select a workplace and leader.");
     }
@@ -112,7 +125,11 @@ function ManagePeople() {
         firestore.ManageWP(companyId, showWorkPlace, {
             imageUrl: imageUrl,  // Save the image URL in Firestore
             lat:lat || null,
-            lon:lon || null
+            lon:lon || null,
+            leaderId:leaderId,
+            name:leader,
+            leaderId1:leaderId1,
+            name1:leader1,
         }, () => {
             alert("Workplace update successfully!");
             handleCloseWP();
@@ -162,11 +179,16 @@ function ManagePeople() {
   const fetchWorkplaceImage = async (workplaceId) => {
     try {
       const workplaceDoc = await firestore.getWorkplaceDoc(companyId, workplaceId);
+      //console.log(workplaceDoc.data())
       if (workplaceDoc.exists()) {
         const imageUrl = workplaceDoc.data().imageUrl || null;
         setWorkplaceImageUrl(imageUrl); // Set the image URL
         setLat(workplaceDoc.data().lat || '')
         setLon(workplaceDoc.data().lon || '')
+        setLeaderId(workplaceDoc.data().leaderId || '')
+        setLeader(workplaceDoc.data().name || '')
+        setLeaderId1(workplaceDoc.data().leaderId1 || '')
+        setLeader1(workplaceDoc.data().name1 || '')
       } else {
         setWorkplaceImageUrl(null); // Clear if no image
         console.log("No image URL found for this workplace.");
@@ -228,7 +250,7 @@ function ManagePeople() {
 
   const handleWorkplaceChange = async (event,{ updateWorkplace = false, updateShowWorkPlace = false }) => {
     const selectedWorkplace = event.target.value;
-    if (updateWorkplace) {
+    if (updateWorkplace) { //employ list
       setWorkplace(selectedWorkplace);
     }
     if (updateShowWorkPlace) {
@@ -280,7 +302,7 @@ function ManagePeople() {
           </div>
             <div className="main-contain">
                 {/* Add component for manage data of dropdown*/}
-                <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%',marginTop:30}}>
+                <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
                 <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
                 <input style={{width:'100%',height:40,borderRadius:5,paddingInlineStart:10,fontSize:22}}
@@ -387,7 +409,7 @@ function ManagePeople() {
             <Form>
               <FormControl variant="filled" fullWidth>
                 <InputLabel>พื้นที่ทำงาน</InputLabel>
-                <Select value={showWorkPlace} onChange={(e) => setShowWorkPlace(e.target.value)}>
+                <Select value={showWorkPlace} onChange={(e) => handleWorkplaceChange(e, { updateShowWorkPlace: true })}>
                   {workplaces.map((option, index) => (
                     <MenuItem key={index} value={option}>
                       {option}
@@ -396,7 +418,7 @@ function ManagePeople() {
                 </Select>
               </FormControl>
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างาน</Form.Label>
+                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างานคนที่ 1</Form.Label>
                 <FormControl variant="filled" fullWidth>
                   <InputLabel>หัวหน้างาน</InputLabel>
                   <Select
@@ -405,6 +427,26 @@ function ManagePeople() {
                       const selectedLeader = leaders.find((leader) => leader.id === e.target.value);
                       setLeader(selectedLeader?.name || ''); // Set the leader's name
                       setLeaderId(selectedLeader?.id || ''); // Set the leader's id
+                    }}
+                  >
+                    {leaders.map((leader, index) => (
+                      <MenuItem key={index} value={leader.id}>
+                        {leader.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างานคนที่ 2</Form.Label>
+                <FormControl variant="filled" fullWidth>
+                  <InputLabel>หัวหน้างาน</InputLabel>
+                  <Select
+                    value={leaderId1} // Set value to leaderId for tracking
+                    onChange={(e) => {
+                      const selectedLeader = leaders.find((leader) => leader.id === e.target.value);
+                      setLeader1(selectedLeader?.name || ''); // Set the leader's name
+                      setLeaderId1(selectedLeader?.id || ''); // Set the leader's id
                     }}
                   >
                     {leaders.map((leader, index) => (
@@ -445,6 +487,46 @@ function ManagePeople() {
                   ))}
                 </Select>
               </FormControl>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างานคนที่ 1</Form.Label>
+                <FormControl variant="filled" fullWidth>
+                  <InputLabel>หัวหน้างาน</InputLabel>
+                  <Select
+                    value={leaderId} // Set value to leaderId for tracking
+                    onChange={(e) => {
+                      const selectedLeader = leaders.find((leader) => leader.id === e.target.value);
+                      setLeader(selectedLeader?.name || ''); // Set the leader's name
+                      setLeaderId(selectedLeader?.id || ''); // Set the leader's id
+                    }}
+                  >
+                    {leaders.map((leader, index) => (
+                      <MenuItem key={index} value={leader.id}>
+                        {leader.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างานคนที่ 2</Form.Label>
+                <FormControl variant="filled" fullWidth>
+                  <InputLabel>หัวหน้างาน</InputLabel>
+                  <Select
+                    value={leaderId1} // Set value to leaderId for tracking
+                    onChange={(e) => {
+                      const selectedLeader = leaders.find((leader) => leader.id === e.target.value);
+                      setLeader1(selectedLeader?.name || ''); // Set the leader's name
+                      setLeaderId1(selectedLeader?.id || ''); // Set the leader's id
+                    }}
+                  >
+                    {leaders.map((leader, index) => (
+                      <MenuItem key={index} value={leader.id}>
+                        {leader.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Form.Group>
               <div style={{ marginTop: '15px' }}>
                 <Form.Label>พิกัด (Latitude, Longitude)</Form.Label>
                 <LocationPickerMap lat={lat} lon={lon} showSearch={true} onLocationSelect={onLocationSelect} />
@@ -492,6 +574,7 @@ function ManagePeople() {
                 <Form.Label>แนบรูปภาพ</Form.Label>
                 <Form.Control type="file" onChange={handleImageChange} />
               </Form.Group>
+              
             </Form>
           </Modal.Body>
           <Modal.Footer>

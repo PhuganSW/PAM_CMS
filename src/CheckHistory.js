@@ -9,7 +9,7 @@ import Layout from './Layout';
 import './Profile.css';
 import './checkHis.css'
 import firestore from './Firebase/Firestore';
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit,AiOutlineDelete  } from "react-icons/ai";
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import MenuItem from '@mui/material/MenuItem';
@@ -93,6 +93,22 @@ function CheckHistory() {
     const filtered1 = allOut.filter(user => user.name?.toLowerCase().includes(query));
     setFilteredUsers(filtered);
     setFilteredOut(filtered1);
+  };
+
+  const handleDelete = () => {
+    const confirmation = window.confirm("Are you sure you want to delete this record?");
+    if (!confirmation) return; // If user cancels, do nothing
+
+    const deleteFunction = isCheckin ? firestore.deleteCheckin : firestore.deleteCheckout;
+    deleteFunction(companyId, uid, 
+      () => {
+        alert('Record deleted successfully!');
+        setShow(false); // Close modal on successful delete
+      }, 
+      (error) => {
+        console.error("Error deleting record: ", error);
+      }
+    );
   };
 
   const handleSave = async () => {
@@ -220,6 +236,12 @@ function CheckHistory() {
     sortData(newOrder, setFilteredOut, allOut);
   };
 
+  const getRowColor = (item) => {
+    if (item.late) return '#B20600';
+    if (item.isInvalidArea) return '#C06014';
+    return 'black';
+  };
+
   return (
     
       <div className="dashboard">
@@ -264,9 +286,7 @@ function CheckHistory() {
                   <tbody>
                   {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => ( */}
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
-                      <tr key={item.id} style={{
-                        color: (item.late || item.isInvalidArea) ? 'red' : 'black'
-                      }}>
+                      <tr key={item.id} style={{ color: getRowColor(item) }}>
                         <th scope="row">{item.date}</th>
                         <td>
                           {item.late?'*'+item.name:item.name}
@@ -300,9 +320,7 @@ function CheckHistory() {
                   </thead>
                   <tbody>
                   {filteredOut.slice(outStartIndex, outEndIndex).map((item, index) => (
-                      <tr key={item.id} style={{
-                        color: (item.late || item.isInvalidArea) ? 'red' : 'black'
-                      }}>
+                      <tr key={item.id} style={{ color: getRowColor(item) }}>
                         <th scope="row">{item.date}</th>
                         <td>
                           {item.name}
@@ -327,26 +345,28 @@ function CheckHistory() {
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title style={{ fontSize: '24px' }}>ข้อมูลเข้าออกงาน</Modal.Title>
+            <Button variant="link" onClick={handleDelete} style={{ color: 'red',marginLeft: -300 }}>
+              <AiOutlineDelete size={24} />
+            </Button>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="date">
-                <Form.Label style={{fontSize:22}}>วันที่</Form.Label>
+                <Form.Label style={{ fontSize: 22 }}>วันที่</Form.Label>
                 <Form.Control
                   type="text"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  style={{fontSize:20,marginBottom:20}}
+                  style={{ fontSize: 20, marginBottom: 20 }}
                 />
               </Form.Group>
-
               <Form.Group controlId="time">
-                <Form.Label style={{fontSize:22}}>เวลา</Form.Label>
+                <Form.Label style={{ fontSize: 22 }}>เวลา</Form.Label>
                 <Form.Control
                   type="text"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  style={{fontSize:20,marginBottom:30}}
+                  style={{ fontSize: 20, marginBottom: 30 }}
                 />
               </Form.Group>
               <FormControl variant="filled" fullWidth>
@@ -355,21 +375,18 @@ function CheckHistory() {
                   value={workplace}
                   onChange={(e) => setWorkplace(e.target.value)}
                 >
-                  {workplaces.map((option,index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
-                    </MenuItem>
+                  {workplaces.map((option, index) => (
+                    <MenuItem key={index} value={option}>{option}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
               {isInvalidArea && (
                 <div style={{ marginTop: '20px' }}>
                   <h5 style={{ marginBottom: '10px', color: 'red' }}>Invalid Location Detected:</h5>
-                  {/* Hide the search bar for this use case */}
                   <LocationPickerMap
                     lat={lat}
                     lon={lon}
-                    showSearch={false} // Hides the search input in this instance
+                    showSearch={false}
                     onLocationSelect={(lat, lon) => {
                       setLat(lat);
                       setLon(lon);
@@ -378,16 +395,15 @@ function CheckHistory() {
                 </div>
               )}
             </Form>
-            
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" style={{backgroundColor:'#D3D3D3',color:'black',fontSize:20}} onClick={handleSave}>
+            <Button variant="primary" style={{ backgroundColor: '#D3D3D3', color: 'black', fontSize: 20 }} onClick={handleSave}>
               Save
             </Button>
             <Button style={{ backgroundColor: '#BEBEBE', color: 'black', fontSize: 20 }} onClick={()=>handleMove(item)}>
               Move
             </Button>
-            <Button variant="secondary" style={{backgroundColor:'#343434',fontSize:20}} onClick={handleClose}>
+            <Button variant="secondary" style={{ backgroundColor: '#343434', fontSize: 20 }} onClick={handleClose}>
               Close
             </Button>
           </Modal.Footer>

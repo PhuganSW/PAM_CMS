@@ -1,6 +1,7 @@
 import React,{useState,useEffect,useContext} from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import './Home.css';
+import './Profile.css'
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
@@ -130,7 +131,7 @@ function Salary() {
                 <tbody>
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                   // {filteredUsers.map((item, index) => (
-                    <tr key={item.id} onClick={()=>calSalary(item.id)}>
+                    <tr key={item.id}>
                       <th scope="row">{startIndex + index + 1}</th>
                       {/* <th scope="row">{index + 1}</th> */}
                       <td>
@@ -138,7 +139,7 @@ function Salary() {
                       </td>
                       <td>{item.position}</td>
                       <td style={{width:'20%',textAlign:'center'}}>
-                        
+                        <button className='Add-button' style={{fontSize:18}} onClick={()=>calSalary(item.id)}>จัดการเงินเดือน</button>
                       </td>
                     </tr>
                   ))}

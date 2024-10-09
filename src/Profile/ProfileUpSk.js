@@ -76,7 +76,7 @@ function ProfileUpSk() {
           <div className="main">
             <div className='header-page'>
               <header>
-                <h1></h1>
+                <h1>องค์ความรู้เพิ่มทักษะ</h1>
                 {/* Add user profile and logout here */}
               </header>
             </div>
