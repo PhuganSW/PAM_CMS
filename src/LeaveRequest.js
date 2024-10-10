@@ -288,6 +288,7 @@ function LeaveRequest() {
     const hashedPass = await hashPassword(inputPassword)
     if (hashedPass === userData.password) {
       firestore.updateLeave(companyId,selectID,{state:false,state1:false,deny:true,exp:new Date()},handleClose,(e)=>console.log(e))
+      setInputPassword('')
       setShowPasswordModal(false);
       setPasswordError('');
     } else {

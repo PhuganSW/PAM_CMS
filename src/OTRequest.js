@@ -179,6 +179,7 @@ function OTRequest() {
         exp:new Date()
       }
       firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
+      setInputPassword('')
       setShowPasswordModal(false);
       setPasswordError('');
     } else {

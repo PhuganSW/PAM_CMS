@@ -101,7 +101,7 @@ function ManagePeople() {
         firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
             username: selectedUser.name,
             position: selectedUser.position,
-        },{workplace:showWorkPlace}, () => {
+        },{workplace:showWorkPlace,newWork:true}, () => {
             alert("Workplace assigned successfully!");
             handleClose();
         }, (error) => {

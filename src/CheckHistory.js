@@ -55,6 +55,7 @@ function CheckHistory() {
   const handleShow = (uid,date,time,workplace,isCheckin,data) =>{
     setItem(data)
     setUid(uid);
+    setName(data.name)
     setDate(date)
     setTime(time)
     setWorkplace(workplace)
@@ -344,10 +345,12 @@ function CheckHistory() {
         </main>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title style={{ fontSize: '24px' }}>ข้อมูลเข้าออกงาน</Modal.Title>
-            <Button variant="link" onClick={handleDelete} style={{ color: 'red',marginLeft: -300 }}>
-              <AiOutlineDelete size={24} />
-            </Button>
+            <Modal.Title style={{ fontSize: '24px' }}>ข้อมูลเข้าออกงาน {name}
+              <Button variant="link" onClick={handleDelete} style={{ color: 'red' }}>
+                <AiOutlineDelete size={24} />
+              </Button>
+            </Modal.Title>
+            
           </Modal.Header>
           <Modal.Body>
             <Form>
