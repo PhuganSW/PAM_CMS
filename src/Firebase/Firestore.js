@@ -294,7 +294,7 @@ class FireStore{
       const allcheckin = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        allcheckin.push({id:doc.id, ...doc.data()});
+        allcheckin.push({id:doc.id,isCheckIn:true, ...doc.data()});
       });
       success(allcheckin);
     }, (error) => {
@@ -310,7 +310,7 @@ class FireStore{
     const unsubscribe = onSnapshot(query(collection(this.db, "companies", companyId, "checkout"),orderBy('date','desc'),orderBy('time','desc')), (querySnapshot) => {
       const allcheckout = [];
       querySnapshot.forEach((doc) => {
-        allcheckout.push({id:doc.id, ...doc.data()});
+        allcheckout.push({id:doc.id,isCheckIn:false, ...doc.data()});
       });
       success(allcheckout);
     }, (error) => {
@@ -320,6 +320,19 @@ class FireStore{
     
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
+  };
+
+  addCheckInOut = async (companyId, isCheckIn, data, success, unsuccess) => {
+    try {
+      const collectionName = isCheckIn ? "checkin" : "checkout";
+      const collectionRef = collection(this.db, "companies", companyId, collectionName);
+  
+      // Adding the document with auto-generated ID
+      await addDoc(collectionRef, data);
+      success();
+    } catch (error) {
+      unsuccess(error);
+    }
   };
 
   updateCheckin = async (companyId, uid, updatedData, success, unsuccess) => {

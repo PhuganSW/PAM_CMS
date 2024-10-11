@@ -27,9 +27,9 @@ const ForgotPass = () => {
             <p style={{fontSize:22,textAlign:'left',color:'#343434',marginTop:15,marginBottom:5}}>กรอก E-mail เพื่อรีเซ็ตรหัสผ่าน</p>
             <input type="email" className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
             
-            
-            <button  className="login-button" onClick={resetPass}>Send</button>
-            
+            <div>
+            <button  className="login-button" style={{marginTop:50,}} onClick={resetPass}>Send</button>
+            </div>
         </div>
         </header>
     </div>

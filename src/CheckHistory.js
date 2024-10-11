@@ -46,12 +46,18 @@ function CheckHistory() {
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order
   const [sortOrderOut, setSortOrderOut] = useState('desc'); // For checkout sorting order
   const [isCheckin, setIsCheckin] = useState(true);
+  const [showNewEntryModal, setShowNewEntryModal] = useState(false);
+  const [users, setUsers] = useState([]); // List of users for dropdown
+  const [selectedUser, setSelectedUser] = useState(''); // Track selected user
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [reason,setReason] = useState('');
 
   const [workplaces,setWorkplaces] = useState([]);
   const [item,setItem] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
+  const handleCloseNewEntry = () => setShowNewEntryModal(false);
   const handleShow = (uid,date,time,workplace,isCheckin,data) =>{
     setItem(data)
     setUid(uid);
@@ -63,6 +69,7 @@ function CheckHistory() {
     setLon(data.lon)
     setIsInvalidArea(data.isInvalidArea)
     setIsCheckin(isCheckin);
+    setReason(data.reason || '')
     setShow(true);
   } 
 
@@ -117,6 +124,7 @@ function CheckHistory() {
       date:date,
       time:time,
       workplace:workplace || '',
+      reason:reason ||'',
     };
 
     console.log(`UID: ${uid}`);  // Debugging the UID
@@ -150,6 +158,7 @@ function CheckHistory() {
         isInvalidArea:item.isInvalidArea,
         late:item.late || null,
         user:item.user,
+        reason:reason || '',
       };
 
       if (isCheckin) {
@@ -201,9 +210,12 @@ function CheckHistory() {
       sortData(sortOrderOut, setFilteredOut, outData); // Ensure sorting after data update
     }, console.error);
 
+    const unsubscribeUsers = firestore.getAllUser(companyId, setUsers, console.error);
+
     return () => {
       unsubscribeIn();
       unsubscribeOut();
+      unsubscribeUsers();
     };
   }, [companyId, sortOrder, sortOrderOut]);
 
@@ -238,9 +250,49 @@ function CheckHistory() {
   };
 
   const getRowColor = (item) => {
-    if (item.late) return '#B20600';
-    if (item.isInvalidArea) return '#C06014';
+    if (item.late && item.isCheckIn) return '#B20600';
+    if (item.isInvalidArea) return '#050C9C';
     return 'black';
+  };
+
+  const handleNewEntry = (isCheckIn) => {
+    setIsCheckin(isCheckIn);
+    setSelectedUserId('');
+    setSelectedUser('');
+    setDate('');
+    setTime('');
+    setWorkplace('');
+    setLat('');
+    setLon('');
+    setIsInvalidArea(false);
+    setLate(false);
+    setReason('')
+    setShowNewEntryModal(true);
+  };
+
+  const handleAddData = () => {
+    const newData = {
+      user: selectedUserId,
+      name: selectedUser,
+      date,
+      time,
+      workplace,
+      lat,
+      lon,
+      isInvalidArea,
+      late,
+      reason,
+    };
+
+    firestore.addCheckInOut(companyId, isCheckin, newData,
+      () => {
+        alert('Data added successfully!');
+        setShowNewEntryModal(false);
+      },
+      (error) => {
+        console.error("Error adding data:", error);
+      }
+    );
   };
 
   return (
@@ -259,13 +311,17 @@ function CheckHistory() {
           </header>
           </div>
             <div class="main-contain">
-            <div className="search-field">
+              <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
                 <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22,alignSelf:'center',justifyContent:'center'}}
                 placeholder='search..' 
                 value={search}
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', width: '95%', alignSelf: 'center',marginTop:10}}>
+                <Button onClick={() => handleNewEntry(true)} variant="success">Add Check-In</Button>
+                <Button onClick={() => handleNewEntry(false)} variant="info" style={{ marginLeft: '10px' }}>Add Check-Out</Button>
               </div>
               <div style={{width:'100%',alignSelf:'center'}}>
               <div className="table-container">
@@ -290,10 +346,17 @@ function CheckHistory() {
                       <tr key={item.id} style={{ color: getRowColor(item) }}>
                         <th scope="row">{item.date}</th>
                         <td>
-                          {item.late?'*'+item.name:item.name}
+                          {item.name}
                         </td>
                         <td>{item.time}</td>
-                        <td>{item.workplace}</td>
+                        <td>
+                          {item.workplace || '*นอกพื้นที่'}
+                          {item.reason && (
+                            <span style={{ fontSize: '0.8em', color: '#666', display: 'block', marginTop: '2px' }}>
+                              {item.reason}
+                            </span>
+                          )}
+                        </td>
                         <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, true,item)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
@@ -327,7 +390,14 @@ function CheckHistory() {
                           {item.name}
                         </td>
                         <td>{item.time}</td>
-                        <td>{item.workplace}</td>
+                        <td>
+                          {item.workplace || '*นอกพื้นที่'}
+                          {item.reason && (
+                            <span style={{ fontSize: '0.8em', color: '#666', display: 'block', marginTop: '2px' }}>
+                              {item.reason}
+                            </span>
+                          )}
+                        </td>
                         <td><button style={{borderRadius:10}} onClick={() => handleShow(item.id, item.date, item.time, item.workplace, false,item)}><AiOutlineEdit /></button></td>
                       </tr>
                    ))}
@@ -378,6 +448,9 @@ function CheckHistory() {
                   value={workplace}
                   onChange={(e) => setWorkplace(e.target.value)}
                 >
+                <MenuItem value="">
+                  <em>None</em> {/* Label for the blank option */}
+                </MenuItem>  
                   {workplaces.map((option, index) => (
                     <MenuItem key={index} value={option}>{option}</MenuItem>
                   ))}
@@ -411,6 +484,100 @@ function CheckHistory() {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal show={showNewEntryModal} onHide={handleCloseNewEntry}>
+        <Modal.Header closeButton>
+            <Modal.Title>{isCheckin ? "Add Check-In Data" : "Add Check-Out Data"}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <FormControl variant="filled" fullWidth style={{ marginBottom: 15 }}>
+                <InputLabel>Select User</InputLabel>
+                <Select
+                  value={selectedUserId}
+                  onChange={(e) => {
+                    setSelectedUserId(e.target.value);
+                    const user = users.find(user => user.id === e.target.value);
+                    setSelectedUser(user ? user.name : '');
+                  }}
+                >
+                  {users.map((user) => (
+                    <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Form.Group controlId="date">
+                <Form.Label>Date</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="dd/mm/yyyy"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="time">
+                <Form.Label style={{marginTop:10}}>Time</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="hh:mm:ss"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                />
+              </Form.Group>
+
+              <FormControl variant="filled" fullWidth style={{ marginBottom: 15,marginTop:20 }}>
+                <InputLabel>Workplace</InputLabel>
+                <Select
+                  value={workplace}
+                  onChange={(e) => setWorkplace(e.target.value)}
+                >
+                <MenuItem value="">
+                  <em>None</em> {/* Label for the blank option */}
+                </MenuItem>  
+                  {workplaces.map((workplace, index) => (
+                    <MenuItem key={index} value={workplace}>{workplace}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* <Form.Group controlId="lat">
+                <Form.Label>Latitude</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={lat}
+                  onChange={(e) => setLat(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="lon">
+                <Form.Label>Longitude</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={lon}
+                  onChange={(e) => setLon(e.target.value)}
+                />
+              </Form.Group> */}
+
+                <Form.Group>
+                  <Form.Label style={{marginTop:10}}>Reason</Form.Label>
+                  <Form.Control
+                    placeholder="reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={handleAddData}>
+              Save
+            </Button>
+            <Button variant="secondary" onClick={handleCloseNewEntry}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+    
       </div>
       
     
