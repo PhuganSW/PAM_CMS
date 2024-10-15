@@ -370,7 +370,7 @@ function CheckHistory() {
                 
                 <div className="table-section">
                 <p className="table-title">เวลาออกงาน</p>
-                <TableBootstrap striped bordered hover style={{marginTop:10}}>
+                <TableBootstrap striped bordered hover className='table' style={{marginTop:10,width:'100%'}}>
                   <thead>
                     <tr>
                       <th scope="col" onClick={toggleSortOrderOut} style={{ cursor: 'pointer' }}>

@@ -550,9 +550,9 @@ class FireStore{
             id:doc.id,
             date: data.date,
             name: data.name,
-            time:data.timeStart+"-"+data.timeEnd ,
+            requestTime:data.requestTime ,
             state: data.status,
-            state1:data.status1
+            state1:data.status1ม
           });
         }
       });
@@ -1076,7 +1076,7 @@ class FireStore{
       const docSnap = await getDoc(userRef);
       const WPSnap = await getDoc(WPRef)
 
-      if (docSnap.exists()) {
+      if (docSnap.exists() || WPSnap.exists()) {
         //console.log("Document data:", docSnap.data());
         leadData(docSnap.data(),WPSnap.data())
       } else {

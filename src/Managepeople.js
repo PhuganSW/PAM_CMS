@@ -65,13 +65,21 @@ function ManagePeople() {
   const handleShow = async (user) =>{
     let Leader = []
     let WP = ''
-    await firestore.getLeader(companyId,user.id,(data,wp)=>{Leader.push(data)
-    WP = wp.workplace})
-    setShowWorkPlace(WP)
-    setLeaderId(Leader[0].leadId)
-    setLeader(Leader[0].name)
-    setLeaderId1(Leader[0].leadId1)
-    setLeader1(Leader[0].name1)
+    await firestore.getLeader(companyId, user.id, (data, wp) => {
+      if (data) {
+        Leader.push(data);
+      }
+      if (wp) {
+        WP = wp.workplace;
+      }
+    });
+  
+    // Set default values if Leader[0] is undefined
+    setShowWorkPlace(WP);
+    setLeaderId(Leader[0]?.leadId || '');
+    setLeader(Leader[0]?.name || '');
+    setLeaderId1(Leader[0]?.leadId1 || '');
+    setLeader1(Leader[0]?.name1 || '');
     setSelectedUser(user);
     setShow(true);
   } 

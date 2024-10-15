@@ -156,9 +156,12 @@ function Salary() {
         {/* Password Modal */}
         <Modal show={showPasswordModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Enter Password</Modal.Title>
+            {userData.level=='0'||userData.level=='1'?<Modal.Title>Enter Password</Modal.Title>:
+            <Modal.Title>You not Permission</Modal.Title>}
+            
           </Modal.Header>
           <Modal.Body>
+            {userData.level=='0'||userData.level=='1'?
             <TextField
               label="Password"
               variant="filled"
@@ -179,17 +182,25 @@ function Salary() {
                   </InputAdornment>
                 ),
               }}
-            />
+            />  :<p>Not authorized</p>}
             {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+          
           </Modal.Body>
-          <Modal.Footer>
+          {userData.level=='0'||userData.level=='1'?
+            <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>
               Cancel
             </Button>
             <Button variant="primary" onClick={handlePasswordSubmit}>
               Submit
             </Button>
-          </Modal.Footer>
+          </Modal.Footer>:
+          <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>}
+          
         </Modal>
       </div>
       

@@ -56,7 +56,7 @@ function OTRequest() {
     if (allOT.length === 0) {
         
       doc.forEach((item) => {
-        ots.push({id: item.id,date:item.date, name: item.name,time:item.time, state:item.state1});
+        ots.push({id: item.id,date:item.date, name: item.name,requestTime:item.requestTime, state:item.state1});
       });
       setAllOT(ots);
       sortData(sortOrder, setFilteredUsers, ots);
@@ -229,6 +229,7 @@ function OTRequest() {
                       <th onClick={toggleNameSortOrder} style={{ cursor: 'pointer' }}>
                         ชื่อ-สกุล {nameSortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                       </th>
+                      <th scope='col'>เวลายื่นคำขอ</th>
                       <th scope='col'>สถานะ</th>
                     </tr>
                   </thead>
@@ -242,7 +243,7 @@ function OTRequest() {
                         {item.date}
                       </td>
                       <td>{item.name}</td>
-                      {/* <td>{item.time}</td> */}
+                      <td>{item.requestTime}</td>
                       {item.state ? (
                         <td>allowed</td>
                       ) : (

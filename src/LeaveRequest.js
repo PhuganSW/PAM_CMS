@@ -119,7 +119,7 @@ function LeaveRequest() {
           remainingDays = welthfareData.absenceR - leaveAmount;
           if (remainingDays < 0) {
             alert("ไม่เหลือวันลากิจ");
-            return;
+            // return;
           }
           updatedData.absenceR = remainingDays;
           break;
@@ -127,7 +127,7 @@ function LeaveRequest() {
           remainingDays = welthfareData.sickR - leaveAmount;
           if (remainingDays < 0) {
             alert("ไม่เหลือวันลาป่วย");
-            return;
+            // return;
           }
           updatedData.sickR = remainingDays;
           break;
@@ -135,7 +135,7 @@ function LeaveRequest() {
           remainingDays = welthfareData.holidayR - leaveAmount;
           if (remainingDays < 0) {
             alert("ไม่เหลือวันลาพักร้อน");
-            return;
+            // return;
           }
           updatedData.holidayR = remainingDays;
           break;
@@ -143,7 +143,7 @@ function LeaveRequest() {
           remainingDays = welthfareData.maternityR - leaveAmount;
           if (remainingDays < 0) {
             alert("ไม่เหลือวันลาคลอด");
-            return;
+            // return;
           }
           updatedData.maternityR = remainingDays;
           break;
@@ -151,7 +151,7 @@ function LeaveRequest() {
           remainingDays = welthfareData.kamaR - leaveAmount;
           if (remainingDays < 0) {
             alert("ไม่เหลือวันลาบวช");
-            return;
+            // return;
           }
           updatedData.kamaR = remainingDays;
           break;
@@ -159,7 +159,7 @@ function LeaveRequest() {
           remainingDays = welthfareData.otherR - leaveAmount;
           if (remainingDays < 0) {
             alert("ไม่เหลือวันลาประเภทอื่น");
-            return;
+            // return;
           }
           updatedData.otherR = remainingDays;
           break;
