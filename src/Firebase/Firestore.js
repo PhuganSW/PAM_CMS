@@ -497,6 +497,7 @@ class FireStore{
             id:doc.id,
             date: data.dateStart,
             name: data.name,
+            requestTime: data.requestTime,
             state: data.state,
             state1:data.state1,
           });
@@ -552,7 +553,7 @@ class FireStore{
             name: data.name,
             requestTime:data.requestTime ,
             state: data.status,
-            state1:data.status1ม
+            state1:data.status1
           });
         }
       });
@@ -1206,6 +1207,44 @@ class FireStore{
       })
       .catch((error) => unsuccess(error));
   };
+
+  onDefaultCheckInOutTimesChange(companyId, callback) {
+    const docRef = doc(this.db, 'companies', companyId, 'settings', 'defaultTimes');
+    const unsubscribe = onSnapshot(docRef, (doc) => {
+      if (doc.exists()) {
+        callback(doc.data());
+      } else {
+        callback({ checkInTime: '08:00', checkOutTime: '17:00' }); // Default values if not set
+      }
+    });
+    return unsubscribe; // Return the unsubscribe function
+  }
+
+  getDefaultCheckInOutTimes(companyId, successCallback, errorCallback) {
+    const docRef = doc(this.db, 'companies', companyId, 'settings', 'defaultTimes');
+    getDoc(docRef)
+      .then((doc) => {
+        if (doc.exists()) {
+          successCallback(doc.data());
+        } else {
+          successCallback({ checkInTime: '08:00', checkOutTime: '17:00' }); // Default values if not set
+        }
+      })
+      .catch(errorCallback);
+  }
+
+  async setDefaultCheckInOutTimes(companyId, data, successCallback, errorCallback) {
+    console.log(data)
+    const docRef = doc(this.db, 'companies', companyId, 'settings', 'defaultTimes');
+    try {
+      await setDoc(docRef, data, { merge: true });
+      successCallback();
+    } catch (error) {
+      console.error("Direct setDoc Error:", error);
+      errorCallback(error);
+    }
+  }
+
 
 }
 

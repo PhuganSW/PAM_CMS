@@ -57,7 +57,7 @@ function LeaveRequest() {
     if (allLeave.length === 0) {
       console.log(doc)
       doc.forEach((item) => {
-        leaves.push({id: item.id,date:item.date, name: item.name, state1:item.state1});
+        leaves.push({id: item.id,date:item.date, name: item.name, requsetTime:item.requsetTime ,state1:item.state1});
       });
       setAllLeave(leaves);
       setFilteredUsers(leaves);
@@ -338,6 +338,7 @@ function LeaveRequest() {
                       <th scope="col" onClick={toggleNameSortOrder} style={{ cursor: 'pointer' }}>
                         ชื่อ-สกุล {nameSortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                       </th>
+                      <th scope='col'>เวลายื่นคำขอ</th>
                       <th scope="col">สถานะ</th>
                     </tr>
                   </thead>
@@ -351,6 +352,7 @@ function LeaveRequest() {
                         {item.date}
                       </td>
                       <td>{item.name}</td>
+                      <td>{item.requestTime}</td>
                       {item.state1 ? (
                         <td>allowed</td>
                       ) : (

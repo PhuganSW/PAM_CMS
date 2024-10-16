@@ -4,7 +4,7 @@ import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline,IoTime } from "react-icons/io5";
 import Layout from './Layout';
 import './Profile.css';
 import './checkHis.css'
@@ -13,11 +13,16 @@ import { AiOutlineEdit,AiOutlineDelete  } from "react-icons/ai";
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material'
 import LocationPickerMap from './LocationPickerMap';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
+
 
 function CheckHistory() {
 
@@ -51,6 +56,9 @@ function CheckHistory() {
   const [selectedUser, setSelectedUser] = useState(''); // Track selected user
   const [selectedUserId, setSelectedUserId] = useState('');
   const [reason,setReason] = useState('');
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [defaultCheckInTime, setDefaultCheckInTime] = useState('08:00'); // Default check-in time
+  const [defaultCheckOutTime, setDefaultCheckOutTime] = useState('17:00');
 
   const [workplaces,setWorkplaces] = useState([]);
   const [item,setItem] = useState([]);
@@ -200,6 +208,11 @@ function CheckHistory() {
 
   useEffect(() => {
     fetchDropdownOptions();
+    const unsubscribeDefaultTimes = firestore.onDefaultCheckInOutTimesChange(companyId, (data) => {
+      setDefaultCheckInTime(data.checkInTime);
+      setDefaultCheckOutTime(data.checkOutTime);
+    });
+
     const unsubscribeIn = firestore.getAllCheckin(companyId, (inData) => {
       setAllIn(inData);
       sortData(sortOrder, setFilteredUsers, inData); // Ensure sorting after data update
@@ -213,11 +226,37 @@ function CheckHistory() {
     const unsubscribeUsers = firestore.getAllUser(companyId, setUsers, console.error);
 
     return () => {
+      unsubscribeDefaultTimes();
       unsubscribeIn();
       unsubscribeOut();
       unsubscribeUsers();
     };
   }, [companyId, sortOrder, sortOrderOut]);
+
+  const handleTimeModalShow = () => setShowTimeModal(true);
+  const handleTimeModalClose = () => setShowTimeModal(false);
+
+  const handleSaveDefaultTimes = () => {
+    const data = {
+      checkInTime: defaultCheckInTime,
+      checkOutTime: defaultCheckOutTime,
+    };
+  
+    firestore.setDefaultCheckInOutTimes(
+      companyId,
+      data,
+      () => {
+        alert("Default check-in and check-out times updated successfully!");
+        setDefaultCheckInTime(data.checkInTime); // Update local state
+        setDefaultCheckOutTime(data.checkOutTime); // Update local state
+        setShowTimeModal(false);
+      },
+      (error) => {
+        console.error("Error saving default times:", error);
+        alert("Failed to update default times. Please try again.");
+      }
+    );
+  };
 
   // Function to convert date string to Date object for comparison
   const parseDate = (dateString) => {
@@ -320,7 +359,10 @@ function CheckHistory() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', width: '95%', alignSelf: 'center',marginTop:10}}>
-                <Button onClick={() => handleNewEntry(true)} variant="success">Add Check-In</Button>
+                <Button onClick={handleTimeModalShow} variant="info">
+                 <IoTime />
+                </Button>
+                <Button onClick={() => handleNewEntry(true)} variant="success" style={{ marginLeft: '10px' }}>Add Check-In</Button>
                 <Button onClick={() => handleNewEntry(false)} variant="info" style={{ marginLeft: '10px' }}>Add Check-Out</Button>
               </div>
               <div style={{width:'100%',alignSelf:'center'}}>
@@ -577,6 +619,56 @@ function CheckHistory() {
             <Button variant="secondary" onClick={handleCloseNewEntry}>Close</Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal show={showTimeModal} onHide={handleTimeModalClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Set Default Check-In/Check-Out Times</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Default Check-In Time</label>
+              <Flatpickr
+                data-enable-time
+                value={defaultCheckInTime}
+                onChange={([date]) => setDefaultCheckInTime(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }))}
+                options={{
+                  noCalendar: true,
+                  enableTime: true,
+                  dateFormat: 'H:i', // 24-hour format
+                  time_24hr: true,
+                  inline: true // Display inline to ensure visibility and interactivity
+                }}
+                className="form-control"
+              />
+            </div>
+            <div>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Default Check-Out Time</label>
+              <Flatpickr
+                data-enable-time
+                value={defaultCheckOutTime}
+                onChange={([date]) => setDefaultCheckOutTime(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }))}
+                options={{
+                  noCalendar: true,
+                  enableTime: true,
+                  dateFormat: 'H:i', // 24-hour format
+                  time_24hr: true,
+                  inline: true // Display inline to ensure visibility and interactivity
+                }}
+                className="form-control"
+              />
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleSaveDefaultTimes} style={{ fontSize: '16px', padding: '10px 20px' }}>
+            Save
+          </Button>
+          <Button variant="secondary" onClick={handleTimeModalClose} style={{ fontSize: '16px', padding: '10px 20px' }}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     
       </div>
       
