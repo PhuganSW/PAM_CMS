@@ -935,6 +935,22 @@ class FireStore{
     }
   }
 
+  async loadNotes(companyId, date) { // This function is added to load notes for a specific date
+    try {
+      const noteRef = doc(this.db, 'companies', companyId, 'calendar_notes', date);
+      const docSnap = await getDoc(noteRef);
+      
+      if (docSnap.exists()) {
+        return docSnap.data().notes || [];
+      } else {
+        return []; // Return an empty array if no notes are found for the date
+      }
+    } catch (error) {
+      console.error('Error loading notes:', error);
+      throw error;
+    }
+  }
+
   // Function to load notes for a specific day
   async loadAllNotes(companyId) {
     try {

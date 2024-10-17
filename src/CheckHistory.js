@@ -359,7 +359,7 @@ function CheckHistory() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', width: '95%', alignSelf: 'center',marginTop:10}}>
-                <Button onClick={handleTimeModalShow} variant="info">
+                <Button onClick={handleTimeModalShow} variant="info" title="ตั้งเวลาเข้า-ออก">
                  <IoTime />
                 </Button>
                 <Button onClick={() => handleNewEntry(true)} variant="success" style={{ marginLeft: '10px' }}>Add Check-In</Button>

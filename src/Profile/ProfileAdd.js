@@ -125,6 +125,7 @@ function ProfileAdd() {
     const file = e.target.files[0];
     if (file) {
       setImage_Off(file);
+      console.log(file)
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);

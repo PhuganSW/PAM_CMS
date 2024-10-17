@@ -28,6 +28,7 @@ class Storage{
 
       async uploadImage(companyId,file) {
         const storageRef = ref(this.storage, `${companyId}/image/${file.name}`);
+        console.log(file.name)
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         return new Promise((resolve, reject) => {

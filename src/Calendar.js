@@ -7,6 +7,8 @@ import './Home.css';
 import './Calendar.css'; // Create and import your CSS for custom styles
 import firestore from './Firebase/Firestore';
 import { UserContext } from './UserContext';
+import { Modal, Button, Form } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CLIENT_ID = '869699175876-mqt0r0crshde3ij7lt61krmcq8oipr1n.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyCKgVX5urTZGB-bYs0bhUn94E3DgYnEOZ8';
@@ -15,10 +17,11 @@ const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
 function CalendarPage() {
   const { companyId } = useContext(UserContext);
-  const [events, setEvents] = useState([]);
   const [notes, setNotes] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [note, setNote] = useState('');
+  const [noteInputs, setNoteInputs] = useState(['', '', '', '']); // Array for up to 4 notes
+  const [showModal, setShowModal] = useState(false);
+  const [language, setLanguage] = useState('en'); // State to control language (default to English)
 
   useEffect(() => {
     function start() {
@@ -27,12 +30,9 @@ function CalendarPage() {
         clientId: CLIENT_ID,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES,
-      }).then(() => {
-        // gapi.auth2.getAuthInstance().signIn().then(() => {
-        //   loadCalendarEvents();
-        // });
       });
     }
+
     const loadAllNotes = async () => {
       try {
         const allNotes = await firestore.loadAllNotes(companyId);
@@ -41,89 +41,54 @@ function CalendarPage() {
         console.error('Failed to load all notes:', error);
       }
     };
+
     gapi.load('client:auth2', start);
     loadAllNotes();
   }, [companyId]);
 
-  // const loadCalendarEvents = () => {
-  //   gapi.client.calendar.events.list({
-  //     calendarId: 'primary',
-  //     timeMin: (new Date()).toISOString(),
-  //     showDeleted: false,
-  //     singleEvents: true,
-  //     maxResults: 10,
-  //     orderBy: 'startTime',
-  //   }).then(response => {
-  //     const events = response.result.items;
-  //     setEvents(events);
-  //   });
-  // };
-
-  const handleDateChange = async (date) => {
+  const handleDateClick = async (date) => {
     setSelectedDate(date);
     const dateString = date.toDateString();
+
     try {
       const loadedNotes = await firestore.loadNotes(companyId, dateString);
-      setNotes(prevNotes => ({
-        ...prevNotes,
-        [dateString]: loadedNotes,
-      }));
+      const loadedNotesPadded = [...loadedNotes, '', '', '', ''].slice(0, 4); // Ensure we have exactly 4 slots
+      setNoteInputs(loadedNotesPadded);
+      setShowModal(true); // Open modal for the selected date
     } catch (error) {
       console.error('Failed to load notes:', error);
     }
   };
 
-  const handleNoteChange = (e) => {
-    setNote(e.target.value);
+  const handleNoteChange = (index, value) => {
+    const updatedNotes = [...noteInputs];
+    updatedNotes[index] = value;
+    setNoteInputs(updatedNotes);
   };
 
   const handleNoteSubmit = async () => {
     const dateString = selectedDate.toDateString();
-    const currentNotes = notes[dateString] || [];
-
-    if (currentNotes.length >= 3) {
-        alert('You can only add up to 3 notes per day.');
-        return;
-    }
-
-    const newNotes = [...currentNotes, note];
+    const filteredNotes = noteInputs.filter((note) => note.trim() !== '');
 
     try {
-        // Save to Firestore
-        await firestore.saveNotes(companyId, dateString, newNotes);
-
-        // Update state after saving to Firestore
-        setNotes(prevNotes => ({
-            ...prevNotes,
-            [dateString]: newNotes,
-        }));
-        setNote('');
+      await firestore.saveNotes(companyId, dateString, filteredNotes);
+      setNotes((prevNotes) => ({
+        ...prevNotes,
+        [dateString]: filteredNotes,
+      }));
+      setShowModal(false); // Close modal after saving
     } catch (error) {
-        console.error('Error saving note:', error);
+      console.error('Error saving note:', error);
     }
   };
 
-  const handleDeleteNote = async (date, noteIndex) => {
-    const dateString = date.toDateString();
-    const currentNotes = notes[dateString] || [];
-
-    const updatedNotes = currentNotes.filter((_, index) => index !== noteIndex);
-
-    try {
-        // Update Firestore
-        await firestore.saveNotes(companyId, dateString, updatedNotes);
-
-        // Update state after deletion
-        setNotes(prevNotes => ({
-            ...prevNotes,
-            [dateString]: updatedNotes,
-        }));
-    } catch (error) {
-        console.error('Error deleting note:', error);
-    }
+  // Close modal handler
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setNoteInputs(['', '', '', '']);
   };
 
-   // Show colored dots on dates with notes
+  // Display a dot on dates with notes
   const tileContent = ({ date, view }) => {
     const dateString = date.toDateString();
     if (view === 'month' && notes[dateString] && notes[dateString].length > 0) {
@@ -141,37 +106,71 @@ function CalendarPage() {
             <header>
               <h1>ปฏิทินบันทึกโน้ต</h1>
             </header>
+            {/* Language Toggle Buttons */}
+            <div className="language-toggle">
+              <Button
+                variant="primary"
+                onClick={() => setLanguage('th')}
+                active={language === 'th'}
+              >
+                TH
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => setLanguage('en')}
+                active={language === 'en'}
+              >
+                EN
+              </Button>
+            </div>
           </div>
           <div className="calendar-main-contain">
             <Calendar
-              onChange={handleDateChange}
+              onClickDay={handleDateClick} // Open modal on date click
               value={selectedDate}
-              tileContent={tileContent}  // Show colored dots on dates with notes
+              tileContent={tileContent}
+              locale={language} // Set the calendar language based on state
             />
-            <div className="calendar-notes-section">
-              <h2>Notes for {selectedDate.toDateString()}</h2>
-                <ul>
-                  {notes[selectedDate.toDateString()]?.map((note, index) => (
-                    <li key={index} className="note-item">
-                      <div className="note-content">
-                        <span>{note}</span>
-                        <button className="delete-button" onClick={() => handleDeleteNote(selectedDate, index)}>Delete</button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <textarea
-                    value={note}
-                    onChange={handleNoteChange}
-                    placeholder="Add a note"
-                />
-              <button onClick={()=>handleNoteSubmit()}>Add Note</button>
-            </div>
           </div>
         </div>
+
+        {/* Add Note Modal */}
+        <Modal show={showModal} onHide={handleCloseModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              {selectedDate.toLocaleDateString(language, {
+                weekday: 'short',
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              {noteInputs.map((note, index) => (
+                <Form.Group key={index} controlId={`noteTextarea${index}`}>
+                  <Form.Control
+                    as="textarea"
+                    rows={1}
+                    value={note}
+                    onChange={(e) => handleNoteChange(index, e.target.value)}
+                    placeholder={`Note ${index + 1}`}
+                    className="mb-2"
+                  />
+                </Form.Group>
+              ))}
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="success" onClick={handleNoteSubmit} className="w-100">
+              Save
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </main>
     </div>
   );
-  }
-  
-  export default CalendarPage;
+}
+
+export default CalendarPage;
