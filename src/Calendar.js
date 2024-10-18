@@ -91,9 +91,15 @@ function CalendarPage() {
   // Display a dot on dates with notes
   const tileContent = ({ date, view }) => {
     const dateString = date.toDateString();
+    
     if (view === 'month' && notes[dateString] && notes[dateString].length > 0) {
-      return <div className="dot" />;
+      const dots = notes[dateString].map((_, index) => (
+        <div key={index} className="dot" />
+      ));
+  
+      return <div className="dot-container">{dots}</div>;
     }
+    
     return null;
   };
 
@@ -135,8 +141,8 @@ function CalendarPage() {
         </div>
 
         {/* Add Note Modal */}
-        <Modal show={showModal} onHide={handleCloseModal} centered>
-          <Modal.Header closeButton>
+        <Modal show={showModal} onHide={handleCloseModal} centered  dialogClassName="custom-modal-border" >
+          <Modal.Header style={{ borderBottom: '2px solid white', position: 'relative' }}>
             <Modal.Title>
               {selectedDate.toLocaleDateString(language, {
                 weekday: 'short',
@@ -145,25 +151,40 @@ function CalendarPage() {
                 year: 'numeric',
               })}
             </Modal.Title>
+            <button 
+              type="button" 
+              className="close" 
+              onClick={handleCloseModal} 
+              style={{
+                position: 'absolute', 
+                right: '10px', 
+                top: '10px', 
+                background: 'none', 
+                border: 'none', 
+                color: 'red',
+                fontSize: '2rem', 
+                cursor: 'pointer'
+              }}
+            >
+              &times;
+            </button>
           </Modal.Header>
           <Modal.Body>
             <Form>
               {noteInputs.map((note, index) => (
                 <Form.Group key={index} controlId={`noteTextarea${index}`}>
                   <Form.Control
-                    as="textarea"
-                    rows={1}
                     value={note}
                     onChange={(e) => handleNoteChange(index, e.target.value)}
                     placeholder={`Note ${index + 1}`}
-                    className="mb-2"
+                    className="note-input mb-2"
                   />
                 </Form.Group>
               ))}
             </Form>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="success" onClick={handleNoteSubmit} className="w-100">
+          <Modal.Footer style={{ borderTop: 'none', justifyContent: 'center' }}>
+            <Button variant="success" onClick={handleNoteSubmit} className="w-100 save-button">
               Save
             </Button>
           </Modal.Footer>
