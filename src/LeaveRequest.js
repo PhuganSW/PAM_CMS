@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline, IoArrowDown, IoArrowUp } from "react-icons/io5";
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
@@ -42,6 +43,8 @@ function LeaveRequest() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const [imageURLs, setImageURLs] = useState([]);
+  const [selectedLeaveIds, setSelectedLeaveIds] = useState([]); // Track selected leave requests
+  const [selectAll, setSelectAll] = useState(false);
   const { setCurrentUser, companyId,setNewLeaveRequests,newLeaveRequests,userData } = useContext(UserContext);
 
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order for dates
@@ -233,6 +236,50 @@ function LeaveRequest() {
     setEndIndex(Math.max(endIndex - 10, 10)); // Decrement the end index by 5, ensuring it doesn't go below 5
   };
 
+  const handleSelect = (id) => {
+    if (selectedLeaveIds.includes(id)) {
+      // Deselect
+      setSelectedLeaveIds(selectedLeaveIds.filter((leaveId) => leaveId !== id));
+    } else {
+      // Select
+      setSelectedLeaveIds([...selectedLeaveIds, id]);
+    }
+  };
+
+  // Handle 'Select All' checkbox
+  const handleSelectAll = () => {
+    if (selectAll) {
+      // Deselect all
+      setSelectedLeaveIds([]);
+    } else {
+      // Select all visible leave requests
+      const allVisibleIds = filteredUsers.map((leave) => leave.id);
+      setSelectedLeaveIds(allVisibleIds);
+    }
+    setSelectAll(!selectAll); // Toggle 'Select All' state
+  };
+
+  // Handle delete
+  const handleDeleteSelected = () => {
+    if (selectedLeaveIds.length === 0) {
+      alert("No leave requests selected for deletion.");
+      return;
+    }
+    if (window.confirm("Are you sure you want to delete the selected leave requests?")) {
+      selectedLeaveIds.forEach((id) => {
+        firestore.deleteLeave(companyId, id, () => {
+          console.log("Leave request deleted successfully.");
+        }, (error) => {
+          console.error("Error deleting leave request:", error);
+        });
+      });
+      // Reset selection after deletion
+      setSelectedLeaveIds([]);
+      setSelectAll(false);
+    }
+  };
+
+
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
@@ -327,10 +374,31 @@ function LeaveRequest() {
               
                 
                 <div style={{width:'95%',alignSelf:'center'}}>
-                
+                <AiOutlineDelete
+                  size={42}
+                  className="trash-icon"
+                  onClick={handleDeleteSelected}
+                  style={{
+                    marginTop: '20px',      
+                    // marginBottom: '10px',    
+                    cursor: 'pointer',       
+                    color: 'red',            
+                    border: '2px solid red', 
+                    padding: '5px',          
+                    borderRadius: '5px',  
+                  }}
+                />
+                  
                 <TableBootstrap striped bordered hover className='table' style={{marginTop:20}}>
                   <thead>
                     <tr>
+                      <th>
+                        <input
+                          type="checkbox"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                        />
+                      </th>
                       <th scope="col">ลำดับ</th>
                       <th scope="col" onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
                         วันที่ {sortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -340,13 +408,21 @@ function LeaveRequest() {
                       </th>
                       <th scope='col'>เวลายื่นคำขอ</th>
                       <th scope="col">สถานะ</th>
+                      <th scope="col" className="center-text">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                   {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => ( */}
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
-                    <tr key={item.id} onClick={()=>getLeave(item.id)}>
-                      <th scope="row">{startIndex + index + 1}</th>
+                    <tr key={item.id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedLeaveIds.includes(item.id)}
+                          onChange={() => handleSelect(item.id)}
+                        />
+                      </td>
+                      <td>{startIndex + index + 1}</td>
                       {/* <th scope="row">{index + 1}</th> */}
                       <td>
                         {item.date}
@@ -358,6 +434,14 @@ function LeaveRequest() {
                       ) : (
                         <td>not allowed</td>
                       )}
+                      <td className="center-text">
+                        <Button variant="info" onClick={()=>getLeave(item.id)}>
+                          <AiOutlineEdit size={20} /> {/* Icon for editing */}
+                        </Button>
+                        {/* <Button variant="danger" style={{ marginLeft: 10 }} onClick={() => handleSelect(item.id)}>
+                          <AiOutlineDelete size={20} /> 
+                        </Button> */}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -30,6 +30,10 @@ const LoginCompany = () => {
     firestore.checkCompany(companyId, success, unsuccess);
   };
 
+  const register = () => {
+    navigate('/register')
+  };
+
   useEffect(() => {
     auth.checksignin((user) => {
       if (user) {
@@ -53,6 +57,12 @@ const LoginCompany = () => {
               onChange={(e) => setCompanyId(e.target.value)}
               required
             />
+            <div style={{ textAlign: 'right',marginRight:8}}>
+            <p className="register">
+              ถ้าคุณยังไม่มีบัญชี{' '}
+              <span className="register-link" onClick={register}>ลงทะเบียน</span>
+            </p>
+            </div>
             <button type="submit" className="login-button" style={{marginTop:30}}>Next</button>
           </form>
         </div>

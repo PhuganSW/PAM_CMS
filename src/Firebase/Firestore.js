@@ -2,7 +2,7 @@
 //import { image } from "html2canvas/dist/types/css/types/image";
 import app from "./Config";
 import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, 
-        deleteDoc, updateDoc, orderBy, query, where, getDocs,writeBatch  } from "firebase/firestore";
+        deleteDoc, updateDoc, orderBy, query, where, getDocs,writeBatch, limit  } from "firebase/firestore";
 
 class FireStore{
   constructor(){
@@ -237,30 +237,6 @@ class FireStore{
     await deleteDoc(doc(this.db, "companies", companyId, "username", id));
   }
 
-  // getAllUser = (success, unsuccess) => {
-  //   //const unsubscribe = onSnapshot(collection(this.db, "users"),orderBy("name","desc"), (querySnapshot) => {
-  //     const q = query(collection(this.db, "users"), orderBy('name',"asc"));
-  //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     const allaccount = [];
-  //     querySnapshot.forEach((doc) => {
-  //       const data = doc.data();
-  //       allaccount.push({
-  //         id: doc.id,
-  //         name: data.name+" "+data.lastname,
-  //         position: data.position,
-  //         image_off:data.image_off,
-  //       });
-  //     });
-  //     success(allaccount);
-  //   }, (error) => {
-  //     console.error("Error getting documents: ", error);
-  //     unsuccess(error);
-  //   });
-    
-  //   // Return unsubscribe function to stop listening for updates
-  //   return unsubscribe;
-  // };
-
   getAllUser = (companyId, success, unsuccess) => {
     const usersCollection = collection(this.db, "companies", companyId, "users");
     const usersQuery = query(usersCollection, orderBy("name", "asc"));
@@ -287,6 +263,56 @@ class FireStore{
     );
   
     return unsubscribe;
+  };
+
+  getTopProfiles = (companyId, success, unsuccess) => {
+    const networkRef = collection(this.db, "companies", companyId, "network");
+    
+    // Create query for the top profiles ordered by 'count' and 'timestamp'
+    const topProfilesQuery = query(
+      networkRef, 
+      orderBy("count", "desc"), 
+      orderBy("timestamp", "asc"), 
+      limit(3) // Limit to top 3 profiles
+    );
+  
+    // Fetch data using onSnapshot to listen for real-time updates
+    const unsubscribe = onSnapshot(
+      topProfilesQuery,
+      async (querySnapshot) => {
+        const topProfiles = [];
+  
+        for (const docSnapshot of querySnapshot.docs) {
+          const netUserId = docSnapshot.id; // User ID from network
+          const likeData = docSnapshot.data(); // Like data for the user
+  
+          try {
+            // Fetch user data from the 'users' collection
+            const userRef = doc(collection(this.db, "companies", companyId, "users"), netUserId);
+            const userSnapshot = await getDoc(userRef);
+  
+            if (userSnapshot.exists()) {
+              // Combine user data with like data
+              topProfiles.push({
+                id: netUserId, // User ID
+                ...userSnapshot.data(), // User details from the 'users' collection
+                count: likeData.count, // Likes count from 'network'
+                timestamp: likeData.timestamp, // Last activity timestamp
+              });
+            }
+          } catch (error) {
+            console.error("Error fetching user data: ", error);
+            unsuccess(error); // Handle individual errors
+          }
+        }
+        success(topProfiles); // Call success callback with top profiles data
+      },
+      (error) => {
+        unsuccess(error); // Handle overall query errors
+      }
+    );
+  
+    return unsubscribe; // Return the unsubscribe function for cleanup
   };
 
   getAllCheckin = (companyId,success, unsuccess) => {
@@ -513,6 +539,16 @@ class FireStore{
     return unsubscribe;
   };
 
+  deleteLeave = async (companyId, leaveId, success, unsuccess) => {
+    try {
+      const docRef = doc(this.db, "companies", companyId, "leaveRequest", leaveId);
+      await deleteDoc(docRef); // Firestore function to delete a document
+      success();
+    } catch (error) {
+      unsuccess(error);
+    }
+  };
+
   getOT=async(companyId,id,success,unsuccess)=>{
     try{
       const docRef = doc(this.db, "companies", companyId, "otRequest", id);
@@ -566,6 +602,16 @@ class FireStore{
     
     // Return unsubscribe function to stop listening for updates
     return unsubscribe;
+  };
+
+  deleteOT = async (companyId, otId, success, unsuccess) => {
+    try {
+      const docRef = doc(this.db, "companies", companyId, "otRequest", otId);
+      await deleteDoc(docRef); // Firestore function to delete a document
+      success();
+    } catch (error) {
+      unsuccess(error);
+    }
   };
 
   addWelth=async(companyId,id,item,success,unsuccess)=>{

@@ -9,7 +9,7 @@ import Layout from './Layout';
 import './Profile.css';
 import './checkHis.css'
 import firestore from './Firebase/Firestore';
-import { AiOutlineEdit,AiOutlineDelete  } from "react-icons/ai";
+import { AiOutlineEdit,AiOutlineDelete,AiOutlineFilter  } from "react-icons/ai";
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import MenuItem from '@mui/material/MenuItem';
@@ -52,6 +52,9 @@ function CheckHistory() {
   const [sortOrderOut, setSortOrderOut] = useState('desc'); // For checkout sorting order
   const [isCheckin, setIsCheckin] = useState(true);
   const [showNewEntryModal, setShowNewEntryModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [selectedFilterUser, setSelectedFilterUser] = useState(null);
   const [users, setUsers] = useState([]); // List of users for dropdown
   const [selectedUser, setSelectedUser] = useState(''); // Track selected user
   const [selectedUserId, setSelectedUserId] = useState('');
@@ -66,6 +69,8 @@ function CheckHistory() {
 
   const handleClose = () => setShow(false);
   const handleCloseNewEntry = () => setShowNewEntryModal(false);
+  const handleCloseFilterModal = () => setShowFilterModal(false);
+  const handleShowFilterModal = () => setShowFilterModal(true);
   const handleShow = (uid,date,time,workplace,isCheckin,data) =>{
     setItem(data)
     setUid(uid);
@@ -196,6 +201,32 @@ function CheckHistory() {
     }
   };
 
+  const handleUserSelect = () => {
+    if (selectedFilterUser) {
+      // Filter the data by the selected user
+      const filteredInData = allIN.filter(item => item.name === selectedFilterUser.name);
+      const filteredOutData = allOut.filter(item => item.name === selectedFilterUser.name);
+  
+      // Apply sorting to filtered data
+      sortData(sortOrder, setFilteredUsers, filteredInData); 
+      sortData(sortOrderOut, setFilteredOut, filteredOutData);
+      
+      // Mark filtering as active
+      setIsFiltered(true);
+    }
+    
+    setShowFilterModal(false);  // Close the filter modal
+  };
+  
+  const handleCancelFilter = () => {
+    // Reset filtered data to the original dataset
+    setFilteredUsers(allIN);
+    setFilteredOut(allOut);
+    setIsFiltered(false);  // Reset filtering state
+    
+    setShowFilterModal(false);  // Close the filter modal
+  };
+
   const fetchDropdownOptions = async () => {
     try {
       const workplaces = await firestore.getDropdownOptions(companyId,'workplace');
@@ -278,14 +309,25 @@ function CheckHistory() {
   const toggleSortOrder = () => {
     const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
     setSortOrder(newOrder);
-    sortData(newOrder, setFilteredUsers, allIN);
+  
+    // If filtering is active, sort the filtered data; otherwise, sort the full dataset
+    if (isFiltered) {
+      sortData(newOrder, setFilteredUsers, filteredUsers);  // Sorting filtered check-ins
+    } else {
+      sortData(newOrder, setFilteredUsers, allIN);  // Sorting all check-ins
+    }
   };
-
-  // Toggle sorting order for check-outs
+  
   const toggleSortOrderOut = () => {
     const newOrder = sortOrderOut === 'asc' ? 'desc' : 'asc';
     setSortOrderOut(newOrder);
-    sortData(newOrder, setFilteredOut, allOut);
+  
+    // If filtering is active, sort the filtered data; otherwise, sort the full dataset
+    if (isFiltered) {
+      sortData(newOrder, setFilteredOut, filteredOut);  // Sorting filtered check-outs
+    } else {
+      sortData(newOrder, setFilteredOut, allOut);  // Sorting all check-outs
+    }
   };
 
   const getRowColor = (item) => {
@@ -359,11 +401,19 @@ function CheckHistory() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', width: '95%', alignSelf: 'center',marginTop:10}}>
-                <Button onClick={handleTimeModalShow} variant="info" title="ตั้งเวลาเข้า-ออก">
+                <Button 
+                  onClick={handleShowFilterModal} 
+                  variant="primary" 
+                  title="Filter"
+                  style={{ display: 'flex', alignItems: 'center',marginLeft: '5px' }}
+                >
+                  <AiOutlineFilter size={24} />
+                </Button>
+                <Button onClick={handleTimeModalShow} variant="info" title="ตั้งเวลาเข้า-ออก" style={{ marginLeft: '5px' }} >
                  <IoTime />
                 </Button>
-                <Button onClick={() => handleNewEntry(true)} variant="success" style={{ marginLeft: '10px' }}>Add Check-In</Button>
-                <Button onClick={() => handleNewEntry(false)} variant="info" style={{ marginLeft: '10px' }}>Add Check-Out</Button>
+                <Button onClick={() => handleNewEntry(true)} variant="success" style={{ marginLeft: '5px' }}>Add Check-In</Button>
+                <Button onClick={() => handleNewEntry(false)} variant="info" style={{ marginLeft: '5px' }}>Add Check-Out</Button>
               </div>
               <div style={{width:'100%',alignSelf:'center'}}>
               <div className="table-container">
@@ -666,6 +716,37 @@ function CheckHistory() {
           </Button>
           <Button variant="secondary" onClick={handleTimeModalClose} style={{ fontSize: '16px', padding: '10px 20px' }}>
             Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFilterModal} onHide={handleCloseFilterModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select User to Filter</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Dropdown for selecting the user */}
+          <FormControl variant="filled" fullWidth>
+            <InputLabel>Select User</InputLabel>
+            <Select
+              value={selectedFilterUser ? selectedFilterUser.id : ''}
+              onChange={(e) => {
+                const user = users.find(user => user.id === e.target.value);
+                setSelectedFilterUser(user);
+              }}
+            >
+              {users.map((user) => (
+                <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleUserSelect} style={{width:100}}>
+            OK
+          </Button>
+          <Button variant="secondary" onClick={handleCancelFilter} style={{width:100}}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>

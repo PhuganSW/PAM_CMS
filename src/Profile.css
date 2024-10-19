@@ -166,6 +166,10 @@ color: #FFF;
 .table tbody tr:hover {
   background-color: #e0e0e0 !important; /* Change to your desired hover color */
 }
+
+.center-text {
+  text-align: center;
+}
 @media (min-width: 1024px){
   .search-field {
     align-items: center;

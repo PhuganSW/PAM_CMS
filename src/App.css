@@ -75,6 +75,24 @@
   margin-bottom: 0px;
 }
 
+.register {
+  display: inline-block;
+  font-size: 18px; /* Adjust font size as needed */
+  color: #000; /* Default color for the text */
+  text-align: right;
+}
+
+.register-link {
+  text-align: right;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer; /* Changes cursor to pointer when hovering over the link */
+}
+
+.register-link:hover {
+  color: darkblue; /* Optional: change color when hovering over the link */
+}
+
 .password-input-wrapper {
   position: relative;
   width: 100%;

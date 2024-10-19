@@ -31,6 +31,7 @@ import ProfileRole from './Profile/ProfileRole';
 import ProfileUpSk from './Profile/ProfileUpSk';
 import ProfileNotice from './Profile/ProfileNotice';
 import ProfileSalary from './Profile/ProfileSalary';
+import Register from './Register';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ProtectedRouteHome><LoginCompany /></ProtectedRouteHome>} />
           <Route path="/login" element={<ProtectedLogin><Login /></ProtectedLogin>} />
+          <Route path="/register" element={<Register />}/>
           <Route path="/forgot_password" element={<ForgotPass />} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfileManage /></ProtectedRoute>} />

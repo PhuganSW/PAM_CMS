@@ -18,6 +18,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import { TextField} from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
+import { AiOutlineEdit,AiOutlineDelete } from "react-icons/ai";
 import { hashPassword } from './hashPassword';
 
 
@@ -39,6 +40,8 @@ function OTRequest() {
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
+  const [selectedOTIds, setSelectedOTIds] = useState([]); // Track selected OT requests
+  const [selectAll, setSelectAll] = useState(false);
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
@@ -167,6 +170,48 @@ function OTRequest() {
     sortByName(newOrder, setFilteredUsers, allOT);
   };
 
+  const handleSelectAll = () => {
+    if (selectAll) {
+      // Deselect all
+      setSelectedOTIds([]);
+    } else {
+      // Select all visible OT requests
+      const allVisibleIds = filteredUsers.map((ot) => ot.id);
+      setSelectedOTIds(allVisibleIds);
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Handle selection of individual OT request
+  const handleSelect = (id) => {
+    if (selectedOTIds.includes(id)) {
+      // Deselect
+      setSelectedOTIds(selectedOTIds.filter((otId) => otId !== id));
+    } else {
+      // Select
+      setSelectedOTIds([...selectedOTIds, id]);
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedOTIds.length === 0) {
+      alert("No OT requests selected for deletion.");
+      return;
+    }
+    if (window.confirm("Are you sure you want to delete the selected OT requests?")) {
+      selectedOTIds.forEach((id) => {
+        firestore.deleteOT(companyId, id, () => {
+          console.log("OT request deleted successfully.");
+        }, (error) => {
+          console.error("Error deleting leave request:", error);
+        });
+      });
+      // Reset selection after deletion
+      setSelectedOTIds([]);
+      setSelectAll(false);
+    }
+  };
+
   const handleClickShowPasswordInModal = () => setShowPasswordInModal((show) => !show);
 
   const handlePasswordSubmit = async() => {
@@ -215,13 +260,33 @@ function OTRequest() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               
-              
+
                 
                 <div style={{width:'95%',alignSelf:'center'}}>
-                
+                  <AiOutlineDelete
+                    size={42}
+                    className="trash-icon"
+                    onClick={handleDeleteSelected}
+                    style={{
+                      marginTop: '20px',      
+                      // marginBottom: '10px',    
+                      cursor: 'pointer',       
+                      color: 'red',            
+                      border: '2px solid red', 
+                      padding: '5px',          
+                      borderRadius: '5px',  
+                    }}
+                  />
                 <TableBootstrap striped bordered hover className='table' style={{marginTop:20}}>
                   <thead>
                     <tr>
+                      <th>
+                        <input
+                          type="checkbox"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                        />
+                      </th>
                       <th scope="col">ลำดับ</th>
                       <th onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
                         วันที่ {sortOrder === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -231,13 +296,21 @@ function OTRequest() {
                       </th>
                       <th scope='col'>เวลายื่นคำขอ</th>
                       <th scope='col'>สถานะ</th>
+                      <th scope='col' className="center-text">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                   // {filteredUsers.map((item, index) => (
-                    <tr key={item.id} onClick={()=>getOT(item.id)}> 
-                      <th scope="row">{startIndex + index + 1}</th>
+                    <tr key={item.id}> 
+                      <td>
+                          <input
+                            type="checkbox"
+                            checked={selectedOTIds.includes(item.id)}
+                            onChange={() => handleSelect(item.id)}
+                          />
+                        </td>
+                      <td scope="row">{startIndex + index + 1}</td>
                       {/* <th scope="row">{index + 1}</th> */}
                       <td>
                         {item.date}
@@ -249,6 +322,14 @@ function OTRequest() {
                       ) : (
                         <td>not allowed</td>
                       )}
+                      <td className="center-text">
+                        <Button variant="info" onClick={()=>getOT(item.id)}>
+                          <AiOutlineEdit size={20} /> {/* Icon for editing */}
+                        </Button>
+                        {/* <Button variant="danger" style={{ marginLeft: 10 }} onClick={() => handleSelect(item.id)}>
+                          <AiOutlineDelete size={20} /> 
+                        </Button> */}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -15,22 +15,41 @@ function Network() {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
+  const [topProfiles, setTopProfiles] = useState([]);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   useEffect(() => {
     // Fetch all users from Firestore
-    const unsubscribe = firestore.getAllUser(companyId,
+    const unsubscribeAllUsers = firestore.getAllUser(companyId,
       (usersData) => {
         console.log("Fetched users:", usersData); // Log fetched users
         setUsers(usersData);
       },
       (error) => console.error("Error fetching users: ", error)
     );
-    return unsubscribe; // Cleanup listener on component unmount
-  }, []);
+    const unsubscribeTopProfiles = firestore.getTopProfiles(
+      companyId,
+      (topProfilesData) => {
+        setTopProfiles(topProfilesData);
+      },
+      (error) => console.error("Error fetching top profiles: ", error)
+    );
+    return () => {
+      unsubscribeAllUsers(); // Clean up all users listener
+      unsubscribeTopProfiles(); // Clean up top profiles listener
+    };
+  }, [companyId]);
 
   const handleImageError = (e) => {
     e.target.src = 'https://via.placeholder.com/100'; // Fallback image URL
+  };
+
+  const getBorderColor = (userId) => {
+    const topIndex = topProfiles.findIndex((profile) => profile.id === userId);
+    if (topIndex === 0) return "#E1AE04"; // 1st place
+    if (topIndex === 1) return "#929292"; // 2nd place
+    if (topIndex === 2) return "#C44500"; // 3rd place
+    return 'transparent'; // No border for users outside top 3
   };
 
   return (
@@ -54,8 +73,15 @@ function Network() {
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>ตำแหน่งงาน :</p>
               </div>
               <div className="user-grid">
-                {users.map((user, index) => (
-                  <div key={user.id} className="user-card">
+              {users.map((user) => (
+                  <div
+                    key={user.id}
+                    className="user-card"
+                    style={{
+                      border: `5px solid ${getBorderColor(user.id)}`,
+                      borderRadius: '10px',
+                    }}
+                  >
                     <img
                       src={user.image_off}
                       alt={`${user.name}'s profile`}
@@ -65,6 +91,10 @@ function Network() {
                     />
                     <h3>{user.name}</h3>
                     <p>{user.position}</p>
+                    {/* Show Likes only for top profiles */}
+                    {topProfiles.find((profile) => profile.id === user.id) && (
+                      <p>Likes: {topProfiles.find((profile) => profile.id === user.id).count}</p>
+                    )}
                   </div>
                 ))}
               </div>

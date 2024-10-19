@@ -11,11 +11,18 @@ const ForgotPass = () => {
     const [password, setPassword] = useState('');
     const [currentUser,setCurrentUser] = useState(null)
 
-    const resetPass =()=>{
-        auth.resetPassword(email)
-        alert("Check your email for reset password.")
-        navigate("/")
-    }
+    const resetPass = () => {
+        auth.resetPassword(
+          email,
+          () => {
+            alert("Check your email for reset password instructions.");
+            navigate("/");
+          },
+          (error) => {
+            alert("Error resetting password: " + error.message);
+          }
+        );
+      };
 
 
     return (
