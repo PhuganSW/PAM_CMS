@@ -30,6 +30,7 @@ function Network() {
     const unsubscribeTopProfiles = firestore.getTopProfiles(
       companyId,
       (topProfilesData) => {
+        console.log("Fetched top profiles:", topProfilesData); 
         setTopProfiles(topProfilesData);
       },
       (error) => console.error("Error fetching top profiles: ", error)
@@ -45,11 +46,15 @@ function Network() {
   };
 
   const getBorderColor = (userId) => {
+    if (!topProfiles || topProfiles.length === 0) return 'transparent'; // No border if no top profiles
+    
     const topIndex = topProfiles.findIndex((profile) => profile.id === userId);
+    
     if (topIndex === 0) return "#E1AE04"; // 1st place
     if (topIndex === 1) return "#929292"; // 2nd place
     if (topIndex === 2) return "#C44500"; // 3rd place
-    return 'transparent'; // No border for users outside top 3
+    
+    return 'transparent'; // Default for non-top users
   };
 
   return (
@@ -74,29 +79,32 @@ function Network() {
               </div>
               <div className="user-grid">
               {users.map((user) => (
-                  <div
-                    key={user.id}
-                    className="user-card"
-                    style={{
-                      border: `5px solid ${getBorderColor(user.id)}`,
-                      borderRadius: '10px',
-                    }}
-                  >
-                    <img
-                      src={user.image_off}
-                      alt={`${user.name}'s profile`}
-                      width={100}
-                      height={100}
-                      onError={handleImageError}
-                    />
-                    <h3>{user.name}</h3>
-                    <p>{user.position}</p>
-                    {/* Show Likes only for top profiles */}
-                    {topProfiles.find((profile) => profile.id === user.id) && (
+                <div
+                  key={user.id}
+                  className="user-card"
+                  style={{
+                    border: `5px solid ${getBorderColor(user.id)}`,
+                    borderRadius: '10px',
+                  }}
+                >
+                  <img
+                    src={user.image_off}
+                    alt={`${user.name}'s profile`}
+                    width={100}
+                    height={100}
+                    onError={handleImageError}
+                  />
+                  <h3>{user.name}</h3>
+                  <p>{user.position}</p>
+                  
+                  {/* Log matching users */}
+                  {topProfiles.find((profile) => profile.id === user.id) && (
+                    <>
                       <p>Likes: {topProfiles.find((profile) => profile.id === user.id).count}</p>
-                    )}
-                  </div>
-                ))}
+                    </>
+                  )}
+                </div>
+              ))}
               </div>
             </div>
 

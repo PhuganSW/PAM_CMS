@@ -40,44 +40,67 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        
+    
+        // Validate Company ID
+        if (!companyId) {
+            setErrorMessage("Company ID is required.");
+            return;
+        }
+    
         // Validate password and confirm password
         if (password !== confirmPassword) {
             setErrorMessage('Passwords do not match.');
             return;
         }
+    
+        try {
+            // Disable auth state change listener temporarily
+            auth.disableAuthStateListener();  // New step to temporarily disable listener
+    
+            // Proceed with account creation
+            const user = await auth.createAccount(email, password);  // Now this works with async/await!
+    
+            // Step 1: Account creation was successful, now add account data to Firestore
+            const hashedPassword = await hashPassword(password); // Hash the password
+    
+            const accountData = {
+                email,
+                name,
+                position,
+                level: 1,
+                password: hashedPassword
+            };
+    
+            // Step 2: Add user to Firestore
+            await firestore.addAccount(companyId, user.uid, accountData);
 
-        // Proceed with account creation
-        // auth.createAccount(email, password, async (user) => {
-        // const hashedPassword = await hashPassword(password); // Hash the password
-        // const accountData = {
-        // email,
-        // name,
-        // position,
-        // level,
-        // password: hashedPassword
-        // };
-
-        // firestore.addAccount(companyId, user.uid, accountData)
-        // .then(() => {
-        //     alert('Account created successfully!');
-        //     navigate('/'); // Redirect to login after successful registration
-        // })
-        // .catch((error) => {
-        //     console.error('Error adding account to Firestore:', error);
-        //     setErrorMessage('Error creating account, please try again.');
-        // });
-        // }, (error) => {
-        //     console.error('Error creating account:', error);
-        //     setErrorMessage('Error creating account, please try again.');
-        // });
+            auth.sendVerificationEmail(user, 
+                () => alert('Verification email sent. Please check your inbox.'),
+                (error) => console.error('Error sending verification email:', error)
+            );
+            
+            // Step 3: Sign out the user immediately after account creation to prevent navigation to /home
+            await auth.signOut();  // This will sign the user out and prevent automatic navigation to home
+    
+            // Step 4: Alert the user that the account was created
+            alert('Account created successfully! Please log in.');
+    
+            // Step 5: Redirect to login page after successful sign out
+            navigate('/'); // Ensure we navigate to the login page
+        } catch (error) {
+            console.error('Error creating account or adding to Firestore:', error);
+            setErrorMessage('Error creating account, please try again.');
+        } finally {
+            // Re-enable the auth state change listener
+            auth.enableAuthStateListener();  // Re-enable listener once everything is complete
+        }
     };
 
     return (
     <div className="App">
         <header className="App-header">
             <div className='Main'>
-            <h2 style={{color:'black',marginTop:-30}}>Register</h2>
+            <h2 style={{color:'black',marginTop:-30}}>Sign Up</h2>
 
             {/* Company ID */}
             <input
@@ -87,7 +110,7 @@ const Register = () => {
                 value={companyId}
                 onChange={(e) => setCompanyId(e.target.value)}
                 required
-                style={{ marginBottom: '15px' }} // Add space between inputs
+                style={{ marginBottom: '10px' }} // Add space between inputs
             />
 
             {/* Email */}
@@ -98,11 +121,11 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                style={{ marginBottom: '15px' }} // Add space between inputs
+                style={{ marginBottom: '10px' }} // Add space between inputs
             />
 
             {/* Password */}
-            <div style={{ position: 'relative', marginBottom: '15px' }}> {/* Add space */}
+            <div style={{ position: 'relative', marginBottom: '10px' }}> {/* Add space */}
                 <input
                 type={showPassword ? 'text' : 'password'}
                 className="input-field"
@@ -130,7 +153,7 @@ const Register = () => {
             </div>
 
             {/* Confirm Password */}
-            <div style={{ position: 'relative', marginBottom: '15px' }}> {/* Add space */}
+            <div style={{ position: 'relative', marginBottom: '10px' }}> {/* Add space */}
                 <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 className="input-field"
@@ -165,7 +188,7 @@ const Register = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                style={{ marginBottom: '15px' }} // Add space between inputs
+                style={{ marginBottom: '10px' }} // Add space between inputs
             />
 
             {/* Position */}
@@ -176,16 +199,16 @@ const Register = () => {
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
                 required
-                style={{ marginBottom: '15px' }} // Add space between inputs
+                style={{ marginBottom: '10px' }} // Add space between inputs
             />
 
             {/* Level */}
-            <select
+            {/* <select
                 className="input-field"
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
                 required
-                style={{ marginBottom: '15px' }} // Add space between inputs
+                style={{ marginBottom: '10px' }} // Add space between inputs
             >
                 <option value="" disabled>Select Level</option>
                 {levels.map((levelOption) => (
@@ -193,7 +216,7 @@ const Register = () => {
                     {levelOption.label}
                 </option>
                 ))}
-            </select>
+            </select> */}
 
             {/* Error Message */}
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}

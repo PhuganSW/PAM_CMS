@@ -32,8 +32,23 @@ import ProfileUpSk from './Profile/ProfileUpSk';
 import ProfileNotice from './Profile/ProfileNotice';
 import ProfileSalary from './Profile/ProfileSalary';
 import Register from './Register';
+import SplashScreen from './SplashScreen';
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false); // Hide the splash screen after 3 seconds
+    }, 3000); // Duration of the splash screen (3000ms = 3 seconds)
+
+    return () => clearTimeout(timer); // Cleanup the timer on unmount
+  }, []);
+
+  if (showSplash) {
+    return <SplashScreen />; // Show the splash screen while the timer is running
+  }
+  
   return (
     <UserProvider>
       <Router>

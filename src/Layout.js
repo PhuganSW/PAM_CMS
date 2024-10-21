@@ -43,6 +43,11 @@ const Layout = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (!companyId) {
+      console.error('Invalid companyId:', companyId);
+      return; // Early exit if companyId is not valid
+    }
+  
     // Listen for new leave requests from Firestore
     const unsubscribe = firestore.getAllLeave(companyId, (allLeave) => {
       // Check if there are any requests with state === true
@@ -67,6 +72,10 @@ const Layout = ({ children }) => {
   }, [location.pathname, newLeaveRequests, setNewLeaveRequests]);
 
   useEffect(() => {
+    if (!companyId) {
+      console.error('Invalid companyId:', companyId);
+      return;
+    }
     // Listen for new leave requests from Firestore
     const unsubscribe = firestore.getAllOT(companyId, (allOt) => {
       // Check if there are any requests with state === true

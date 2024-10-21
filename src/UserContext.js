@@ -14,9 +14,19 @@ export const UserProvider = ({ children }) => {
   const [newOtRequests, setNewOtRequests] = useState(false);
 
   useEffect(() => {
+
+    // const timeoutId = setTimeout(() => {
+    //   // Reset state after 1 minute if still loading
+    //   if (loading) {
+    //     setLoading(false);
+    //     setCurrentUser(null);
+    //     setCompanyId(null);
+    //   }
+    // }, 60000); // 1 minute timeout (60000 ms)
     // Listen for Firebase authentication changes
     const unsubscribe = auth.checksignin((user) => {
       if (user) {
+        //clearTimeout(timeoutId);
         setCurrentUser(user);  // Set user if authenticated
         const storedCompanyId = localStorage.getItem('companyId');
         if (storedCompanyId) {
@@ -42,6 +52,7 @@ export const UserProvider = ({ children }) => {
     return () => {
       // Ensure unsubscribe is called on component unmount
       if (unsubscribe) unsubscribe();
+      //clearTimeout(timeoutId);
     };
   }, []);
 

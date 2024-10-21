@@ -163,7 +163,7 @@ function SalaryList() {
                 <button className="search-button" ><IoSearchOutline size={24} /></button>
               </div> */}
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
-                <button className='Edit-button' style={{fontSize:16}} onClick={()=> addSalary(uid)}>เพิ่มข้อมูลเงินเดือน</button>
+                <button className='Edit-button' style={{fontSize:16,width:150,height:50}} onClick={()=> addSalary(uid)}>เพิ่มข้อมูลเงินเดือน</button>
                 <button className='Add-button' style={{fontSize:16}} onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
               </div>
       

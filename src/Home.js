@@ -54,6 +54,10 @@ function Home() {
   };
 
   useEffect(() => {
+    if (!companyId) {
+      console.error('Invalid companyId:', companyId);
+      return;
+    }
     // Fetch workplace user count data
     //console.log(userData.position)
     firestore.getWorkplaceUserCounts(
@@ -82,6 +86,10 @@ function Home() {
   }, [companyId]);
 
   useEffect(() => {
+    if (!companyId) {
+      console.error('Invalid companyId:', companyId);
+      return;
+    }
     // Fetch all users and then fetch their leave data from wealthfare collection
     firestore.getAllUser(
       companyId,

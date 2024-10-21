@@ -141,7 +141,7 @@ function CalendarPage() {
         </div>
 
         {/* Add Note Modal */}
-        <Modal show={showModal} onHide={handleCloseModal} centered  dialogClassName="custom-modal-border" >
+        <Modal show={showModal} onHide={handleCloseModal} centered  dialogClassName="calendar-modal" >
           <Modal.Header style={{ borderBottom: '2px solid white', position: 'relative' }}>
             <Modal.Title>
               {selectedDate.toLocaleDateString(language, {

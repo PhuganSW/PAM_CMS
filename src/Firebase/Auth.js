@@ -1,14 +1,15 @@
 //Auth.js
 import app from './Config'
 import {getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
-        , sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth";
+        , sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence,
+        sendEmailVerification } from "firebase/auth";
 import { getFunctions, httpsCallable } from "firebase/functions";
 
 class Auth {
   constructor(){
       this.auth = getAuth(app)
       this.functions = getFunctions(app);
-
+      this.authStateListener = null;
       /* this.admin = require('firebase-admin');
       this.serviceAccount = require('./pamproject-a57c5-firebase-adminsdk-mh5a3-5ea1082565.json');
 
@@ -18,16 +19,38 @@ class Auth {
 
   }
 
-  createAccount=(email,password,success,unsuccess)=>{
-      createUserWithEmailAndPassword(this.auth,email, password)
-      .then((userCredential)=>{
-        var user = userCredential.user
-        success(user)
+  createAccount = (email, password, success, unsuccess) => {
+    return createUserWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if (success) {
+          // Use success callback if provided
+          success(user);
+        }
+        return user;  // Also return the user object for async/await
       })
-      .catch((error)=>{
-        unsuccess(error)
+      .catch((error) => {
+        if (unsuccess) {
+          // Use unsuccess callback if provided
+          unsuccess(error);
+        }
+        throw error;  // Also throw error for async/await
+      });
+  };
+
+  sendVerificationEmail = (user, success, unsuccess) => {
+    sendEmailVerification(user)
+      .then(() => {
+        if (success) {
+          success();  // Success callback (e.g., email sent)
+        }
       })
-    }
+      .catch((error) => {
+        if (unsuccess) {
+          unsuccess(error);  // Failure callback
+        }
+      });
+  };
 
   signin = async (email, password, success, unsuccess) => {
     // Set session persistence
@@ -51,11 +74,14 @@ class Auth {
       });
   }
 
-  checksignin = (suc) => {
-    return onAuthStateChanged(this.auth, (user) => {
-      suc(user);
-    });
-  }
+  checksignin = (callback) => {
+    // Enable the auth state listener if it's not already active
+    if (!this.authStateListener) {
+      this.authStateListener = onAuthStateChanged(this.auth, (user) => {
+        callback(user);
+      });
+    }
+  };
 
   signOut = (success) => {
     this.auth.signOut().then(() => {
@@ -88,6 +114,22 @@ class Auth {
         console.error('Error deleting user:', error);
         unsuccess(error);
       });
+  };
+
+  disableAuthStateListener = () => {
+    if (this.authStateListener) {
+      this.authStateListener();  // Unsubscribe the listener
+      this.authStateListener = null;
+    }
+  };
+
+  // Re-enable the auth state listener after registration or other processes
+  enableAuthStateListener = () => {
+    if (!this.authStateListener) {
+      this.authStateListener = onAuthStateChanged(this.auth, (user) => {
+        console.log('Auth state changed:', user);
+      });
+    }
   };
 }
 

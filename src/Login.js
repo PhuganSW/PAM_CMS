@@ -19,6 +19,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // Track password visibility
   const { setCurrentUser, setCompanyId, companyId, setUserData } = useContext(UserContext);
 
+  const allowedTestEmails = ['admin.miscible@pam.com','sisira.w@miscible.com','hr.miscible@pam.com','test@test.com']
+
   const getAccountS = (data) => {
     // Save companyId to local storage to persist across refreshes
     console.log(data)
@@ -31,8 +33,15 @@ const Login = () => {
 
   const loginSuc = (user) => {
     if (user) {
-      setCurrentUser(user);
-      firestore.getAccount(companyId, user.uid, getAccountS, getAccountUn);
+      const userEmail = user.email.toLowerCase();
+      if (user.emailVerified || allowedTestEmails.includes(userEmail)) {
+        setCurrentUser(user);
+        firestore.getAccount(companyId, user.uid, getAccountS, getAccountUn);
+      } else {
+        // If the email isn't verified, and it's not in the allowed list, alert the user
+        alert("Please verify your email address before logging in.");
+        auth.signOut();  // Sign the user out if their email isn't verified
+      }
     } else {
       alert("Login: Not Found user!!");
     }

@@ -26,33 +26,48 @@ function ProfileSalary() {
   const [action,setAction] = useState('');
   const [uid,setUid] = useState('');
 
-  const [costL,setCostL] = useState(0); //ค่าครองชีพ
-  const [ot,setOT] = useState(0); //ค่าล่วงเวลา
-  const [allowance,setAllowance] = useState(0); //เบี้ยเลี้ยง
-  const [salary,setSalary] = useState(0); //ค่าเงินเดือน
-  const [venhicle,setVenhicle] = useState(0); //ค่ายานพาหนะ
-  const [sub,setSub] = useState(0); //เงินอุดหนุน
-  const [welth,setWelth] = useState(0); //ค่าสวัสดิการ
-  const [bonus,setBonus] = useState(0); //เงินโบนัส
-  const [tax,setTax] = useState(0); //หักภาษี
-  const [insurance,setInsurance] = useState(0); //ประกันสังคม
-  const [late,setLate] = useState(0); //เข้างานสาย
-  const [missing,setMissing] = useState(0); //ขาดงาน
-  const [borrow,setBorrow] = useState(0); //เงินกู้ยืม
-  const [withdraw,setWithdraw] = useState(0); //เงินเบิกล่วงหน้า
-  const [allDeposit,setAllDeposit] = useState(0); //รายได้สะสม
-  const [allInsurance,setAllInsurance] = useState(0); //ประกันสังคมสะสม
+  const [costL,setCostL] = useState(null); //ค่าครองชีพ
+  const [ot,setOT] = useState(null); //ค่าล่วงเวลา
+  const [allowance,setAllowance] = useState(null); //เบี้ยเลี้ยง
+  const [salary,setSalary] = useState(null); //ค่าเงินเดือน
+  const [venhicle,setVenhicle] = useState(null); //ค่ายานพาหนะ
+  const [sub,setSub] = useState(null); //เงินอุดหนุน
+  const [welth,setWelth] = useState(null); //ค่าสวัสดิการ
+  const [bonus,setBonus] = useState(null); //เงินโบนัส
+  const [tax,setTax] = useState(null); //หักภาษี
+  const [insurance,setInsurance] = useState(null); //ประกันสังคม
+  const [late,setLate] = useState(null); //เข้างานสาย
+  const [missing,setMissing] = useState(null); //ขาดงาน
+  const [borrow,setBorrow] = useState(null); //เงินกู้ยืม
+  const [withdraw,setWithdraw] = useState(null); //เงินเบิกล่วงหน้า
+  const [allDeposit,setAllDeposit] = useState(null); //รายได้สะสม
+  const [allInsurance,setAllInsurance] = useState(null); //ประกันสังคมสะสม
  
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const validateNumberInput = (input) => {
-    const number = Number(input);
+    const sanitizedInput = input.replace(/[^0-9.]/g, ''); // Remove any non-numeric characters except decimal points
+  
+    // Check if there's more than one decimal point
+    const parts = sanitizedInput.split('.');
+    if (parts.length > 2) {
+      alert("Invalid input. Too many decimal points.");
+      return '';
+    }
+  
+    // Ensure valid number, but allow empty input for continued typing
+    if (sanitizedInput === '' || sanitizedInput === '.') {
+      return sanitizedInput; // Allow users to start typing a decimal
+    }
+  
+    const number = parseFloat(sanitizedInput);
     if (isNaN(number)) {
       alert("Invalid input, resetting to 0.");
       return 0;
     }
-    return number;
-  }
+    
+    return sanitizedInput; // Return the valid sanitized input string
+  };
 
 
   const addUserSuccess=async(id)=>{
@@ -167,7 +182,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={salary}
                     onChange={(e) => setSalary(validateNumberInput(e.target.value))}
@@ -177,7 +192,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={sub}
                     onChange={(e) => setSub(validateNumberInput(e.target.value))}
@@ -188,7 +203,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={ot}
                     onChange={(e) => setOT(validateNumberInput(e.target.value))}
@@ -198,7 +213,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allowance}
                     onChange={(e) => setAllowance(validateNumberInput(e.target.value))}
@@ -209,7 +224,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={venhicle}
                     onChange={(e) => setVenhicle(validateNumberInput(e.target.value))}
@@ -221,7 +236,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={welth}
                     onChange={(e) => setWelth(validateNumberInput(e.target.value))}
@@ -231,7 +246,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={bonus}
                     onChange={(e) => setBonus(validateNumberInput(e.target.value))}
@@ -241,7 +256,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={costL}
                     onChange={(e) => setCostL(validateNumberInput(e.target.value))}
@@ -251,7 +266,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allDeposit}
                     onChange={(e) => setAllDeposit(validateNumberInput(e.target.value))}
@@ -267,7 +282,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={insurance}
                     onChange={(e) => setInsurance(validateNumberInput(e.target.value))}
@@ -277,7 +292,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={late}
                     onChange={(e) => setLate(validateNumberInput(e.target.value))}
@@ -288,7 +303,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={withdraw}
                     onChange={(e) => setWithdraw(validateNumberInput(e.target.value))}
@@ -298,7 +313,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={borrow}
                     onChange={(e) => setBorrow(validateNumberInput(e.target.value))}
@@ -309,7 +324,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={missing}
                     onChange={(e) => setMissing(validateNumberInput(e.target.value))}
@@ -321,7 +336,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%',marginRight:'1.25%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={tax}
                     onChange={(e) => setTax(validateNumberInput(e.target.value))}
@@ -331,7 +346,7 @@ function ProfileSalary() {
                     className="form-field"
                     variant="filled"
                     style={{width:'19%'}}
-                    InputLabelProps={{ style: { color: '#000' } }}
+                    InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={allInsurance}
                     onChange={(e) => setAllInsurance(validateNumberInput(e.target.value))}

@@ -273,7 +273,7 @@ class FireStore{
       networkRef, 
       orderBy("count", "desc"), 
       orderBy("timestamp", "asc"), 
-      limit(3) // Limit to top 3 profiles
+      limit(4) // Limit to top 3 profiles
     );
   
     // Fetch data using onSnapshot to listen for real-time updates

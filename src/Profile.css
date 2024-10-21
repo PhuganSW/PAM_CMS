@@ -14,7 +14,7 @@
     border-width: 20px;
     border-radius: 0 0 10px 10px;
     flex-direction: column;
-    font-size: 16px;
+    font-size: 24px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     padding-bottom: 20px;
     margin-bottom: 40px;
@@ -69,7 +69,7 @@
     margin-right: 5px;
     margin-left: 5px;
     width: 120px;
-    height: 30%;
+    height: 40px;
     border-width: 0;
     color: #FFF;
 }   
@@ -78,7 +78,7 @@
     border-radius: 5px;
     margin-left: 5px;
     width: 120px;
-    height: 30%;
+    height: 40px;
     color: #FFF;
     border-width: 0;
 }
@@ -115,15 +115,15 @@ color: #FFF;
 }
 
 .Role-button {
-  color: #188282; /* blue */
+  color: #3ca1a1; /* blue */
 }
 
 .UpSkill-button {
-  color: #69f9f9; /* green */
+  color: #3ca1a1; /* green */
 }
 
 .Notice-button {
-  color: #69f9f9; /* yellow */
+  color: #3ca1a1; /* yellow */
 }
 
 .fillter-button{

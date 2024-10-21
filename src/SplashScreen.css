@@ -1,0 +1,19 @@
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4; /* Adjust background color as needed */
+  }
+  
+  .splash-text {
+    font-size: 5rem;  /* Adjust the font size as needed */
+    font-weight: bold;
+    color: #343434;  /* Adjust text color */
+    text-align: center;
+  }
+  

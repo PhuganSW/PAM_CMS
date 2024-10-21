@@ -4,8 +4,9 @@
 }
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f0f2f5;
+  /* font-family: 'Arial', sans-serif;
+  background-color: #f0f2f5; */
+  font-family: 'THSarabunNew', sans-serif;
 }
 
 /* .dashboard {
@@ -19,8 +20,8 @@ body {
     width: 100%;
     background: #D3D3D3; /* light background for content */
     overflow-y: auto; /* allows scrolling */
-    font-family: 'Arial', sans-serif;
-    font-size: 10px;
+    font-family:  'THSarabunNew';
+    font-size: 28px;
     transition: margin-left 0.3s ease-in-out;
     align-items: center;
     justify-content: center;

@@ -234,13 +234,28 @@ function SalaryCal() {
   };
 
   const validateNumberInput = (input) => {
-    const number = Number(input);
+    const sanitizedInput = input.replace(/[^0-9.]/g, ''); // Remove any non-numeric characters except decimal points
+  
+    // Check if there's more than one decimal point
+    const parts = sanitizedInput.split('.');
+    if (parts.length > 2) {
+      alert("Invalid input. Too many decimal points.");
+      return '';
+    }
+  
+    // Ensure valid number, but allow empty input for continued typing
+    if (sanitizedInput === '' || sanitizedInput === '.') {
+      return sanitizedInput; // Allow users to start typing a decimal
+    }
+  
+    const number = parseFloat(sanitizedInput);
     if (isNaN(number)) {
       alert("Invalid input, resetting to 0.");
       return 0;
     }
-    return number;
-  }
+    
+    return sanitizedInput; // Return the valid sanitized input string
+  };
 
   const exportToPDF = async () => {
   const doc = new jsPDF();
@@ -394,7 +409,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={salary}
-                    onChange={(e) => setSalary(Number(e.target.value))}
+                    onChange={(e) => setSalary(validateNumberInput(e.target.value))}
                   />
                   <TextField
                     label="ค่าจ้าง"
@@ -404,7 +419,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={sub}
-                    onChange={(e) => setSub(Number(e.target.value))}
+                    onChange={(e) => setSub(validateNumberInput(e.target.value))}
                   />
                   <TextField
                     
@@ -415,7 +430,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={ot}
-                    onChange={(e) => setOT(Number(e.target.value))}
+                    onChange={(e) => setOT(validateNumberInput(e.target.value))}
                   />
                   <TextField
                     label="ค่าเบี้ยเลี้ยง"
@@ -425,7 +440,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={allowance}
-                    onChange={(e) => setAllowance(Number(e.target.value))}
+                    onChange={(e) => setAllowance(validateNumberInput(e.target.value))}
                   >
                   </TextField>
                   <TextField
@@ -436,7 +451,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={venhicle}
-                    onChange={(e) => setVenhicle(Number(e.target.value))}
+                    onChange={(e) => setVenhicle(validateNumberInput(e.target.value))}
                   />
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
@@ -450,7 +465,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={welth}
-                    onChange={(e) => setWelth(Number(e.target.value))}
+                    onChange={(e) => setWelth(validateNumberInput(e.target.value))}
                   />
                    <TextField
                     label="เงินโบนัส"
@@ -460,7 +475,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={bonus}
-                    onChange={(e) => setBonus(Number(e.target.value))}
+                    onChange={(e) => setBonus(validateNumberInput(e.target.value))}
                       />
                   <TextField
                     label="เงินพิเศษ"
@@ -470,7 +485,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={costL}
-                    onChange={(e) => setCostL(Number(e.target.value))}
+                    onChange={(e) => setCostL(validateNumberInput(e.target.value))}
                   />
                   {/* <TextField
                     label="เงินสวัสดิการ"
@@ -532,7 +547,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={insurance}
-                    onChange={(e) => setInsurance(Number(e.target.value))}
+                    onChange={(e) => setInsurance(validateNumberInput(e.target.value))}
                   />
                   <TextField
                     label="เงินหัก ณ ที่จ่าย"
@@ -542,7 +557,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={late}
-                    onChange={(e) => setLate(Number(e.target.value))}
+                    onChange={(e) => setLate(validateNumberInput(e.target.value))}
                   />
                   <TextField
                     
@@ -553,7 +568,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={withdraw}
-                    onChange={(e) => setWithdraw(Number(e.target.value))}
+                    onChange={(e) => setWithdraw(validateNumberInput(e.target.value))}
                   />
                   <TextField
                     label="เงินกู้ยืมสวัสดิการ"
@@ -563,7 +578,7 @@ function SalaryCal() {
                     InputLabelProps={{ shrink: true,style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={borrow}
-                    onChange={(e) => setBorrow(Number(e.target.value))}
+                    onChange={(e) => setBorrow(validateNumberInput(e.target.value))}
                   >
                   </TextField>
                   <TextField
@@ -574,7 +589,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={missing}
-                    onChange={(e) => setMissing(Number(e.target.value))}
+                    onChange={(e) => setMissing(validateNumberInput(e.target.value))}
                   />
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}} >
@@ -586,7 +601,7 @@ function SalaryCal() {
                     InputLabelProps={{shrink: true, style: { color: '#000' } }}
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' },readOnly: !editable }}
                     value={tax}
-                    onChange={(e) => setTax(Number(e.target.value))}
+                    onChange={(e) => setTax(validateNumberInput(e.target.value))}
                   />
                 </div>
                 <div className="form-row" style={{ display: 'flex'}}>
