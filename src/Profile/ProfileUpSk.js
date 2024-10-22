@@ -33,6 +33,7 @@ function ProfileUpSk() {
             linkAi:linkAi,
             linkSoft:linkSoft,
             linkWeld:linkWeld,
+            newRead:true,
          }
         firestore.addUpSkill(companyId,uid,item,()=>navigate('/profile'),(e)=>console.log(e))
     }catch{
@@ -45,6 +46,7 @@ function ProfileUpSk() {
        linkAi:linkAi,
        linkSoft:linkSoft,
        linkWeld:linkWeld,
+       newRead:true,
     }
     firestore.updateUpskill(companyId,uid,item,SaveSuc,SaveUnsuc)
   }

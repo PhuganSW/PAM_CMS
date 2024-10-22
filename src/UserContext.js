@@ -32,22 +32,51 @@ export const UserProvider = ({ children }) => {
         if (storedCompanyId) {
           setCompanyId(storedCompanyId);  // Retrieve companyId from localStorage
 
-          firestore.getAccount(storedCompanyId, user.uid, (accountData) => {
-            setUserData(accountData); // Store Firestore user data
-            setLoading(false);  // Stop loading after data is fetched
-          }, () => {
-            console.error("Error fetching user data from Firestore");
-            setLoading(false); // Stop loading even if there's an error
-          });
+          // firestore.getAccount(storedCompanyId, user.uid, (accountData) => {
+          //   setUserData(accountData); // Store Firestore user data
+          //   setLoading(false);  // Stop loading after data is fetched
+          // }, () => {
+          //   console.error("Error fetching user data from Firestore");
+          //   setLoading(false); // Stop loading even if there's an error
+          // });
+          fetchAccountData(storedCompanyId, user.uid);
+        }else {
+          // If no companyId is found in localStorage, log out the user
+          handleInvalidState();
         }
       } else {
-        setCurrentUser(null);  // Clear user state if not authenticated
-        setCompanyId(null);    // Clear companyId if not authenticated
-        setUserData(null);    // Clear Firestore user data
-        setLoading(false); 
+        handleInvalidState();
+        // setCurrentUser(null);  // Clear user state if not authenticated
+        // setCompanyId(null);    // Clear companyId if not authenticated
+        // setUserData(null);    // Clear Firestore user data
+        // setLoading(false); 
       }
       // setLoading(false);  // Stop loading after the check is complete
     });
+    const handleInvalidState = () => {
+      // Clear all states and prevent navigation to home
+      setCurrentUser(null);
+      setCompanyId(null);
+      setUserData(null);
+      setLoading(false);
+      localStorage.removeItem('companyId');
+    };
+
+    const fetchAccountData = (companyId, userId) => {
+      // Fetch the user's account data from Firestore using the companyId and userId
+      firestore.getAccount(companyId, userId, (accountData) => {
+        if (accountData) {
+          setUserData(accountData); // Store Firestore user data
+        } else {
+          console.error("Account not found for the provided companyId.");
+          handleInvalidState();  // Clear state if account data is not found
+        }
+        setLoading(false);  // Stop loading after data is fetched
+      }, (error) => {
+        console.error("Error fetching user data from Firestore:", error);
+        handleInvalidState();  // Clear state if there was an error fetching data
+      });
+    };
 
     return () => {
       // Ensure unsubscribe is called on component unmount

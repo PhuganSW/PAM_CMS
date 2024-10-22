@@ -38,14 +38,39 @@ const Register = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-    
-        // Validate Company ID
+    const verifyCompanyId = async () => {
         if (!companyId) {
             setErrorMessage("Company ID is required.");
-            return;
+            return false;
         }
+        // Check for whitespace in companyId
+        if (/\s/.test(companyId)) {
+            setErrorMessage("Company ID cannot contain spaces.");
+            return false;
+        }
+
+        // Proceed to check if the companyId is already in use
+        return new Promise((resolve, reject) => {
+            firestore.checkCompany(companyId, (exists) => {
+                if (exists) {
+                    setErrorMessage("Company ID is already in use.");
+                    resolve(false);
+                } else {
+                    resolve(true); // companyId is valid and not in use
+                }
+            }, (error) => {
+                console.error("Error checking company ID:", error);
+                setErrorMessage("An error occurred while verifying the Company ID.");
+                reject(false);
+            });
+        });
+    };
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+
+        const isCompanyIdValid = await verifyCompanyId();
+        if (!isCompanyIdValid) return;
     
         // Validate password and confirm password
         if (password !== confirmPassword) {
@@ -100,7 +125,7 @@ const Register = () => {
     <div className="App">
         <header className="App-header">
             <div className='Main'>
-            <h2 style={{color:'black',marginTop:-30}}>Sign Up</h2>
+            <h2 style={{color:'black',marginTop:-30,fontWeight:'bold'}}>Sign Up</h2>
 
             {/* Company ID */}
             <input

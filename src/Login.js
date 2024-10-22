@@ -22,20 +22,27 @@ const Login = () => {
   const allowedTestEmails = ['admin.miscible@pam.com','sisira.w@miscible.com','hr.miscible@pam.com','test@test.com']
 
   const getAccountS = (data) => {
-    // Save companyId to local storage to persist across refreshes
-    console.log(data)
-    setUserData(data);
-    localStorage.setItem('userData', JSON.stringify(data));
-    navigate("/home");
+    if (data) {
+      // Save companyId to local storage to persist across refreshes
+      console.log(data);
+      setUserData(data);
+      localStorage.setItem('userData', JSON.stringify(data));
+      navigate("/home"); // Only navigate if account is found
+    } else {
+      getAccountUn();
+    }
   };
 
-  const getAccountUn = () => alert("Account: Not Found user!!");
+  const getAccountUn = () => {
+    setCurrentUser(null);
+    alert("Account: Not Found user!!");
+  }
 
   const loginSuc = (user) => {
     if (user) {
       const userEmail = user.email.toLowerCase();
       if (user.emailVerified || allowedTestEmails.includes(userEmail)) {
-        setCurrentUser(user);
+        //setCurrentUser(user);
         firestore.getAccount(companyId, user.uid, getAccountS, getAccountUn);
       } else {
         // If the email isn't verified, and it's not in the allowed list, alert the user
@@ -62,18 +69,6 @@ const Login = () => {
     navigate('/forgot_password')
   };
 
-  // const suc=(user)=>{
-  //   if (user) {
-  //     setCurrentUser(user)
-  //     firestore.getAccount("miscible",user.uid,getAccountS,getAccountUn)
-      
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   auth.checksignin(suc);
-  // }, []);
-
   // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -85,6 +80,7 @@ const Login = () => {
       <header className="App-header">
         <div className='Main'>
           <img src='https://i.postimg.cc/VLLwZdzX/PAM-logo.png' width={200} height={200} alt="Logo" />
+          <form onSubmit={onLogin}>
           <div style={{flex:1}}>
             <p style={{color:'black',fontSize:24,marginBottom:0,textAlign:'left',marginLeft:-5}}>กรุณาใส่ User ในรูปแบบของอีเมล</p>
             <input type="email" className="input-field" placeholder="Email" onChange={(e) => setEmail(e.target.value)} autoFocus={true} required />
@@ -106,8 +102,9 @@ const Login = () => {
               </div>
             </div>
             <div className="forgotPass" onClick={forgotPassword}>forgot password?</div>
-            <button type="submit" className="login-button" onClick={onLogin}>LOGIN</button>
+            <button type="submit" className="login-button">LOGIN</button>
           </div>
+          </form>
         </div>
       </header>
     </div>

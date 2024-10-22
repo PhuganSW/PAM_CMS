@@ -32,6 +32,7 @@ function ProfileNotice() {
         let item= {
             other:other,
             notice:notice,
+            newRead:true,
          }
         firestore.addNotice(companyId,uid,item,()=>navigate('/profile'),(e)=>console.log(e))
     }catch{
@@ -43,6 +44,7 @@ function ProfileNotice() {
     let item= {
         other:other,
         notice:notice,
+        newRead:true,
     }
     firestore.updateNotice(companyId,uid,item,SaveSuc,SaveUnsuc)
   }
