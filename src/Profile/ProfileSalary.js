@@ -46,38 +46,27 @@ function ProfileSalary() {
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const validateNumberInput = (input) => {
-    const sanitizedInput = input.replace(/[^0-9.]/g, ''); // Remove any non-numeric characters except decimal points
+    const sanitizedInput = input.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except the decimal point
   
     // Check if there's more than one decimal point
     const parts = sanitizedInput.split('.');
     if (parts.length > 2) {
-      alert("Invalid input. Too many decimal points.");
-      return '';
+      return ''; // Return an empty string if the input is invalid (too many decimal points)
     }
   
-    // Ensure valid number, but allow empty input for continued typing
+    // If input is empty or just a period, return as is to allow further typing
     if (sanitizedInput === '' || sanitizedInput === '.') {
-      return sanitizedInput; // Allow users to start typing a decimal
+      return sanitizedInput;
     }
   
+    // Ensure it's a valid number and allow further typing
     const number = parseFloat(sanitizedInput);
     if (isNaN(number)) {
-      alert("Invalid input, resetting to 0.");
-      return 0;
+      return ''; // Reset invalid input
     }
-    
-    return sanitizedInput; // Return the valid sanitized input string
+  
+    return sanitizedInput; // Return the sanitized string input for further editing
   };
-
-
-  const addUserSuccess=async(id)=>{
-
-  }
-
-  const addUserUnsuccess=(e)=>{
-    console.log(e)
-    alert('กรอกชื่อกับนามสกุลให้ครบถ้วน')
-  }
 
   const updateSuccess = () => {
     navigate('/salary_list',{state:{uid:uid}})
@@ -90,22 +79,22 @@ function ProfileSalary() {
   const onSave= async()=>{
 
     let item ={
-    costL: costL || 0,
-    ot: ot || 0,
-    allowance: allowance || 0,
-    salary: salary || 0,
-    venhicle: venhicle || 0,
-    sub: sub || 0,
-    welth: welth || 0,
-    bonus: bonus || 0,
-    allDeposit: allDeposit || 0,
-    tax: tax || 0,
-    insurance: insurance || 0,
-    late: late || 0,
-    missing: missing || 0,
-    borrow: borrow || 0,
-    withdraw: withdraw || 0,
-    allInsurance: allInsurance || 0,
+      costL: parseFloat(costL) || 0,
+      ot: parseFloat(ot) || 0,
+      allowance: parseFloat(allowance) || 0,
+      salary: parseFloat(salary) || 0,
+      venhicle: parseFloat(venhicle) || 0,
+      sub: parseFloat(sub) || 0,
+      welth: parseFloat(welth) || 0,
+      bonus: parseFloat(bonus) || 0,
+      allDeposit: parseFloat(allDeposit) || 0,
+      tax: parseFloat(tax) || 0,
+      insurance: parseFloat(insurance) || 0,
+      late: parseFloat(late) || 0,
+      missing: parseFloat(missing) || 0,
+      borrow: parseFloat(borrow) || 0,
+      withdraw: parseFloat(withdraw) || 0,
+      allInsurance: parseFloat(allInsurance) || 0,
     }
     if(action=='edit'){
         firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);

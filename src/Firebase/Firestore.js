@@ -1092,7 +1092,6 @@ class FireStore{
             count: userSnapshot.size,  // Number of users
           });
         }
-
         success(workplaceData);
       })
       .catch((error) => unsuccess(error));
@@ -1264,7 +1263,7 @@ class FireStore{
             holidayR,
           });
         } else {
-          unsuccess("No wealthfare document found for this user.");
+          unsuccess(`No wealthfare document found for this user ${userId}`);
         }
       })
       .catch((error) => unsuccess(error));

@@ -134,25 +134,25 @@ function SalaryCal() {
       name:name,
       position:position,
       date:date_str,
-      costL:costL,
-      ot:ot,
-      allowance:allowance,
-      salary:salary,
-      venhicle:venhicle,
-      sub:sub,
-      welth:welth,
-      bonus:bonus,
-      tax:tax,
-      insurance:insurance,
-      late:late,
-      missing:missing,
-      borrow:borrow,
-      withdraw:withdraw,
-      deposit:deposit,
-      allDeposit:allDeposit,
-      allWithdraw:allWithdraw,
-      allInsurance:allInsurance,
-      amount:amount,
+      costL: parseFloat(costL) || 0,   // Ensure all these values are saved as numbers
+      ot: parseFloat(ot) || 0,
+      allowance: parseFloat(allowance) || 0,
+      salary: parseFloat(salary) || 0,
+      venhicle: parseFloat(venhicle) || 0,
+      sub: parseFloat(sub) || 0,
+      welth: parseFloat(welth) || 0,
+      bonus: parseFloat(bonus) || 0,
+      tax: parseFloat(tax) || 0,
+      insurance: parseFloat(insurance) || 0,
+      late: parseFloat(late) || 0,
+      missing: parseFloat(missing) || 0,
+      borrow: parseFloat(borrow) || 0,
+      withdraw: parseFloat(withdraw) || 0,
+      deposit: parseFloat(deposit) || 0,
+      allDeposit: parseFloat(allDeposit) || 0,
+      allWithdraw: parseFloat(allWithdraw) || 0,
+      allInsurance: parseFloat(allInsurance) || 0,
+      amount: parseFloat(amount) || 0,
       confirm:false,
       urlPDF:urlPDF,
     }
@@ -234,27 +234,16 @@ function SalaryCal() {
   };
 
   const validateNumberInput = (input) => {
-    const sanitizedInput = input.replace(/[^0-9.]/g, ''); // Remove any non-numeric characters except decimal points
-  
-    // Check if there's more than one decimal point
-    const parts = sanitizedInput.split('.');
-    if (parts.length > 2) {
-      alert("Invalid input. Too many decimal points.");
-      return '';
-    }
-  
-    // Ensure valid number, but allow empty input for continued typing
-    if (sanitizedInput === '' || sanitizedInput === '.') {
-      return sanitizedInput; // Allow users to start typing a decimal
-    }
-  
-    const number = parseFloat(sanitizedInput);
-    if (isNaN(number)) {
-      alert("Invalid input, resetting to 0.");
-      return 0;
-    }
+    const sanitizedInput = input.replace(/[^0-9.-]/g, ''); // Allow numbers, decimal points, and negative signs
     
-    return sanitizedInput; // Return the valid sanitized input string
+    // Prevent more than one decimal point or more than one negative sign
+    const parts = sanitizedInput.split('.');
+    if (parts.length > 2 || sanitizedInput.indexOf('-') > 0) {
+      return ''; // Return empty string if invalid
+    }
+  
+    // Return the cleaned input string for real-time display
+    return sanitizedInput;
   };
 
   const exportToPDF = async () => {
