@@ -62,7 +62,7 @@ function Home() {
     //console.log(userData.position)
     firestore.getWorkplaceUserCounts(
       companyId,
-      (data) => setWorkplaceUserData(data),  // On success, set the state
+      (data) => {setWorkplaceUserData(data); console.log(data)},  // On success, set the state
       (error) => console.error('Error fetching workplace data:', error) // On error
     );
     firestore.getAllUser(

@@ -1079,11 +1079,11 @@ class FireStore{
         const workplaceData = [];
 
         for (const doc of snapshot.docs) {
-          const workplaceId = doc.id;
+          const workplaceId = doc.data().wp;
           
 
           // For each workplace, fetch the user count
-          const usersRef = collection(this.db, "companies", companyId, "workplaces", workplaceId, "users");
+          const usersRef = collection(this.db, "companies", companyId, "workplaces", doc.id, "users");
           const userSnapshot = await getDocs(usersRef);
 
           // Push workplace data with user count

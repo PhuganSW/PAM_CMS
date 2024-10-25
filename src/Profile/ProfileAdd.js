@@ -101,8 +101,8 @@ function ProfileAdd() {
   };
 
   const addUsernameSuc=()=>{
-    //navigate('/profile')
     alert('Save data success!!')
+    navigate('/profile')
   }
 
   const addUsernameUnsuc=(e)=>{

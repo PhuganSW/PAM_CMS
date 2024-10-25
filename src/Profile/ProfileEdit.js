@@ -172,8 +172,8 @@ function ProfileEdit() {
   };
 
   const updateSuccess = () => {
-    //navigate('/profile');
     alert('Update data success!!')
+    navigate('/profile');
   };
 
   const updateUnsuccess = (error) => {

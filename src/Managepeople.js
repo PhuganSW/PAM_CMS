@@ -36,8 +36,8 @@ function ManagePeople() {
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [selectFillter,setSelectFillter] = useState('');
-  const [workplace,setWorkplace] =useState('');
-  const [showWorkPlace,setShowWorkPlace] = useState('');
+  const [workplace, setWorkplace] = useState({ id: '', name: '' });
+  const [showWorkPlace,setShowWorkPlace] = useState({ id: '', name: '' });
   const [workplaces,setWorkplaces] = useState([]);
   const [lat,setLat] = useState(null);
   const [lon,setLon] = useState(null);
@@ -65,17 +65,19 @@ function ManagePeople() {
   const handleShow = async (user) =>{
     let Leader = []
     let WP = ''
+    let wpID = ''
     await firestore.getLeader(companyId, user.id, (data, wp) => {
       if (data) {
         Leader.push(data);
       }
       if (wp) {
         WP = wp.workplace;
+        wpID = wp.wpID
       }
     });
   
     // Set default values if Leader[0] is undefined
-    setShowWorkPlace(WP);
+    setShowWorkPlace({id:wpID,name:WP});
     setLeaderId(Leader[0]?.leadId || '');
     setLeader(Leader[0]?.name || '');
     setLeaderId1(Leader[0]?.leadId1 || '');
@@ -106,10 +108,10 @@ function ManagePeople() {
     console.log(showWorkPlace,' ',leader)
     if (selectedUser && showWorkPlace && leader && leader1) {
 
-        firestore.assignWork(companyId, showWorkPlace, selectedUser.id, {
+        firestore.assignWork(companyId, showWorkPlace.id, selectedUser.id, {
             username: selectedUser.name,
             position: selectedUser.position,
-        },{workplace:showWorkPlace,newWork:true}, () => {
+        },{wpID:showWorkPlace.id,workplace:showWorkPlace.name,newWork:true}, () => {
             alert("Workplace assigned successfully!");
             handleClose();
         }, (error) => {
@@ -127,10 +129,11 @@ function ManagePeople() {
 
       if (selectedImage) {
         setUploading(true);
-        imageUrl = await storage.uploadWorkplaceImg(selectedImage, `${companyId}/workplace_images/${showWorkPlace}`);
+        imageUrl = await storage.uploadWorkplaceImg(selectedImage, `${companyId}/workplace_images/${showWorkPlace.name}`);
         setUploading(false);
       }
-        firestore.ManageWP(companyId, showWorkPlace, {
+        firestore.ManageWP(companyId, showWorkPlace.id, {
+            wp:showWorkPlace.name,
             imageUrl: imageUrl,  // Save the image URL in Firestore
             lat:lat || null,
             lon:lon || null,
@@ -176,9 +179,11 @@ function ManagePeople() {
 
   const fetchDropdownOptions = async () => {
     try {
-      const workplaces = await firestore.getDropdownOptions(companyId,'workplace');
-      setWorkplaces(workplaces.map(option => option.name));
-      
+      const workplacesData = await firestore.getDropdownOptions(companyId, 'workplace');
+      setWorkplaces(workplacesData.map(option => ({
+        id: option.id,   // Store the ID
+        name: option.name  // Store the name
+      })));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);
     }
@@ -256,31 +261,50 @@ function ManagePeople() {
     setFilteredUsers(filtered);
   };
 
-  const handleWorkplaceChange = async (event,{ updateWorkplace = false, updateShowWorkPlace = false }) => {
-    const selectedWorkplace = event.target.value;
-    if (updateWorkplace) { //employ list
-      setWorkplace(selectedWorkplace);
+  const handleWorkplaceChange = async (event, { updateWorkplace = false, updateShowWorkPlace = false }) => {
+    const selectedWorkplaceId = event.target.value;  // The selected ID
+    const selectedWorkplace = workplaces.find(wp => wp.id === selectedWorkplaceId);  // Find the full workplace object
+  
+    if (!selectedWorkplace) {
+      console.error("No workplace selected or invalid ID.");
+      return;
+    }
+    setLeaderId('')
+    setLeader('')
+    setLeaderId1('')
+    setLeader1('')
+  
+    const selectedWorkplaceName = selectedWorkplace.name;  // Extract the name
+  
+    // Log the ID and Name for verification
+    console.log("Selected Workplace ID:", selectedWorkplaceId);
+    console.log("Selected Workplace Name:", selectedWorkplaceName);
+  
+    // Update state with both ID and Name
+    if (updateWorkplace) {
+      setWorkplace({ id: selectedWorkplaceId, name: selectedWorkplaceName });  // Store both ID and Name in workplace state
     }
     if (updateShowWorkPlace) {
-      setShowWorkPlace(selectedWorkplace);
-    }
-   
-    if (unsubscribe) {
-        unsubscribe();
+      setShowWorkPlace({ id: selectedWorkplaceId, name: selectedWorkplaceName });  // Optionally update other state
     }
   
-    if(updateWorkplace){
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  
+    // Fetch related data using the selected workplace
+    if (updateWorkplace) {
       const unsubscribeFn = firestore.getUsersByWorkplace(
         companyId,
-        selectedWorkplace,
+        selectedWorkplaceId,
         getUsersByWorkplaceSuccess,
         getUsersByWorkplaceUnsuccess
-    );
-  
-    setUnsubscribe(() => unsubscribeFn);
+      );
+      setUnsubscribe(() => unsubscribeFn);
     }
-    
-    await fetchWorkplaceImage(selectedWorkplace); 
+  
+    // Fetch workplace image or other information
+    await fetchWorkplaceImage(selectedWorkplaceId);
   };
 
   const openLargeImage = () => {
@@ -368,14 +392,16 @@ function ManagePeople() {
                     label="พื้นที่ทำงาน"
                     variant="filled"
                     style={{ width: '79%' }}
-                    value={workplace}
-                    onChange={(e) => handleWorkplaceChange(e, { updateWorkplace: true })}
+                    value={workplace.id}
+                    onChange={(e) => {
+                      handleWorkplaceChange(e, { updateWorkplace: true });
+                    }}
                   >
-                    {workplaces.map((option,index) => (
-                  <MenuItem key={index} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
+                    {workplaces.map((option, index) => (
+                      <MenuItem key={index} value={option.id}>  {/* Use the ID as the value */}
+                        {option.name}  {/* Display the name */}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px',}}>
@@ -417,10 +443,10 @@ function ManagePeople() {
             <Form>
               <FormControl variant="filled" fullWidth>
                 <InputLabel>พื้นที่ทำงาน</InputLabel>
-                <Select value={showWorkPlace} onChange={(e) => handleWorkplaceChange(e, { updateShowWorkPlace: true })}>
+                <Select value={showWorkPlace.id} onChange={(e) => handleWorkplaceChange(e, { updateShowWorkPlace: true })}>
                   {workplaces.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
+                    <MenuItem key={index} value={option.id}>  {/* Use the ID as the value */}
+                      {option.name}  {/* Display the name */}
                     </MenuItem>
                   ))}
                 </Select>
@@ -487,12 +513,12 @@ function ManagePeople() {
               <FormControl variant="filled" fullWidth>
                 <InputLabel>พื้นที่ทำงาน</InputLabel>
                 {/* On changing the workplace, handleWorkplaceChange is called */}
-                <Select value={showWorkPlace} onChange={(e) => handleWorkplaceChange(e, { updateShowWorkPlace: true })}>
-                  {workplaces.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
+                <Select value={showWorkPlace.id} onChange={(e) => handleWorkplaceChange(e, { updateShowWorkPlace: true })}>
+                {workplaces.map((option, index) => (
+                  <MenuItem key={index} value={option.id}>  {/* Use the ID as the value */}
+                    {option.name}  {/* Display the name */}
+                  </MenuItem>
+                ))}
                 </Select>
               </FormControl>
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
