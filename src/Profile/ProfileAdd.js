@@ -83,7 +83,8 @@ function ProfileAdd() {
   const [inputPassword, setInputPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPasswordInModal, setShowPasswordInModal] = useState(false);
-  
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
 
   const levelOptions = [
     {label:'Employee',value:'employee'},
@@ -102,7 +103,7 @@ function ProfileAdd() {
 
   const addUsernameSuc=()=>{
     alert('Save data success!!')
-    navigate('/profile')
+    navigate('/profile', { state: { startIndex, endIndex } })
   }
 
   const addUsernameUnsuc=(e)=>{
@@ -309,6 +310,10 @@ function ProfileAdd() {
       firestore.getUsername(companyId,location.state.uid, getUsernameSuc, getUsernameUnsuc)
     } else {
       console.warn('No ID found in location state');
+    }
+    if (location.state) {
+      setStartIndex(location.state.startIndex || 0);
+      setEndIndex(location.state.endIndex || 10);
     }
     fetchDropdownOptions();
   }, [location.state]);
@@ -737,7 +742,7 @@ function ProfileAdd() {
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile',{ state: { startIndex, endIndex } })}>ยกเลิก</button>
                 {/* <button style={{ width: 120, height: 50, borderRadius: 5, backgroundColor: '#BEBEBE' }} onClick={handleSalaryClick}>ข้อมูลเงินเดือน</button> */}
               </div>
 

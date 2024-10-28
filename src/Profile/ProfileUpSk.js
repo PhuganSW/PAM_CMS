@@ -25,8 +25,10 @@ function ProfileUpSk() {
   const [linkAi,setLinkAi] = useState('');
   const [linkSoft,setLinkSoft] = useState('');
   const [linkWeld,setLinkWeld] = useState('');
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
 
-  const SaveSuc=()=> navigate('/profile');
+  const SaveSuc=()=> navigate('/profile', { state: { startIndex, endIndex } });
   const SaveUnsuc=(e)=>{
     try{
         let item= {
@@ -35,7 +37,7 @@ function ProfileUpSk() {
             linkWeld:linkWeld,
             newRead:true,
          }
-        firestore.addUpSkill(companyId,uid,item,()=>navigate('/profile'),(e)=>console.log(e))
+        firestore.addUpSkill(companyId,uid,item,()=>navigate('/profile', { state: { startIndex, endIndex } }),(e)=>console.log(e))
     }catch{
         console.log(e)
     }
@@ -65,6 +67,10 @@ function ProfileUpSk() {
         firestore.getUpSkill(companyId,location.state.uid, getUserSuccess, getUserUnsuccess)
       } else {
         console.warn('No ID found in location state');
+      }
+      if (location.state) {
+        setStartIndex(location.state.startIndex || 0);
+        setEndIndex(location.state.endIndex || 10);
       }
   }, [location.state]);
 
@@ -137,7 +143,7 @@ function ProfileUpSk() {
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile', { state: { startIndex, endIndex } })}>ยกเลิก</button>
               </div>
 
             </div>

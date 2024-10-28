@@ -33,6 +33,7 @@ import ProfileNotice from './Profile/ProfileNotice';
 import ProfileSalary from './Profile/ProfileSalary';
 import Register from './Register';
 import SplashScreen from './SplashScreen';
+import Service from './Service';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);

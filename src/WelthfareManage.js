@@ -28,6 +28,8 @@ function WelthfareManage() {
   const [maternityR,setMaternityR] = useState(''); //ลาคลอด
   const [kamaR,setKamaR] = useState('') //ลาบวช
   const [otherR,setOtherR] = useState(''); //ลาสิทธิ์อื่น
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
   const { setCurrentUser, companyId } = useContext(UserContext);
 
   const handleNumberInput = (e) => {
@@ -48,7 +50,7 @@ function WelthfareManage() {
   }
 
   const addWelthSuc=()=>{
-    navigate('/welthfare')
+    navigate('/welthfare', { state: { startIndex, endIndex } })
   }
 
   const addWelthUnsuc=()=>{
@@ -104,6 +106,10 @@ function WelthfareManage() {
       firestore.getWelth(companyId,location.state.uid,getWelSuc,getWelunsuc)
     } else {
       console.warn('No ID found in location state');
+    }
+    if (location.state) {
+      setStartIndex(location.state.startIndex || 0);
+      setEndIndex(location.state.endIndex || 10);
     }
   }, [location.state]);
 
@@ -253,7 +259,7 @@ function WelthfareManage() {
               </div>
               <div style={{display:'flex', flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/welthfare')}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/welthfare', { state: { startIndex, endIndex } })}>ยกเลิก</button>
               </div>
 
             </div>

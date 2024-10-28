@@ -5,7 +5,7 @@ import Sidebar from '../sidebar';
 import '../Profile.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import firestore from '../Firebase/Firestore';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -19,6 +19,7 @@ import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 function ProfileManage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [allUser,setAllUser] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
@@ -79,23 +80,23 @@ function ProfileManage() {
 
   const onAdd =()=>{
     console.log(account)
-    navigate('/profile_add');
+    navigate('/profile_add',{state:{startIndex, endIndex}});
   }
 
   const onEdit =(id)=>{
-    navigate('/profile_edit',{state:{uid:id}})
+    navigate('/profile_edit',{state:{uid:id,startIndex, endIndex}})
   }
 
   const onRole =(id)=>{
-    navigate('/profile_role',{state:{uid:id}})
+    navigate('/profile_role',{state:{uid:id,startIndex, endIndex}})
   }
 
   const onUpSkill =(id)=>{
-    navigate('/profile_upskill',{state:{uid:id}})
+    navigate('/profile_upskill',{state:{uid:id,startIndex, endIndex}})
   }
 
   const onNotice =(id)=>{
-    navigate('/profile_notice',{state:{uid:id}})
+    navigate('/profile_notice',{state:{uid:id,startIndex, endIndex}})
   }
 
   const fetchDropdownOptions = async () => {
@@ -111,9 +112,16 @@ function ProfileManage() {
   };
 
   useEffect(() => {
+    if (location.state && location.state.startIndex !== undefined) {
+      setStartIndex(location.state.startIndex);
+      setEndIndex(location.state.endIndex);
+    } else {
+      setStartIndex(0); // Default to first page if no state is provided
+      setEndIndex(10);
+    }
     firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
     fetchDropdownOptions();
-  }, []);
+  }, [location.state]);
 
   const onNext = () => {
     setStartIndex(startIndex + 10); // Increment the start index by 5
@@ -135,12 +143,15 @@ function ProfileManage() {
   };
 
   const handleFillter = () => {
-    const query = position.toLowerCase();
-    //setSearch(event.target.value);
-    setSearchQuery(query);
-    const filtered = allUser.filter(user => user.position.toLowerCase().includes(query) );
-    setFilteredUsers(filtered);
-    setShowFillter(false)
+    if (position === "") {
+      // Reset filter when "None" or empty is selected
+      setFilteredUsers(allUser);
+    } else {
+      // Apply filter based on position
+      const filtered = allUser.filter(user => user.position.toLowerCase().includes(position.toLowerCase()));
+      setFilteredUsers(filtered);
+    }
+    setShowFillter(false);
   };
 
   // Sorting function for names
@@ -256,7 +267,11 @@ function ProfileManage() {
                     style={{width:300,marginRight:10}}
                     value={position}
                     onChange={(e) => setPosition(e.target.value)}
+                    SelectProps={{
+                      displayEmpty: true,
+                    }}
                   >
+                     <MenuItem value="">None / Clear Filter</MenuItem>
                     {positionOptions.map((option, index) => (
                     <MenuItem key={index} value={option}>
                       {option}

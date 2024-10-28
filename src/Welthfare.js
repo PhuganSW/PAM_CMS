@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useContext} from 'react';
-import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link, useNavigate,useLocation } from 'react-router-dom';
 import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,6 +13,7 @@ import { UserContext } from './UserContext';
 
 function Welthfare() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [allUser,setAllUser] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
@@ -40,10 +41,17 @@ function Welthfare() {
   }
 
   const manageWel=(id)=>{
-    navigate('/welthfare_manage',{state:{uid:id}})
+    navigate('/welthfare_manage',{state:{uid:id,startIndex, endIndex}})
   }
 
   useEffect(() => {
+    if (location.state && location.state.startIndex !== undefined) {
+      setStartIndex(location.state.startIndex);
+      setEndIndex(location.state.endIndex);
+    } else {
+      setStartIndex(0); // Default to first page if no state is provided
+      setEndIndex(10);
+    }
     firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
   }, []);
 

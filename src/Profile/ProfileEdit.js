@@ -94,6 +94,8 @@ function ProfileEdit() {
   const [inputPassword, setInputPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPasswordInModal, setShowPasswordInModal] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
 
   const warningImg = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%A2%E0%B9%80%E0%B8%95%E0%B8%B7%E0%B8%AD%E0%B8%99%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%87%E0%B8%81%E0%B8%B2%E0%B8%A2%E0%B8%AA%E0%B8%B8%E0%B8%A0%E0%B8%B2%E0%B8%9E.jpg?alt=media&token=e704f682-cf3c-4e6f-97c8-4ad7e6fdbefe"
   const defaultMen = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/333.png?alt=media&token=f5b9e3a6-8644-417e-a366-c4cddac12007"
@@ -120,6 +122,7 @@ function ProfileEdit() {
 
   const getUserSuccess = (data) => {
     setPrefixTh(data.prefixth);
+    console.log(data.prefixth)
     setPrefixEn(data.prefixEn);
     setEmID(data.emID);
     setName(data.name + " " + data.lastname);
@@ -173,7 +176,7 @@ function ProfileEdit() {
 
   const updateSuccess = () => {
     alert('Update data success!!')
-    navigate('/profile');
+    navigate('/profile', { state: { startIndex, endIndex } });
   };
 
   const updateUnsuccess = (error) => {
@@ -286,26 +289,46 @@ function ProfileEdit() {
     }
   };
 
+  const addOldValueToOptions = (oldValue, options) => {
+    // Check if oldValue exists and is not already in the options
+    if (oldValue && !options.includes(oldValue)) {
+      console.log("Adding old value to options:", oldValue); // Debug log
+      return [oldValue, ...options];
+    }
+    return options;
+  };
+
   const fetchDropdownOptions = async () => {
     try {
-      const prefixThOptions = await firestore.getDropdownOptions(companyId,'prefixTh');
-      setPrefixThOptions(prefixThOptions.map(option => option.name));
-      const prefixEnOptions = await firestore.getDropdownOptions(companyId,'prefixEn');
-      setPrefixEnOptions(prefixEnOptions.map(option => option.name));
-      const sexOptions = await firestore.getDropdownOptions(companyId,'sex');
-      setSexOptions(sexOptions.map(option => option.name));
-      const positionOptions = await firestore.getDropdownOptions(companyId,'position');
-      console.log(positionOptions);
-      setPositionOptions(positionOptions.map(option => option.name));
-      const departmentOptions = await firestore.getDropdownOptions(companyId,'department');
-      console.log(departmentOptions)
-      setDepartmentOptions(departmentOptions.map(option => option.name));
-      // const levelOptions = await firestore.getDropdownOptions('level');
-      // setLevelOptions(levelOptions.map(option => option.name));
-      const bankOptions = await firestore.getDropdownOptions(companyId,'bank');
-      setBankOptions(bankOptions.map(option => option.name));
-      const statusOptions = await firestore.getDropdownOptions(companyId,'status_per');
-      setStatusOptions(statusOptions.map(option => option.name));
+      const prefixThOptionsData = await firestore.getDropdownOptions(companyId, 'prefixTh');
+      const loadedPrefixThOptions = prefixThOptionsData.map(option => option.name);
+      const updatedPrefixThOptions = addOldValueToOptions(prefixth, loadedPrefixThOptions);
+      setPrefixThOptions(updatedPrefixThOptions);
+      console.log("Updated prefixThOptions:", updatedPrefixThOptions); // Debug log to check options
+  
+      const prefixEnOptionsData = await firestore.getDropdownOptions(companyId, 'prefixEn');
+      const loadedPrefixEnOptions = prefixEnOptionsData.map(option => option.name);
+      setPrefixEnOptions(addOldValueToOptions(prefixEn, loadedPrefixEnOptions));
+  
+      const sexOptionsData = await firestore.getDropdownOptions(companyId, 'sex');
+      const loadedSexOptions = sexOptionsData.map(option => option.name);
+      setSexOptions(addOldValueToOptions(sex, loadedSexOptions));
+  
+      const positionOptionsData = await firestore.getDropdownOptions(companyId, 'position');
+      const loadedPositionOptions = positionOptionsData.map(option => option.name);
+      setPositionOptions(addOldValueToOptions(position, loadedPositionOptions));
+  
+      const departmentOptionsData = await firestore.getDropdownOptions(companyId, 'department');
+      const loadedDepartmentOptions = departmentOptionsData.map(option => option.name);
+      setDepartmentOptions(addOldValueToOptions(department, loadedDepartmentOptions));
+  
+      const bankOptionsData = await firestore.getDropdownOptions(companyId, 'bank');
+      const loadedBankOptions = bankOptionsData.map(option => option.name);
+      setBankOptions(addOldValueToOptions(bank, loadedBankOptions));
+  
+      const statusOptionsData = await firestore.getDropdownOptions(companyId, 'status_per');
+      const loadedStatusOptions = statusOptionsData.map(option => option.name);
+      setStatusOptions(addOldValueToOptions(personal_status, loadedStatusOptions));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);
     }
@@ -318,6 +341,10 @@ function ProfileEdit() {
       firestore.getUsername(companyId,location.state.uid, getUsernameSuc, getUsernameUnsuc)
     } else {
       console.warn('No ID found in location state');
+    }
+    if (location.state) {
+      setStartIndex(location.state.startIndex || 0);
+      setEndIndex(location.state.endIndex || 10);
     }
     fetchDropdownOptions();
   }, [location.state]);
@@ -743,7 +770,7 @@ function ProfileEdit() {
             </div>
             <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile')}>ยกเลิก</button>
+              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile', { state: { startIndex, endIndex } })}>ยกเลิก</button>
               
             </div>
 

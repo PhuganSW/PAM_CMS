@@ -410,7 +410,7 @@ class FireStore{
         const actionDoc = await getDoc(actionRef);
 
         if (actionDoc.exists()) {
-            const currentWorkplaceId = actionDoc.data().workplace;
+            const currentWorkplaceId = actionDoc.data().wpID;
             console.log(currentWorkplaceId)
 
             // If the user has a current workplace, delete them from that workplace
@@ -839,6 +839,10 @@ class FireStore{
     try {
       const docRef = doc(this.db, "companies", companyId, "categories", categoryId, "items", itemId);
       await updateDoc(docRef, newData);
+      if(categoryId=="workplace"){
+        const wpRef = doc(this.db, "companies", companyId, "workplaces", itemId);
+        await updateDoc(wpRef, {wp:newData.name});
+      }
       success();
     } catch (e) {
       unsuccess(e);
