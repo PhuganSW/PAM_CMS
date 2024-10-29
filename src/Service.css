@@ -1,63 +1,97 @@
+/* Fullscreen background color */
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #e2f7f7;
+  height: 100%;
+  width: 100%;
+}
+
 .container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: #e0f7f7;
-    height: 100vh;
-  }
-  
-  .key-features {
-    width: 30%;
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-  
-  .key-features h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .key-features ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .key-features li {
-    font-size: 18px;
-    margin-bottom: 5px;
-  }
-  
-  .center-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 120px;
-    height: 120px;
-    background-color: white;
-    border-radius: 50%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .center-logo img {
-    width: 80%;
-  }
-  
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .button {
-    width: 180px;
-    padding: 10px;
-    text-align: center;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 18px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.background-overlay {
+  position: absolute;
+  left: 0;   /* Start from the left */
+  right: 0;  /* Extend to the right */
+  background-color: #BEBEBE;
+  width: 100%;  /* Full width */
+  height: 60%;  /* Adjust height if needed */
+  top: 20%;     /* Center vertically */
+  z-index: 1;
+  border-radius: 8px;
+}
+
+/* Key features section styling */
+.key-features {
+  width: 30%;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading and list styling */
+.key-features h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.key-features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.key-features li {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+/* Logo center styling with drop shadow */
+.center-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  background-color: white;
+  border-radius: 50%;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.center-logo img {
+  width: 80%;
+}
+
+/* Button styling */
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.button {
+  width: 180px;
+  padding: 10px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 18px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}

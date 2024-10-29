@@ -408,9 +408,9 @@ function ManagePeople() {
                 <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
-                    <th scope="col">ลำดับ</th>
-                    <th scope="col">ชื่อ-สกุล</th>
-                    <th scope="col">ตำแหน่ง</th>
+                    <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                    <th scope="col" style={{width:'45%'}}>ชื่อ-สกุล</th>
+                    <th scope="col"style={{width:'45%'}}>ตำแหน่ง</th>
                     {/* <th scope="col"></th> */}
                   </tr>
                 </thead>

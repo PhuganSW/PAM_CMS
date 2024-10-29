@@ -46,7 +46,7 @@ function ProfileManage() {
           users.push({id: item.id, name: item.name, position: item.position});
       });
       setAllUser(users);
-      setFilteredUsers(users);
+      applyFilters(users);
     }
   }
 
@@ -80,23 +80,33 @@ function ProfileManage() {
 
   const onAdd =()=>{
     console.log(account)
-    navigate('/profile_add',{state:{startIndex, endIndex}});
+    navigate('/profile_add',{state:{startIndex, endIndex, search,
+      searchQuery,
+      position,}});
   }
 
   const onEdit =(id)=>{
-    navigate('/profile_edit',{state:{uid:id,startIndex, endIndex}})
+    navigate('/profile_edit',{state:{uid:id,startIndex, endIndex,  search,
+      searchQuery,
+      position,}})
   }
 
   const onRole =(id)=>{
-    navigate('/profile_role',{state:{uid:id,startIndex, endIndex}})
+    navigate('/profile_role',{state:{uid:id,startIndex, endIndex,  search,
+      searchQuery,
+      position,}})
   }
 
   const onUpSkill =(id)=>{
-    navigate('/profile_upskill',{state:{uid:id,startIndex, endIndex}})
+    navigate('/profile_upskill',{state:{uid:id,startIndex, endIndex,  search,
+      searchQuery,
+      position,}})
   }
 
   const onNotice =(id)=>{
-    navigate('/profile_notice',{state:{uid:id,startIndex, endIndex}})
+    navigate('/profile_notice',{state:{uid:id,startIndex, endIndex,  search,
+      searchQuery,
+      position,}})
   }
 
   const fetchDropdownOptions = async () => {
@@ -111,10 +121,24 @@ function ProfileManage() {
     }
   };
 
+  const applyFilters = (users) => {
+    let filtered = users || allUser;
+    if (searchQuery) {
+      filtered = filtered.filter(user => user.name.toLowerCase().includes(searchQuery) || user.position.toLowerCase().includes(searchQuery));
+    }
+    if (position) {
+      filtered = filtered.filter(user => user.position.toLowerCase().includes(position.toLowerCase()));
+    }
+    setFilteredUsers(filtered);
+  };
+
   useEffect(() => {
     if (location.state && location.state.startIndex !== undefined) {
       setStartIndex(location.state.startIndex);
       setEndIndex(location.state.endIndex);
+      setSearch(location.state.search || '');
+      setSearchQuery(location.state.searchQuery || '');
+      setPosition(location.state.position || '');
     } else {
       setStartIndex(0); // Default to first page if no state is provided
       setEndIndex(10);
@@ -137,20 +161,11 @@ function ProfileManage() {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
     setSearchQuery(query);
-    const filtered = allUser.filter(user => user.name.toLowerCase().includes(query) || 
-      user.position.toLowerCase().includes(query));
-    setFilteredUsers(filtered);
+    applyFilters(allUser); // Reapply filters whenever search changes
   };
 
   const handleFillter = () => {
-    if (position === "") {
-      // Reset filter when "None" or empty is selected
-      setFilteredUsers(allUser);
-    } else {
-      // Apply filter based on position
-      const filtered = allUser.filter(user => user.position.toLowerCase().includes(position.toLowerCase()));
-      setFilteredUsers(filtered);
-    }
+    applyFilters(allUser); // Apply filters when filter button is clicked
     setShowFillter(false);
   };
 
@@ -191,7 +206,7 @@ function ProfileManage() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
-                <button className='fillter-button' onClick={()=>handleFilterShow()}><IoFilterOutline size={20} /></button>
+                <button className='fillter-button' onClick={()=>setShowFillter(true)}><IoFilterOutline size={20} /></button>
                 <button className='Add-button' onClick={onAdd}>เพิ่มพนักงาน</button>
               </div>
               

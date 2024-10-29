@@ -1,10 +1,12 @@
 import React from 'react';
-import './Service.css'; // Import CSS file for styling
-import logo from './icon/PAM_logo.png'; // Ensure this path is correct
+import './Service.css';
+import logo from './icon/PAM_logo.png';
 
 const Service = () => {
   return (
     <div className="container">
+      <div className="background-overlay"></div> {/* New background layer */}
+      
       <div className="key-features">
         <h2>Key Feature</h2>
         <ul>

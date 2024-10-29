@@ -111,7 +111,7 @@ function ManageIndex() {
       () => {
         setItems(items.map(item => item.id === editingItem.id ? { ...item, name: newItem } : item));
         setEditingItem(null);
-        setNewItem('');
+        //setNewItem('');
       },
       (error) => console.error("Error updating item: ", error)
     );
@@ -121,6 +121,7 @@ function ManageIndex() {
     firestore.deleteItemFromCategory(companyId,selectedCategory, selectID)
       .then(() => {setItems(items.filter(item => item.id !== selectID))
         setSelectedCategory('')
+        setNewItem('')
         handleDelClose()})
       .catch((error) => console.error("Error deleting item: ", error));
   };

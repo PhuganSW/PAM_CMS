@@ -95,101 +95,94 @@ function Home() {
       companyId,
       (users) => {
         console.log("Fetched users:", users);
-
+  
         const leaveDataPromises = users.map((user) =>
-          new Promise((resolve, reject) => {
-            firestore.getAllLeaveDataMtoL(companyId, user.id, (leaveData) => {
-              // Ensure values are not negative
-              const absenceUsed = Math.max(0, leaveData.absence - leaveData.absenceR);
-              const sickUsed = Math.max(0, leaveData.sick - leaveData.sickR);
-              const holidayUsed = Math.max(0, leaveData.holiday - leaveData.holidayR);
-
-              resolve({
-                name: user.name,
-                image: user.image_off,
-                absenceUsed,
-                sickUsed,
-                holidayUsed,
-                totalLeaveUsed: absenceUsed + sickUsed + holidayUsed, // For sorting later
-              });
-            }, reject);
+          new Promise((resolve) => {
+            firestore.getAllLeaveDataMtoL(
+              companyId, 
+              user.id, 
+              (leaveData) => {
+                const absenceUsed = Math.max(0, leaveData.absence - leaveData.absenceR);
+                const sickUsed = Math.max(0, leaveData.sick - leaveData.sickR);
+                const holidayUsed = Math.max(0, leaveData.holiday - leaveData.holidayR);
+  
+                resolve({
+                  name: user.name,
+                  image: user.image_off,
+                  absenceUsed,
+                  sickUsed,
+                  holidayUsed,
+                  totalLeaveUsed: absenceUsed + sickUsed + holidayUsed,
+                });
+              },
+              (error) => {
+                console.warn(`Skipping user ${user.id} due to missing data: ${error}`);
+                resolve(null); // Resolve with null if wealthfare document is missing
+              }
+            );
           })
         );
-
-        // Process barData1 (Most to Least)
+  
         Promise.all(leaveDataPromises).then((leaveDataResults) => {
-          const top10LeaveData = leaveDataResults
-            .sort((a, b) => b.totalLeaveUsed - a.totalLeaveUsed)  // Sort by total leave used (most to least)
+          const filteredData = leaveDataResults.filter(data => data !== null);
+  
+          // Process barData1 (Most to Least)
+          const top10LeaveData = filteredData
+            .sort((a, b) => b.totalLeaveUsed - a.totalLeaveUsed)
             .slice(0, 10);
-        
-          console.log("Top 10 Leave Data:", top10LeaveData); // Add this line to debug
-        
+  
           setEmployeeLeaveData(top10LeaveData);
-        
+  
           if (top10LeaveData.length > 0) {
-            const labels = top10LeaveData.map((employee) => employee.name);
-            const absenceData = top10LeaveData.map((employee) => employee.absenceUsed);
-            const sickData = top10LeaveData.map((employee) => employee.sickUsed);
-            const holidayData = top10LeaveData.map((employee) => employee.holidayUsed);
-        
             setBarData1({
-              labels,
+              labels: top10LeaveData.map(employee => employee.name),
               datasets: [
                 {
                   label: 'ลาพักร้อน',
-                  backgroundColor: '#508C9B',  // Solid blue for 'ลาพักร้อน'
-                  data: holidayData,
+                  backgroundColor: '#508C9B',
+                  data: top10LeaveData.map(employee => employee.holidayUsed),
                 },
                 {
                   label: 'ลาป่วย',
-                  backgroundColor: '#134B70',  // Solid yellow for 'ลาป่วย'
-                  data: sickData,
+                  backgroundColor: '#134B70',
+                  data: top10LeaveData.map(employee => employee.sickUsed),
                 },
                 {
                   label: 'ลากิจ',
-                  backgroundColor: '#201E43',  // Solid purple for 'ลากิจ'
-                  data: absenceData,
+                  backgroundColor: '#201E43',
+                  data: top10LeaveData.map(employee => employee.absenceUsed),
                 },
               ],
-              users: top10LeaveData, // This array should match the length of the labels array
+              users: top10LeaveData,
             });
           }
-        });
-        
-        // Process barData2 (Least to Most)
-        Promise.all(leaveDataPromises).then((leaveDataResults) => {
-          const bottom10LeaveData = leaveDataResults
-            .sort((a, b) => a.totalLeaveUsed - b.totalLeaveUsed)  // Sort by total leave used (least to most)
+  
+          // Process barData2 (Least to Most)
+          const bottom10LeaveData = filteredData
+            .sort((a, b) => a.totalLeaveUsed - b.totalLeaveUsed)
             .slice(0, 10);
-        
-          console.log("Bottom 10 Leave Data:", bottom10LeaveData); // Add this line to debug
-        
+  
           if (bottom10LeaveData.length > 0) {
-            const labels = bottom10LeaveData.map((employee) => employee.name);
-            const absenceData = bottom10LeaveData.map((employee) => employee.absenceUsed);
-            const sickData = bottom10LeaveData.map((employee) => employee.sickUsed);
-            const holidayData = bottom10LeaveData.map((employee) => employee.holidayUsed);
-        
             setBarData2({
-              labels,
+              labels: bottom10LeaveData.map(employee => employee.name),
               datasets: [
                 {
                   label: 'ลาพักร้อน',
-                  backgroundColor: '#D5DEF5',  // Solid blue for 'ลาพักร้อน'
-                  data: holidayData,
+                  backgroundColor: '#D5DEF5',
+                  data: bottom10LeaveData.map(employee => employee.holidayUsed),
                 },
                 {
                   label: 'ลาป่วย',
-                  backgroundColor: '#8594E4',  // Solid yellow for 'ลาป่วย'
-                  data: sickData,
+                  backgroundColor: '#8594E4',
+                  data: bottom10LeaveData.map(employee => employee.sickUsed),
                 },
                 {
                   label: 'ลากิจ',
-                  backgroundColor: '#6643B5',  // Solid purple for 'ลากิจ'
-                  data: absenceData,
+                  backgroundColor: '#6643B5',
+                  data: bottom10LeaveData.map(employee => employee.absenceUsed),
                 },
               ],
-              users: bottom10LeaveData, // This array should match the length of the labels array
+              users: bottom10LeaveData,
             });
           }
         });

@@ -4,7 +4,7 @@ import './Home.css';
 import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
-import { IoSearchOutline,IoTime } from "react-icons/io5";
+import { IoSearchOutline,IoTime,IoCloseOutline } from "react-icons/io5";
 import Layout from './Layout';
 import './Profile.css';
 import './checkHis.css'
@@ -213,9 +213,21 @@ function CheckHistory() {
       
       // Mark filtering as active
       setIsFiltered(true);
+    }else {
+      // Clear filter to show all users if `None / Clear Filter` is selected
+      sortData(sortOrder, setFilteredUsers,allIN); 
+      sortData(sortOrderOut, setFilteredOut, allOut);
+      setIsFiltered(false);
     }
     
     setShowFilterModal(false);  // Close the filter modal
+  };
+
+  const handleClearSearch = () => {
+    setSearch(''); // Clear the search input
+    setSearchQuery('');
+    sortData(sortOrder, setFilteredUsers,allIN); 
+      sortData(sortOrderOut, setFilteredOut, allOut); // Reset filtered data for check-outs
   };
   
   const handleCancelFilter = () => {
@@ -392,14 +404,37 @@ function CheckHistory() {
           </header>
           </div>
             <div class="main-contain">
-              <div className="search-field">
-                {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
-                <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22,alignSelf:'center',justifyContent:'center'}}
-                placeholder='search..' 
+            <div className="search-field" style={{ position: "relative", width: '95%', margin: '5px auto' }}>
+              <input
+                style={{
+                  width: "100%",
+                  height: 40,
+                  borderRadius: 5,
+                  paddingInlineStart: 10,
+                  fontSize: 22,
+                  paddingRight: "2.5rem" // Extra padding for icon space
+                }}
+                placeholder="Search.."
                 value={search}
-                onChange={handleSearch} />
-                {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
-              </div>
+                onChange={handleSearch}
+              />
+              {search && (
+                <button
+                  onClick={handleClearSearch}
+                  style={{
+                    position: "absolute",
+                    right: 10,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  <IoCloseOutline size={24} color="#999" />
+                </button>
+              )}
+            </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', width: '95%', alignSelf: 'center',marginTop:10}}>
                 <Button 
                   onClick={handleShowFilterModal} 
@@ -731,10 +766,14 @@ function CheckHistory() {
             <Select
               value={selectedFilterUser ? selectedFilterUser.id : ''}
               onChange={(e) => {
-                const user = users.find(user => user.id === e.target.value);
+                const user = users.find(user => user.id === e.target.value) || null;
                 setSelectedFilterUser(user);
               }}
+              displayEmpty
             >
+              <MenuItem value="">
+                <em>None / Clear Filter</em>
+              </MenuItem>
               {users.map((user) => (
                 <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
               ))}

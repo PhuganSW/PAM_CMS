@@ -90,10 +90,10 @@ function ProfileEdit() {
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
   const { setCurrentUser, companyId,userData } = useContext(UserContext);
 
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [inputPassword, setInputPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [showPasswordInModal, setShowPasswordInModal] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
+  const [filterPosition,setFilterPosition] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
 
@@ -176,7 +176,7 @@ function ProfileEdit() {
 
   const updateSuccess = () => {
     alert('Update data success!!')
-    navigate('/profile', { state: { startIndex, endIndex } });
+    navigate('/profile', { state: { startIndex, endIndex, search, searchQuery, position:filterPosition } });
   };
 
   const updateUnsuccess = (error) => {
@@ -290,10 +290,10 @@ function ProfileEdit() {
   };
 
   const addOldValueToOptions = (oldValue, options) => {
-    // Check if oldValue exists and is not already in the options
-    if (oldValue && !options.includes(oldValue)) {
-      console.log("Adding old value to options:", oldValue); // Debug log
-      return [oldValue, ...options];
+    const trimmedOldValue = oldValue ? oldValue.trim() : '';
+    if (trimmedOldValue && !options.includes(trimmedOldValue)) {
+      console.log("Adding old value to options:", trimmedOldValue); // Debug log
+      return [trimmedOldValue, ...options];
     }
     return options;
   };
@@ -301,33 +301,33 @@ function ProfileEdit() {
   const fetchDropdownOptions = async () => {
     try {
       const prefixThOptionsData = await firestore.getDropdownOptions(companyId, 'prefixTh');
-      const loadedPrefixThOptions = prefixThOptionsData.map(option => option.name);
+      const loadedPrefixThOptions = prefixThOptionsData.map(option => option.name.trim()); // Trim options to match
       const updatedPrefixThOptions = addOldValueToOptions(prefixth, loadedPrefixThOptions);
       setPrefixThOptions(updatedPrefixThOptions);
-      console.log("Updated prefixThOptions:", updatedPrefixThOptions); // Debug log to check options
+      console.log("Updated prefixThOptions:", updatedPrefixThOptions); // Debug log
   
       const prefixEnOptionsData = await firestore.getDropdownOptions(companyId, 'prefixEn');
-      const loadedPrefixEnOptions = prefixEnOptionsData.map(option => option.name);
+      const loadedPrefixEnOptions = prefixEnOptionsData.map(option => option.name.trim());
       setPrefixEnOptions(addOldValueToOptions(prefixEn, loadedPrefixEnOptions));
   
       const sexOptionsData = await firestore.getDropdownOptions(companyId, 'sex');
-      const loadedSexOptions = sexOptionsData.map(option => option.name);
+      const loadedSexOptions = sexOptionsData.map(option => option.name.trim());
       setSexOptions(addOldValueToOptions(sex, loadedSexOptions));
   
       const positionOptionsData = await firestore.getDropdownOptions(companyId, 'position');
-      const loadedPositionOptions = positionOptionsData.map(option => option.name);
+      const loadedPositionOptions = positionOptionsData.map(option => option.name.trim());
       setPositionOptions(addOldValueToOptions(position, loadedPositionOptions));
   
       const departmentOptionsData = await firestore.getDropdownOptions(companyId, 'department');
-      const loadedDepartmentOptions = departmentOptionsData.map(option => option.name);
+      const loadedDepartmentOptions = departmentOptionsData.map(option => option.name.trim());
       setDepartmentOptions(addOldValueToOptions(department, loadedDepartmentOptions));
   
       const bankOptionsData = await firestore.getDropdownOptions(companyId, 'bank');
-      const loadedBankOptions = bankOptionsData.map(option => option.name);
+      const loadedBankOptions = bankOptionsData.map(option => option.name.trim());
       setBankOptions(addOldValueToOptions(bank, loadedBankOptions));
   
       const statusOptionsData = await firestore.getDropdownOptions(companyId, 'status_per');
-      const loadedStatusOptions = statusOptionsData.map(option => option.name);
+      const loadedStatusOptions = statusOptionsData.map(option => option.name.trim());
       setStatusOptions(addOldValueToOptions(personal_status, loadedStatusOptions));
     } catch (error) {
       console.error('Error fetching dropdown options:', error);
@@ -345,6 +345,9 @@ function ProfileEdit() {
     if (location.state) {
       setStartIndex(location.state.startIndex || 0);
       setEndIndex(location.state.endIndex || 10);
+      setSearch(location.state.search || '');
+      setSearchQuery(location.state.searchQuery || '');
+      setFilterPosition(location.state.position || '');
     }
     fetchDropdownOptions();
   }, [location.state]);
@@ -395,7 +398,8 @@ function ProfileEdit() {
                   style={{ width: '35%',marginRight:'1%'}}
                   value={prefixth}
                   onChange={(e) => setPrefixTh(e.target.value)}
-                >{prefixThOptions.map((option, index) => (
+                >
+                  {prefixThOptions.map((option, index) => (
                   <MenuItem key={index} value={option}>
                     {option}
                   </MenuItem>
@@ -770,7 +774,7 @@ function ProfileEdit() {
             </div>
             <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{ width: 100, maxWidth: 300,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile', { state: { startIndex, endIndex } })}>ยกเลิก</button>
+              <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF',marginRight:10}} onClick={()=>navigate('/profile', { state: { startIndex, endIndex, search, searchQuery, position:filterPosition } })}>ยกเลิก</button>
               
             </div>
 
