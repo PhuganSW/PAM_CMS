@@ -336,6 +336,7 @@ function ProfileEdit() {
 
   useEffect(() => {
     if (location.state && location.state.uid) {
+      console.log(location.state.uid)
       setUid(location.state.uid);
       firestore.getUser(companyId,location.state.uid, getUserSuccess, getUserUnsuccess);
       firestore.getUsername(companyId,location.state.uid, getUsernameSuc, getUsernameUnsuc)
