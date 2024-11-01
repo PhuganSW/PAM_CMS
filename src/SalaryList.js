@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
-import { IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline,IoTrash } from "react-icons/io5";
 import Layout from './Layout';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -31,6 +31,11 @@ function SalaryList() {
   const [allBillCF,setAllBillCF] = useState([])
   const [addAble,setAddAble] = useState(null)
   const { setCurrentUser, companyId } = useContext(UserContext);
+
+  const [selectedBillIds, setSelectedBillIds] = useState([]); // Track selected bills for the first table
+  const [selectedBillCFIds, setSelectedBillCFIds] = useState([]); // Track selected bills for the second table
+  const [selectAllBills, setSelectAllBills] = useState(false);
+  const [selectAllBillCFs, setSelectAllBillCFs] = useState(false);
 
   const getUserSuccess=(data)=>{
     setName(data.name+" "+data.lastname)
@@ -135,6 +140,73 @@ function SalaryList() {
     // setFilteredUsers(filtered);
   };
 
+  const handleSelectAllBills = () => {
+    if (selectAllBills) {
+      setSelectedBillIds([]);
+    } else {
+      const allIds = allBill.map((bill) => bill.id);
+      setSelectedBillIds(allIds);
+    }
+    setSelectAllBills(!selectAllBills);
+  };
+
+  const handleSelectAllBillCFs = () => {
+    if (selectAllBillCFs) {
+      setSelectedBillCFIds([]);
+    } else {
+      const allIds = allBillCF.map((bill) => bill.id);
+      setSelectedBillCFIds(allIds);
+    }
+    setSelectAllBillCFs(!selectAllBillCFs);
+  };
+
+  const handleSelectBill = (id) => {
+    if (selectedBillIds.includes(id)) {
+      setSelectedBillIds(selectedBillIds.filter((billId) => billId !== id));
+    } else {
+      setSelectedBillIds([...selectedBillIds, id]);
+    }
+  };
+
+  const handleSelectBillCF = (id) => {
+    if (selectedBillCFIds.includes(id)) {
+      setSelectedBillCFIds(selectedBillCFIds.filter((billId) => billId !== id));
+    } else {
+      setSelectedBillCFIds([...selectedBillCFIds, id]);
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    const allSelectedIds = [...selectedBillIds, ...selectedBillCFIds];
+    if (allSelectedIds.length === 0) {
+      alert("No bills selected for deletion.");
+      return;
+    }
+    if (window.confirm("Are you sure you want to delete the selected bills?")) {
+      allSelectedIds.forEach((id) => {
+        firestore.deleteBill(
+          companyId,
+          id,
+          () => {
+            console.log("Bill deleted successfully:", id);
+            // Update the state by filtering out the deleted ID
+            setAllBill((prevBills) => prevBills.filter((bill) => bill.id !== id));
+            setAllBillCF((prevBillsCF) => prevBillsCF.filter((billCF) => billCF.id !== id));
+          },
+          (error) => {
+            console.error("Error deleting bill:", error);
+          }
+        );
+      });
+  
+      // Reset selection after deletion
+      setSelectedBillIds([]);
+      setSelectedBillCFIds([]);
+      setSelectAllBills(false);
+      setSelectAllBillCFs(false);
+    }
+  };
+
 
   return (
     
@@ -169,9 +241,29 @@ function SalaryList() {
       
               <div style={{width:'95%',alignSelf:'center',marginTop:20}}>
               <p style={{fontSize:28,textAlign:'center'}}>เงินเดือนล่าสุด</p>
+              <IoTrash
+                size={32}
+                className="trash-icon"
+                onClick={handleDeleteSelected}
+                style={{
+                  marginBottom: '10px',
+                  cursor: 'pointer',
+                  color: 'red',
+                  border: '2px solid red',
+                  padding: '5px',
+                  borderRadius: '5px',
+                }}
+              />
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
-                  <tr>
+                    <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        checked={selectAllBills}
+                        onChange={handleSelectAllBills}
+                      />
+                    </th>
                     <th scope="col">ลำดับ</th>
                     <th scope="col">เดือน</th>
                     <th scope="col" style={{width:'35%'}}>actions</th>
@@ -181,12 +273,20 @@ function SalaryList() {
                   {/*{allUser.slice(startIndex, endIndex).map((item, index) => (*/}
                   {allBill.map((item, index) => (
                     <tr key={item.id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedBillIds.includes(item.id)}
+                          onChange={() => handleSelectBill(item.id)}
+                        />
+                      </td>
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row">{index + 1}</th>
                       <td>
                         {item.date}
                       </td>
-                      <td style={{textAlign:'center'}}><button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date,item.id)}>ดูและแก้ไข</button>
+                      <td style={{textAlign:'center'}}>
+                          <button className='Edit-button' style={{width:'35%',height:'30%'}} onClick={()=> toEdit(item.date,item.id)}>ดูและแก้ไข</button>
                           <button className='Add-button' style={{height:'30%',width:'35%'}} onClick={()=>onConfirm(item.id)}>Submit</button>
                       </td>
                     </tr>
@@ -197,6 +297,13 @@ function SalaryList() {
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
+                  <th>
+                      <input
+                        type="checkbox"
+                        checked={selectAllBillCFs}
+                        onChange={handleSelectAllBillCFs}
+                      />
+                    </th>
                     <th scope="col">ลำดับ</th>
                     <th scope="col">เดือน</th>
                     <th scope="col" style={{width:'35%'}}>actions</th>
@@ -205,6 +312,13 @@ function SalaryList() {
                 <tbody>
                 {allBillCF.map((item, index) => (
                     <tr key={item.id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedBillCFIds.includes(item.id)}
+                          onChange={() => handleSelectBillCF(item.id)}
+                        />
+                      </td>
                       {/*<th scope="row">{startIndex + index + 1}</th>*/}
                       <th scope="row">{index + 1}</th>
                       <td>

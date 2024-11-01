@@ -221,9 +221,12 @@ color: #FFF;
     .verify-wel,
     .Next-button,
     .Previous-button {
+      display: flex;
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+      /* padding: 10px; */
+      /* margin: 10px 0; */
+      align-items: center;
+      justify-content: center;
     }
   
     button {

@@ -92,7 +92,7 @@ function ProfileUpSk() {
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%',marginTop:30}}>
               <div className="form-row" style={{ display: 'flex',}}>
                 <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>Ai Knowledge</p>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>Knowledge - 1</p>
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
@@ -109,7 +109,7 @@ function ProfileUpSk() {
               </div>
               <div className="form-row" style={{ display: 'flex',}}>
                 <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>Software Knowledge</p>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>Knowledge - 2</p>
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField
@@ -125,7 +125,7 @@ function ProfileUpSk() {
               </div>
               <div className="form-row" style={{ display: 'flex',}}>
                 <p style={{fontSize:28,backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>Welding Knowledge</p>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5,paddingLeft:5}}>Knowledge - 3</p>
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
                 <TextField

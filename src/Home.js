@@ -1,4 +1,4 @@
-import React, { useContext,useEffect,useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Home.css'; // Your custom CSS file
 import Layout from './Layout';
 import { Pie } from 'react-chartjs-2';
@@ -17,7 +17,50 @@ function Home() {
   const [employeeLeaveData, setEmployeeLeaveData] = useState([]);
   const [barData1, setBarData1] = useState({});
   const [barData2, setBarData2] = useState({}); 
+  const [currentSlide, setCurrentSlide] = useState(0);
 
+  const generateSummary = (labels, data, total) => {
+    return labels
+      .map((label, index) => `${label} [${data[index]} / ${(data[index] / total * 100).toFixed(2)}%],`)
+      .join(' ');
+  };
+  
+  // Summarize pieData1 (Department Data)
+  const pieData1Labels = Object.keys(departmentData);
+  const pieData1Values = Object.values(departmentData);
+  const pieData1Total = pieData1Values.reduce((acc, val) => acc + val, 0);
+  const pieData1Summary = generateSummary(pieData1Labels, pieData1Values, pieData1Total);
+
+  // Summarize pieData2 (Work and Leave Summary)
+  const pieData2Labels = ['เข้าทำงาน', 'ลากิจ', 'ลาป่วย', 'ลาพักร้อน'];
+  const pieData2Values = [
+    leaveData.working,
+    leaveData.leave['ลากิจ'],
+    leaveData.leave['ลาป่วย'],
+    leaveData.leave['ลาพักร้อน'],
+  ];
+  const pieData2Total = pieData2Values.reduce((acc, val) => acc + val, 0);
+  const pieData2Summary = generateSummary(pieData2Labels, pieData2Values, pieData2Total);
+
+  // Summarize otherPieChartData (Workplace Data)
+  const otherPieChartLabels = workplaceUserData.map((workplace) => workplace.name);
+  const otherPieChartValues = workplaceUserData.map((workplace) => workplace.count);
+  const otherPieChartTotal = otherPieChartValues.reduce((acc, val) => acc + val, 0);
+  const otherPieChartSummary = generateSummary(otherPieChartLabels, otherPieChartValues, otherPieChartTotal);
+
+  const slides = [
+    { title: "สรุปรายละเอียดพนักงานทั้งหมด", content: pieData1Summary },
+    { title: "สรุปรายละเอียดการเข้าทำงาน", content: pieData2Summary },
+    { title: "สรุปการจัดการกำลังพล", content: otherPieChartSummary },
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+  };
 
   const generateColors = (length) => {
     // Define a base color palette
@@ -215,9 +258,10 @@ function Home() {
   };
 
   Chart.register(customTooltipPlugin);
+  
 
   const pieData1 = {
-    labels: Object.keys(departmentData),
+    labels: pieData1Labels,
     datasets: [
       {
         label: 'จำนวนพนักงาน',
@@ -228,7 +272,7 @@ function Home() {
     ],
   };
 
-  const pieData2Labels = ['เข้าทำงาน', 'ลากิจ', 'ลาป่วย', 'ลาพักร้อน'];
+  //const pieData2Labels = ['เข้าทำงาน', 'ลากิจ', 'ลาป่วย', 'ลาพักร้อน'];
   const pieData2 = {
     labels: pieData2Labels,
     datasets: [
@@ -248,11 +292,11 @@ function Home() {
 
   // Prepare the data for "จำนวนคนอื่นๆ" pie chart
   const otherPieChartData = {
-    labels: workplaceUserData.map((workplace) => workplace.name), // Workplace names
+    labels: otherPieChartLabels, // Workplace names
     datasets: [
       {
         label: 'จำนวนคนตามพื้นที่ทำงาน',
-        data: workplaceUserData.map((workplace) => workplace.count), // Number of users in each workplace
+        data: otherPieChartValues, // Number of users in each workplace
         backgroundColor: generateColors(workplaceUserData.length),
         hoverBackgroundColor: generateColors(workplaceUserData.length),
       },
@@ -296,12 +340,22 @@ function Home() {
             />
           </div>
           
+         
           <div className="chart-container">
-            <p>Data Visualization</p>
-            <div style={{ backgroundColor: '#f5f5f5', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              Custom content here
+            <p className="data-title">Data Visualization</p>
+
+            <div className="slideshow-container">
+              <button onClick={prevSlide} className="slide-nav-btn">◀</button>
+
+              <div className="slide">
+                <p className="slide-title">{slides[currentSlide].title}</p>
+                <p className="slide-content">{slides[currentSlide].content}</p>
+              </div>
+
+              <button onClick={nextSlide} className="slide-nav-btn">▶</button>
             </div>
           </div>
+        
         </div>
 
         {/* Third Row: First Bar Chart */}

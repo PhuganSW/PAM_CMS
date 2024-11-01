@@ -1310,6 +1310,17 @@ class FireStore{
     }
   }
 
+  deleteBill = async (companyId, billId, onSuccess, onError) => {
+    try {
+      await deleteDoc(doc(this.db, "companies", companyId, "Salary", billId));
+      console.log("Bill deleted successfully:", billId);
+      if (onSuccess) onSuccess();
+    } catch (error) {
+      console.error("Error deleting bill:", error);
+      if (onError) onError(error);
+    }
+  };
+
 
 }
 
