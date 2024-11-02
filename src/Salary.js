@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useContext} from 'react';
-import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link, useNavigate,useLocation } from 'react-router-dom';
 import './Home.css';
 import './Profile.css'
 import Sidebar from './sidebar';
@@ -17,16 +17,17 @@ import { hashPassword } from './hashPassword';
 
 function Salary() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [allUser,setAllUser] = useState([]);
-  const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(10);
+  const [startIndex, setStartIndex] = useState(location.state?.startIndex || 0);
+  const [endIndex, setEndIndex] = useState(location.state?.endIndex || 10);
   const [selectID, setSelectID] = useState();
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
 
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(!location.state?.bypassPassword);
   const [inputPassword, setInputPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPasswordInModal, setShowPasswordInModal] = useState(false);
@@ -49,13 +50,14 @@ function Salary() {
   }
 
   const calSalary=(id)=>{
-    navigate('/salary_list',{state:{uid:id}})
+    navigate('/salary_list',{state:{uid:id,startIndex, endIndex}})
   }
 
   useEffect(() => {
-    setShowPasswordModal(true);
-    //firestore.getAllUser(companyId,getAllUsersSuccess,getAllUsersUnsuccess)
-  }, []);
+    if (!showPasswordModal) {
+      firestore.getAllUser(companyId, getAllUsersSuccess, getAllUsersUnsuccess);
+    }
+  }, [showPasswordModal]);
 
   const onNext = () => {
     setStartIndex(startIndex + 10); // Increment the start index by 5

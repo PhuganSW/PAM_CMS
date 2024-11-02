@@ -54,8 +54,8 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/service" element={<Service />}/>
-          <Route path="/" element={<ProtectedRouteHome><LoginCompany /></ProtectedRouteHome>} />
+          <Route path="/" element={<Service />}/>
+          <Route path="/login_company" element={<ProtectedRouteHome><LoginCompany /></ProtectedRouteHome>} />
           <Route path="/login" element={<ProtectedLogin><Login /></ProtectedLogin>} />
           <Route path="/register" element={<Register />}/>
           <Route path="/forgot_password" element={<ForgotPass />} />

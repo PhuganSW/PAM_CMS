@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableBootstrap from "react-bootstrap/Table";
 import firestore from './Firebase/Firestore';
-import { IoSearchOutline,IoTrash } from "react-icons/io5";
+import { IoSearchOutline,IoTrash,IoChevronBackOutline } from "react-icons/io5";
 import Layout from './Layout';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -207,6 +207,10 @@ function SalaryList() {
     }
   };
 
+  const handleBack = () => {
+    navigate('/salary', { state: { uid, bypassPassword: true } });
+  };
+
 
   return (
     
@@ -224,7 +228,15 @@ function SalaryList() {
             </header>
             </div>
             <div class="main-contain">
-                <p style={{fontSize:36,marginLeft:15,marginTop:20}} onClick={()=>navigate('/salary')}>เงินเดือน: {name}</p>
+                
+              <p style={{fontSize:36,marginLeft:15,marginTop:20}} onClick={()=>navigate('/salary')}>
+                <IoChevronBackOutline
+                  size={32}
+                  style={{ cursor: 'pointer', marginRight: 10 }}
+                  onClick={handleBack}
+                />
+                เงินเดือน: {name}
+              </p>
             {/* <div className="search-field">
                 <button className='Add-button' onClick={()=> calSalary(uid)}>คำนวณเงินเดือน</button>
             <p style={{marginTop:17}}>ค้นหา</p>

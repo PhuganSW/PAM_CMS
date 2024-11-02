@@ -1,12 +1,75 @@
 /* Fullscreen background color */
+@font-face {
+  font-family: 'THSarabunNew';
+  src: url('./fonts/THSarabunNew.ttf') format('truetype');
+}
+
+body {
+  /* font-family: 'Arial', sans-serif;
+  background-color: #f0f2f5; */
+  font-family: 'THSarabunNew', sans-serif;
+}
+
 body, html {
   margin: 0;
   padding: 0;
   background-color: #e2f7f7;
   height: 100%;
   width: 100%;
+  /* font-family: Arial, sans-serif; */
 }
 
+/* Navbar styling */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo-image {
+  height: 50px;
+  width: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Drop shadow for logo */
+  border-radius: 50%; /* Adjust if needed */
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar-button.sign-up {
+  background-color: #D3D3D3;
+  font-size: 20px;
+  color: #000000;
+  border-radius: 5px;
+}
+
+.navbar-button.sign-in {
+  background-color: #343434;
+  font-size: 20px;
+  color: #f0f0f0;
+  border-radius: 5px;
+}
+
+
+.navbar-button:hover {
+  background-color: #0056b3;
+}
+
+/* Container styling */
 .container {
   display: flex;
   justify-content: space-around;
@@ -15,19 +78,23 @@ body, html {
   height: 100vh;
   width: 100vw;
   box-sizing: border-box;
-  padding: 20px;
+  
 }
 
 .background-overlay {
   position: absolute;
-  left: 0;   /* Start from the left */
-  right: 0;  /* Extend to the right */
-  background-color: #BEBEBE;
-  width: 100%;  /* Full width */
-  height: 60%;  /* Adjust height if needed */
-  top: 20%;     /* Center vertically */
+  top: 60px; /* Directly below the navbar */
+  left: -60;
+  width: 100vw; /* Full viewport width */
+  height: 40%; /* Adjust height as needed */
+  background-color: rgba(190, 190, 190, 0.3); /* Using rgba for 80% opacity */
   z-index: 1;
-  border-radius: 8px;
+  display: flex;
+  align-items: center; /* Center content vertically */
+  justify-content: flex-start; /* Align content to the left */
+  padding-left: 50px; /* Add padding to bring the content slightly away from the edge */
+  overflow: hidden; /* Prevent any overflow that might cause horizontal scroll */
+  border-radius: 0; /* Remove rounded corners */
 }
 
 /* Key features section styling */
@@ -40,6 +107,7 @@ body, html {
   position: relative;
   z-index: 2;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0; /* Remove auto margin to keep it left-aligned */
 }
 
 /* Heading and list styling */
@@ -94,4 +162,8 @@ body, html {
   border-radius: 8px;
   font-size: 18px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  background-color: #f0f0f0;
 }

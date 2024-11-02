@@ -1,12 +1,30 @@
+// Service.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Service.css';
 import logo from './icon/PAM_logo.png';
+
+const Navbar = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="navbar">
+      <div className="navbar-logo">
+        <img src={logo} alt="PAM Logo" className="navbar-logo-image" />
+      </div>
+      <div className="navbar-buttons">
+      <button className="navbar-button sign-up" onClick={() => navigate('/register')}>Sign Up</button>
+      <button className="navbar-button sign-in" onClick={() => navigate('/login_company')}>Sign In</button>
+      </div>
+    </div>
+  );
+};
 
 const Service = () => {
   return (
     <div className="container">
-      <div className="background-overlay"></div> {/* New background layer */}
-      
+      <Navbar />
+      <div className="background-overlay">
       <div className="key-features">
         <h2>Key Feature</h2>
         <ul>
@@ -16,15 +34,6 @@ const Service = () => {
           <li>จัดการสิทธิพนักงาน</li>
         </ul>
       </div>
-
-      <div className="center-logo">
-        <img src={logo} alt="PAM Logo" />
-      </div>
-
-      <div className="buttons">
-        <div className="button">PAM mini</div>
-        <div className="button">PAM</div>
-        <div className="button">PAM Ai</div>
       </div>
     </div>
   );
