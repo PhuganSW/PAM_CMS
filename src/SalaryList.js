@@ -24,6 +24,8 @@ function SalaryList() {
   const [date,setDate] = useState(dayjs(new Date(),'DD-MM-YYYY'));
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(5);
+  const [startIndexSalary, setStartIndexSalary] = useState(location.state?.startIndex || 0);
+  const [endIndexSalary, setEndIndexSalary] = useState(location.state?.endIndex || 10);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
@@ -208,7 +210,7 @@ function SalaryList() {
   };
 
   const handleBack = () => {
-    navigate('/salary', { state: { uid, bypassPassword: true } });
+    navigate('/salary', { state: { startIndex: startIndexSalary, endIndex: endIndexSalary, bypassPassword: true } });
   };
 
 
@@ -229,10 +231,10 @@ function SalaryList() {
             </div>
             <div class="main-contain">
                 
-              <p style={{fontSize:36,marginLeft:15,marginTop:20}} onClick={()=>navigate('/salary')}>
+              <p style={{fontSize:36,marginLeft:15,marginTop:20}} onClick={handleBack}>
                 <IoChevronBackOutline
                   size={32}
-                  style={{ cursor: 'pointer', marginRight: 10 }}
+                  style={{ cursor: 'pointer', marginRight: 10,alignSelf:'center',justifyContent:'center' }}
                   onClick={handleBack}
                 />
                 เงินเดือน: {name}

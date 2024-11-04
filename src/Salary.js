@@ -19,15 +19,15 @@ function Salary() {
   const navigate = useNavigate();
   const location = useLocation();
   const [allUser,setAllUser] = useState([]);
-  const [startIndex, setStartIndex] = useState(location.state?.startIndex || 0);
-  const [endIndex, setEndIndex] = useState(location.state?.endIndex || 10);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
   const [selectID, setSelectID] = useState();
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
 
-  const [showPasswordModal, setShowPasswordModal] = useState(!location.state?.bypassPassword);
+  const [showPasswordModal, setShowPasswordModal] = useState(true);
   const [inputPassword, setInputPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPasswordInModal, setShowPasswordInModal] = useState(false);
@@ -50,8 +50,18 @@ function Salary() {
   }
 
   const calSalary=(id)=>{
-    navigate('/salary_list',{state:{uid:id,startIndex, endIndex}})
+    navigate('/salary_list',{state:{uid: id, startIndex, endIndex, bypassPassword: true}})
   }
+
+  useEffect(() => {
+    if (location.state) {
+      setStartIndex(location.state.startIndex || 0);
+      setEndIndex(location.state.endIndex || 10);
+      setShowPasswordModal(!location.state.bypassPassword);
+    } else {
+      setShowPasswordModal(true); // Default to showing the modal if no state is passed
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (!showPasswordModal) {
