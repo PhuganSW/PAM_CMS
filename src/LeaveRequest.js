@@ -10,16 +10,18 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline, IoArrowDown, IoArrowUp } from "react-icons/io5";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineFilter, AiOutlineExport } from "react-icons/ai";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
+import {FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import { TextField} from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { hashPassword } from './hashPassword';
+import * as XLSX from 'xlsx';
 
 
 function LeaveRequest() {
@@ -45,6 +47,11 @@ function LeaveRequest() {
   const [imageURLs, setImageURLs] = useState([]);
   const [selectedLeaveIds, setSelectedLeaveIds] = useState([]); // Track selected leave requests
   const [selectAll, setSelectAll] = useState(false);
+  const [selectedName, setSelectedName] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [filteredLeaves, setFilteredLeaves] = useState([]);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [users, setUsers] = useState([]);
   const { setCurrentUser, companyId,setNewLeaveRequests,newLeaveRequests,userData } = useContext(UserContext);
 
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order for dates
@@ -60,7 +67,7 @@ function LeaveRequest() {
     if (allLeave.length === 0) {
       console.log(doc)
       doc.forEach((item) => {
-        leaves.push({id: item.id,date:item.date, name: item.name, requsetTime:item.requsetTime ,state1:item.state1});
+        leaves.push({id: item.id,date:item.dateStart, name: item.name, requsetTime:item.requsetTime ,state1:item.state1});
       });
       setAllLeave(leaves);
       setFilteredUsers(leaves);
@@ -221,6 +228,7 @@ function LeaveRequest() {
         console.log('check state')
         setNewLeaveRequests(true);  // Only set to true if there are new requests
       }
+      firestore.getAllUser(companyId, setUsers, console.error);
     }, console.error);
 
     
@@ -285,7 +293,7 @@ function LeaveRequest() {
     setSearch(event.target.value);
     setSearchQuery(query);
     const filtered = allLeave.filter(user => user.name.toLowerCase().includes(query));
-    setFilteredUsers(filtered);
+    sortData(sortOrder, setFilteredUsers, filtered);
   };
 
   const parseDate = (dateString) => {
@@ -296,8 +304,8 @@ function LeaveRequest() {
   // Sort the data based on the date (toggle between ascending and descending)
   const sortData = (order, setData, data) => {
     const sortedData = [...data].sort((a, b) => {
-      const dateA = parseDate(a.date);
-      const dateB = parseDate(b.date);
+      const dateA = parseDate(a.dateStart);
+      const dateB = parseDate(b.dateStart);
       return order === 'asc' ? dateA - dateB : dateB - dateA;
     });
     setData(sortedData);
@@ -347,6 +355,49 @@ function LeaveRequest() {
     setShowPasswordModal(true);
   };
 
+  const handleShowFilterModal = () => setShowFilterModal(true);
+  const handleCloseFilterModal = () => setShowFilterModal(false);
+
+  const handleFilter = () => {
+    const filtered = allLeave.filter(item => {
+      const matchesName = selectedName ? item.name === selectedName : true;
+      const matchesMonth = selectedMonth
+        ? item.dateStart && new Date(item.dateStart.split('/').reverse().join('-')).getMonth() + 1 === parseInt(selectedMonth)
+        : true;
+      return matchesName && matchesMonth;
+    });
+    sortData(sortOrder, setFilteredUsers, filtered);
+    setShowFilterModal(false);
+  };
+
+  const handleExportToExcel = () => {
+    const selectedOrUserName = selectedName || userData.name || 'AllUsers';
+    const currentDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '_');
+    const fileName = `Leave_${selectedOrUserName}_${currentDate}.xlsx`;
+    
+    const exportData = [
+      { requestDate: "Leave Data", requestTime: "", name: "", types: "", detail: "", dateStart: "", dateEnd: "", amount: "" },
+      { requestDate: "Request Date", requestTime: "Request Time", name: "Name", types: "Type", detail: "Detail", dateStart: "Start Date", dateEnd: "End Date", amount: "Amount" },
+      ...filteredUsers.map(item => ({
+        requestDate: item.requestDate || "",
+        requestTime: item.requestTime || "",
+        name: item.name || "",
+        types: item.types || "",
+        detail: item.detail || "",
+        dateStart: item.dateStart || "",
+        dateEnd: item.dateEnd || "",
+        amount: item.amount || "",
+      }))
+    ];
+  
+    const worksheet = XLSX.utils.json_to_sheet(exportData, { skipHeader: true });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Leave Data');
+    worksheet['!cols'] = Array(8).fill({ wch: 15 });
+  
+    XLSX.writeFile(workbook, fileName);
+  };
+
   return (
     
       <div className="dashboard">
@@ -370,25 +421,32 @@ function LeaveRequest() {
                 onChange={handleSearch} />
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
-              
-              
                 
                 <div style={{width:'95%',alignSelf:'center'}}>
-                <AiOutlineDelete
-                  size={42}
-                  className="trash-icon"
-                  onClick={handleDeleteSelected}
-                  style={{
-                    marginTop: '20px',      
-                    // marginBottom: '10px',    
-                    cursor: 'pointer',       
-                    color: 'red',            
-                    border: '2px solid red', 
-                    padding: '5px',          
-                    borderRadius: '5px',  
-                  }}
-                />
-                  
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 0' }}>
+                  <AiOutlineDelete
+                    size={42}
+                    className="trash-icon"
+                    onClick={handleDeleteSelected}
+                    style={{
+                      marginTop: '20px',      
+                      // marginBottom: '10px',    
+                      cursor: 'pointer',       
+                      color: 'red',            
+                      border: '2px solid red', 
+                      padding: '5px',          
+                      borderRadius: '5px',  
+                    }}
+                  />
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <Button onClick={handleExportToExcel} variant="outlined">
+                      <AiOutlineExport size={24} /> Export
+                    </Button>
+                    <Button onClick={() => setShowFilterModal(true)} variant="outlined">
+                      <AiOutlineFilter size={24} /> Filter
+                    </Button>
+                  </div>
+                </div>
                 <TableBootstrap striped bordered hover className='table' style={{marginTop:20}}>
                   <thead>
                     <tr>
@@ -425,7 +483,7 @@ function LeaveRequest() {
                       <td>{startIndex + index + 1}</td>
                       {/* <th scope="row">{index + 1}</th> */}
                       <td>
-                        {item.date}
+                        {item.dateStart}
                       </td>
                       <td>{item.name}</td>
                       <td>{item.requestTime}</td>
@@ -591,6 +649,38 @@ function LeaveRequest() {
           <Button variant="primary" onClick={handlePasswordSubmit}>
             Submit
           </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFilterModal} onHide={() => setShowFilterModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Filter Options</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <FormControl fullWidth>
+            <InputLabel>Name</InputLabel>
+            <Select value={selectedName} onChange={(e) => setSelectedName(e.target.value)}>
+              <MenuItem value="">All Names</MenuItem>
+              {users.map((user) => (
+                <MenuItem key={user.id} value={user.name}>{user.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth style={{ marginTop: 20 }}>
+            <InputLabel>Month</InputLabel>
+            <Select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+              <MenuItem value="">All Months</MenuItem>
+              {Array.from({ length: 12 }, (_, i) => (
+                <MenuItem key={i} value={i + 1}>
+                  {new Date(0, i).toLocaleString('default', { month: 'long' })}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleFilter} variant="primary">Apply Filter</Button>
+          <Button onClick={() => setShowFilterModal(false)} variant="secondary">Close</Button>
         </Modal.Footer>
       </Modal>
       </div>

@@ -9,7 +9,7 @@ import Layout from './Layout';
 import './Profile.css';
 import './checkHis.css'
 import firestore from './Firebase/Firestore';
-import { AiOutlineEdit,AiOutlineDelete,AiOutlineFilter  } from "react-icons/ai";
+import { AiOutlineEdit,AiOutlineDelete,AiOutlineFilter,AiOutlineExport } from "react-icons/ai";
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import MenuItem from '@mui/material/MenuItem';
@@ -22,6 +22,8 @@ import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material'
 import LocationPickerMap from './LocationPickerMap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
+import * as XLSX from 'xlsx';
+
 
 
 function CheckHistory() {
@@ -62,6 +64,8 @@ function CheckHistory() {
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [defaultCheckInTime, setDefaultCheckInTime] = useState('08:00'); // Default check-in time
   const [defaultCheckOutTime, setDefaultCheckOutTime] = useState('17:00');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedMonthRange, setSelectedMonthRange] = useState('');
 
   const [workplaces,setWorkplaces] = useState([]);
   const [item,setItem] = useState([]);
@@ -201,11 +205,50 @@ function CheckHistory() {
     }
   };
 
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
+  const handleMonthRangeChange = (event) => {
+    setSelectedMonthRange(event.target.value);
+  };
+
   const handleUserSelect = () => {
+    const monthFilter = selectedMonth ? parseInt(selectedMonth) : null;
+    const rangeMonths = {
+      Q1: [1, 2, 3],
+      Q2: [4, 5, 6],
+      Q3: [7, 8, 9],
+      Q4: [10, 11, 12],
+    };
+    const selectedRangeMonths = rangeMonths[selectedMonthRange] || null;
+
     if (selectedFilterUser) {
       // Filter the data by the selected user
-      const filteredInData = allIN.filter(item => item.name === selectedFilterUser.name);
-      const filteredOutData = allOut.filter(item => item.name === selectedFilterUser.name);
+      const filteredInData = allIN.filter(item => {
+        const isUserMatch = item.name === selectedFilterUser.name;
+        const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
+  
+        const isMonthMatch = monthFilter
+          ? itemMonth === monthFilter
+          : selectedRangeMonths
+          ? selectedRangeMonths.includes(itemMonth)
+          : true;
+  
+        return isUserMatch && isMonthMatch;
+      });
+      const filteredOutData = allOut.filter(item => {
+        const isUserMatch = item.name === selectedFilterUser.name;
+        const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
+  
+        const isMonthMatch = monthFilter
+          ? itemMonth === monthFilter
+          : selectedRangeMonths
+          ? selectedRangeMonths.includes(itemMonth)
+          : true;
+  
+        return isUserMatch && isMonthMatch;
+      });
   
       // Apply sorting to filtered data
       sortData(sortOrder, setFilteredUsers, filteredInData); 
@@ -227,15 +270,17 @@ function CheckHistory() {
     setSearch(''); // Clear the search input
     setSearchQuery('');
     sortData(sortOrder, setFilteredUsers,allIN); 
-      sortData(sortOrderOut, setFilteredOut, allOut); // Reset filtered data for check-outs
+    sortData(sortOrderOut, setFilteredOut, allOut); // Reset filtered data for check-outs
   };
   
   const handleCancelFilter = () => {
     // Reset filtered data to the original dataset
-    setFilteredUsers(allIN);
-    setFilteredOut(allOut);
+    sortData(sortOrder, setFilteredUsers,allIN); 
+    sortData(sortOrderOut, setFilteredOut, allOut)
     setIsFiltered(false);  // Reset filtering state
-    
+    setSelectedFilterUser(null);
+    setSelectedMonth('');
+    setSelectedMonthRange('');
     setShowFilterModal(false);  // Close the filter modal
   };
 
@@ -387,6 +432,125 @@ function CheckHistory() {
       }
     );
   };
+
+  const handleExportToExcel = () => {
+    // Check if any filter is applied; if not, apply filters based on modal selections
+    let filteredCheckInData = filteredUsers;
+    let filteredCheckOutData = filteredOut;
+
+    if (!isFiltered) {
+        // Apply filters if not already applied
+        const userFilter = selectedFilterUser ? selectedFilterUser.name : null;
+        const monthFilter = selectedMonth ? parseInt(selectedMonth) : null;
+
+        filteredCheckInData = allIN.filter(item => {
+            const isUserMatch = !userFilter || item.name === userFilter;
+            const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
+            const isMonthMatch = !monthFilter || itemMonth === monthFilter;
+            return isUserMatch && isMonthMatch;
+        });
+
+        filteredCheckOutData = allOut.filter(item => {
+            const isUserMatch = !userFilter || item.name === userFilter;
+            const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
+            const isMonthMatch = !monthFilter || itemMonth === monthFilter;
+            return isUserMatch && isMonthMatch;
+        });
+    }
+
+    // Get the selected user's name or default to 'AllUsers'
+    const userName = selectedFilterUser ? selectedFilterUser.name : 'AllUsers';
+    // Format the current date as dd-mm-yyyy
+    const currentDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '_');
+    // Create the filename with the specified format
+    const fileName = `CheckHistory_${userName}_${currentDate}.xlsx`;
+
+    // Prepare data for "Check-In" sheet with title row
+    const checkInData = [
+        { Date: "Check-In Data", Name: "", Workplace: "", Time: "" },
+        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time" },
+        ...filteredCheckInData.map(({ date, name, workplace, time }) => ({
+            Date: date,
+            Name: name,
+            Workplace: workplace || '*นอกพื้นที่',
+            Time: time,
+        }))
+    ];
+
+    // Prepare data for "Check-Out" sheet with title row
+    const checkOutData = [
+        { Date: "Check-Out Data", Name: "", Workplace: "", Time: "" },
+        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time" },
+        ...filteredCheckOutData.map(({ date, name, workplace, time }) => ({
+            Date: date,
+            Name: name,
+            Workplace: workplace || '*นอกพื้นที่',
+            Time: time,
+        }))
+    ];
+
+    // Create worksheets for each data set
+    const checkInWorksheet = XLSX.utils.json_to_sheet(checkInData, { skipHeader: true });
+    const checkOutWorksheet = XLSX.utils.json_to_sheet(checkOutData, { skipHeader: true });
+
+    // Set column widths for readability
+    const columnWidths = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 15 }];
+    checkInWorksheet['!cols'] = columnWidths;
+    checkOutWorksheet['!cols'] = columnWidths;
+
+    // Merge cells for the title row in both sheets
+    checkInWorksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    checkOutWorksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+
+    // Apply styling for the title row in both sheets
+    const titleCellStyle = {
+        font: { bold: true, sz: 14 },
+        alignment: { horizontal: "center", vertical: "center" },
+    };
+
+    // Apply the title cell style to each cell in the merged range of the title row
+    ["A1", "B1", "C1", "D1"].forEach((cell) => {
+        checkInWorksheet[cell] = checkInWorksheet[cell] || {};
+        checkInWorksheet[cell].s = titleCellStyle;
+
+        checkOutWorksheet[cell] = checkOutWorksheet[cell] || {};
+        checkOutWorksheet[cell].s = titleCellStyle;
+    });
+
+    // Apply center alignment for data cells
+    const dataCellStyle = {
+        alignment: { horizontal: "center", vertical: "center" },
+    };
+
+    // Get data range for Check-In worksheet (from A2 to D last row)
+    const checkInRange = XLSX.utils.decode_range(checkInWorksheet['!ref']);
+    for (let row = 1; row <= checkInRange.e.r; row++) {
+        for (let col = 0; col <= checkInRange.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            if (!checkInWorksheet[cellAddress]) continue;
+            checkInWorksheet[cellAddress].s = dataCellStyle;
+        }
+    }
+
+    // Get data range for Check-Out worksheet (from A2 to D last row)
+    const checkOutRange = XLSX.utils.decode_range(checkOutWorksheet['!ref']);
+    for (let row = 1; row <= checkOutRange.e.r; row++) {
+        for (let col = 0; col <= checkOutRange.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            if (!checkOutWorksheet[cellAddress]) continue;
+            checkOutWorksheet[cellAddress].s = dataCellStyle;
+        }
+    }
+
+    // Create a new workbook and append both sheets
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, checkInWorksheet, 'Check-In');
+    XLSX.utils.book_append_sheet(workbook, checkOutWorksheet, 'Check-Out');
+
+    // Save the workbook as an Excel file with the custom filename
+    XLSX.writeFile(workbook, fileName);
+  };
+
 
   return (
     
@@ -761,8 +925,8 @@ function CheckHistory() {
         </Modal.Header>
         <Modal.Body>
           {/* Dropdown for selecting the user */}
-          <FormControl variant="filled" fullWidth>
-            <InputLabel>Select User</InputLabel>
+          <FormControl variant="filled" fullWidth style={{ marginBottom: 20 }}>
+            <InputLabel shrink={true}>Select User</InputLabel>
             <Select
               value={selectedFilterUser ? selectedFilterUser.id : ''}
               onChange={(e) => {
@@ -779,8 +943,37 @@ function CheckHistory() {
               ))}
             </Select>
           </FormControl>
+          <FormControl variant="filled" fullWidth style={{ marginBottom: 20 }}>
+            <InputLabel shrink={true}>Select Month</InputLabel>
+            <Select value={selectedMonth} onChange={handleMonthChange} displayEmpty>
+              <MenuItem value="">
+                <em>All Months</em>
+              </MenuItem>
+              {Array.from({ length: 12 }, (_, index) => (
+                <MenuItem key={index + 1} value={index + 1}>
+                  {new Date(0, index).toLocaleString('default', { month: 'long' })}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {/* <FormControl variant="filled" fullWidth>
+            <InputLabel shrink={true}>Select Month Range</InputLabel>
+            <Select value={selectedMonthRange} onChange={handleMonthRangeChange} displayEmpty>
+              <MenuItem value="">
+                <em>All Ranges</em>
+              </MenuItem>
+              <MenuItem value="Q1">Q1 (Jan-Mar)</MenuItem>
+              <MenuItem value="Q2">Q2 (Apr-Jun)</MenuItem>
+              <MenuItem value="Q3">Q3 (Jul-Sep)</MenuItem>
+              <MenuItem value="Q4">Q4 (Oct-Dec)</MenuItem>
+            </Select>
+          </FormControl>     */}
         </Modal.Body>
         <Modal.Footer>
+          <Button variant="contained" color="primary" onClick={handleExportToExcel} style={{ display: 'flex', alignItems: 'center' }}>
+            <AiOutlineExport size={20} style={{ marginRight: 5 }} />
+            Export
+          </Button>
           <Button variant="primary" onClick={handleUserSelect} style={{width:100}}>
             OK
           </Button>

@@ -520,12 +520,12 @@ class FireStore{
         const data = doc.data();
         if(data.state){
           allLeave.push({
-            id:doc.id,
-            date: data.dateStart,
-            name: data.name,
-            requestTime: data.requestTime,
-            state: data.state,
-            state1:data.state1,
+            id:doc.id,...doc.data()
+            // dateStart: data.dateStart,
+            // name: data.name,
+            // requestTime: data.requestTime,
+            // state: data.state,
+            // state1:data.state1,
           });
         }
       });
@@ -589,7 +589,7 @@ class FireStore{
             name: data.name,
             requestTime:data.requestTime ,
             state: data.status,
-            state1:data.status1
+            state1:data.status1,...data
           });
         }
       });
