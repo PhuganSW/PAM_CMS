@@ -11,6 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { IoSearchOutline, IoArrowDown, IoArrowUp } from "react-icons/io5";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFilter, AiOutlineExport } from "react-icons/ai";
+import { SiMicrosoftexcel } from "react-icons/si";
 import Layout from './Layout';
 import { UserContext } from './UserContext';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
@@ -67,7 +68,7 @@ function LeaveRequest() {
     if (allLeave.length === 0) {
       console.log(doc)
       doc.forEach((item) => {
-        leaves.push({id: item.id,date:item.dateStart, name: item.name, requsetTime:item.requsetTime ,state1:item.state1});
+        leaves.push({id: item.id,date:item.date, name: item.name, requsetTime:item.requsetTime ,state1:item.state1});
       });
       setAllLeave(leaves);
       setFilteredUsers(leaves);
@@ -302,12 +303,27 @@ function LeaveRequest() {
   };
 
   // Sort the data based on the date (toggle between ascending and descending)
+  // const sortData = (order, setData, data) => {
+  //   const sortedData = [...data].sort((a, b) => {
+  //     const dateA = parseDate(a.dateStart);
+  //     const dateB = parseDate(b.dateStart);
+  //     return order === 'asc' ? dateA - dateB : dateB - dateA;
+  //   });
+  //   setData(sortedData);
+  // };
   const sortData = (order, setData, data) => {
     const sortedData = [...data].sort((a, b) => {
+      // Primary sorting: 'not allowed' (state1 === false) entries first
+      if (a.state1 !== b.state1) {
+        return a.state1 ? 1 : -1;
+      }
+      
+      // Secondary sorting: sort by date within each status group
       const dateA = parseDate(a.dateStart);
       const dateB = parseDate(b.dateStart);
       return order === 'asc' ? dateA - dateB : dateB - dateA;
     });
+  
     setData(sortedData);
   };
 
@@ -371,7 +387,7 @@ function LeaveRequest() {
   };
 
   const handleExportToExcel = () => {
-    const selectedOrUserName = selectedName || userData.name || 'AllUsers';
+    const selectedOrUserName = selectedName || 'AllUsers';
     const currentDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '_');
     const fileName = `Leave_${selectedOrUserName}_${currentDate}.xlsx`;
     
@@ -393,7 +409,7 @@ function LeaveRequest() {
     const worksheet = XLSX.utils.json_to_sheet(exportData, { skipHeader: true });
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Leave Data');
-    worksheet['!cols'] = Array(8).fill({ wch: 15 });
+    worksheet['!cols'] = Array(8).fill({ wch: 20 });
   
     XLSX.writeFile(workbook, fileName);
   };
@@ -439,10 +455,18 @@ function LeaveRequest() {
                     }}
                   />
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <Button onClick={handleExportToExcel} variant="outlined">
-                      <AiOutlineExport size={24} /> Export
+                    <Button onClick={handleExportToExcel} variant="outlined"  style={{
+                      borderColor: '#000000', // Set border color
+                      borderWidth: '2px',     // Set border width
+                      color: '#000000'        // Set text color to match the border
+                    }}>
+                      <SiMicrosoftexcel size={24} color="#217346"/> Export
                     </Button>
-                    <Button onClick={() => setShowFilterModal(true)} variant="outlined">
+                    <Button onClick={() => setShowFilterModal(true)} variant="outlined"  style={{
+                      borderColor: '#000000', // Set border color
+                      borderWidth: '2px',     // Set border width
+                      color: '#000000'        // Set text color to match the border
+                    }}>
                       <AiOutlineFilter size={24} /> Filter
                     </Button>
                   </div>

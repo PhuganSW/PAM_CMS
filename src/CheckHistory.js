@@ -10,6 +10,7 @@ import './Profile.css';
 import './checkHis.css'
 import firestore from './Firebase/Firestore';
 import { AiOutlineEdit,AiOutlineDelete,AiOutlineFilter,AiOutlineExport } from "react-icons/ai";
+import { SiMicrosoftexcel } from "react-icons/si";
 import { Select, FormControl, InputLabel } from '@mui/material';
 import Form from 'react-bootstrap/Form';
 import MenuItem from '@mui/material/MenuItem';
@@ -970,8 +971,8 @@ function CheckHistory() {
           </FormControl>     */}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="contained" color="primary" onClick={handleExportToExcel} style={{ display: 'flex', alignItems: 'center' }}>
-            <AiOutlineExport size={20} style={{ marginRight: 5 }} />
+          <Button variant="contained" color="primary" onClick={handleExportToExcel} style={{ display: 'flex', alignItems: 'center',  borderColor: '#BEBEBE',borderWidth: '2px' }}>
+            <SiMicrosoftexcel size={24} color="#217346" style={{ marginRight: 5 }}/>
             Export
           </Button>
           <Button variant="primary" onClick={handleUserSelect} style={{width:100}}>
@@ -984,7 +985,6 @@ function CheckHistory() {
       </Modal>
     
       </div>
-      
     
   );
 }

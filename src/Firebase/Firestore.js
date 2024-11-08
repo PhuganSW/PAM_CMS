@@ -584,7 +584,7 @@ class FireStore{
         const data = doc.data();
         if(data.status){
           allOT.push({
-            id:doc.id,
+            uid:doc.id,
             date: data.date,
             name: data.name,
             requestTime:data.requestTime ,

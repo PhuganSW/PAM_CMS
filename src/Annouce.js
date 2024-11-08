@@ -259,8 +259,8 @@ function Annouce() {
                       </td>
                       <td>{item.date}</td>
                       <td style={{width:'30%',textAlign:'center'}}>
-                        <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
-                        <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                        <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                        <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                       </td>
                     </tr>
                   ))}
@@ -294,8 +294,8 @@ function Annouce() {
                         </td>
                         <td>{item.date}</td>
                         <td style={{width:'30%',textAlign:'center'}}>
-                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
-                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                         </td>
                       </tr>
                     ))}
@@ -330,8 +330,8 @@ function Annouce() {
                         </td>
                         <td>{item.date}</td>
                         <td style={{width:'30%',textAlign:'center'}}>
-                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
-                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                         </td>
                       </tr>
                     ))}
@@ -367,8 +367,8 @@ function Annouce() {
                         </td>
                         <td>{item.date}</td>
                         <td style={{width:'30%',textAlign:'center'}}>
-                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
-                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                         </td>
                       </tr>
                     ))}
@@ -404,8 +404,8 @@ function Annouce() {
                         </td>
                         <td>{item.date}</td>
                         <td style={{width:'30%',textAlign:'center'}}>
-                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
-                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                         </td>
                       </tr>
                     ))}
@@ -441,8 +441,8 @@ function Annouce() {
                         </td>
                         <td>{item.date}</td>
                         <td style={{width:'30%',textAlign:'center'}}>
-                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไขประกาศ</button>
-                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบประกาศ</button>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                         </td>
                       </tr>
                     ))}

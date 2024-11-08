@@ -18,9 +18,11 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import { TextField} from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
-import { AiOutlineEdit,AiOutlineDelete } from "react-icons/ai";
+import {FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { AiOutlineEdit,AiOutlineDelete,AiOutlineFilter, AiOutlineExport } from "react-icons/ai";
+import { SiMicrosoftexcel } from "react-icons/si";
 import { hashPassword } from './hashPassword';
-
+import * as XLSX from 'xlsx';
 
 function OTRequest() {
   const navigate = useNavigate();
@@ -42,6 +44,10 @@ function OTRequest() {
   const [endIndex, setEndIndex] = useState(10);
   const [selectedOTIds, setSelectedOTIds] = useState([]); // Track selected OT requests
   const [selectAll, setSelectAll] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [selectedName, setSelectedName] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
@@ -55,11 +61,13 @@ function OTRequest() {
 
 
   const getAllOTSuccess=(doc)=>{
+    
     let ots = []
     if (allOT.length === 0) {
         
       doc.forEach((item) => {
-        ots.push({id: item.id,date:item.date, name: item.name,requestTime:item.requestTime, state:item.state1});
+        ots.push({uid: item.uid,date:item.date, name: item.name,position:item.position,timeStart:item.timeStart,timeEnd:item.timeEnd,
+                  amount:item.amount,detail:item.detail,requestTime:item.requestTime, state:item.state1});
       });
       setAllOT(ots);
       sortData(sortOrder, setFilteredUsers, ots);
@@ -103,13 +111,14 @@ function OTRequest() {
 
   }
 
-  const getOT=(id)=>{
-    setSelectID(id)
-    firestore.getOT(companyId,id,getOTSuc,getOTUnsuc)
+  const getOT=(uid)=>{
+    setSelectID(uid)
+    firestore.getOT(companyId,uid,getOTSuc,getOTUnsuc)
   }
 
   useEffect(() => {
     firestore.getAllOT(companyId,getAllOTSuccess,getAllOTUnsuccess)
+    firestore.getAllUser(companyId, setUsers, console.error);
   }, []);
 
   const onNext = () => {
@@ -127,7 +136,7 @@ function OTRequest() {
     setSearch(event.target.value);
     setSearchQuery(query);
     const filtered = allOT.filter(user => user.name.toLowerCase().includes(query));
-    setFilteredUsers(filtered);
+    sortData(sortData, setFilteredUsers, filtered);
   };
 
    // Convert date string (dd/MM/yyyy) to Date object for sorting
@@ -139,10 +148,17 @@ function OTRequest() {
   // Sort data by date
   const sortData = (order, setData, data) => {
     const sortedData = [...data].sort((a, b) => {
+      // Primary sorting: 'not allowed' (state1 === false) entries first
+      if (a.state !== b.state) {
+        return a.state1 ? 1 : -1;
+      }
+      
+      // Secondary sorting: sort by date within each status group
       const dateA = parseDate(a.date);
       const dateB = parseDate(b.date);
       return order === 'asc' ? dateA - dateB : dateB - dateA;
     });
+  
     setData(sortedData);
   };
 
@@ -176,7 +192,7 @@ function OTRequest() {
       setSelectedOTIds([]);
     } else {
       // Select all visible OT requests
-      const allVisibleIds = filteredUsers.map((ot) => ot.id);
+      const allVisibleIds = filteredUsers.map((ot) => ot.uid);
       setSelectedOTIds(allVisibleIds);
     }
     setSelectAll(!selectAll);
@@ -236,6 +252,46 @@ function OTRequest() {
     setShowPasswordModal(true);
   };
 
+  const handleFilter = () => {
+    const filtered = allOT.filter(item => {
+        const matchesName = selectedName ? item.name === selectedName : true;
+        const matchesMonth = selectedMonth
+            ? item.date && new Date(item.date.split('/').reverse().join('-')).getMonth() + 1 === parseInt(selectedMonth)
+            : true;
+        return matchesName && matchesMonth;
+    });
+    sortData(sortData, setFilteredUsers, filtered);
+    setShowFilterModal(false);
+  };
+
+  const handleExportToExcel = () => {
+    const selectedOrUserName = selectedName || 'AllUsers';
+    const currentDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '_');
+    const fileName = `OT_${selectedOrUserName}_${currentDate}.xlsx`;
+
+    const exportData = [
+        { requestTime: "OT Data", date: "", name: "", position: "", timeStart: "", timeEnd: "", amount: "", detail: "" },
+        { requestTime: "Request Time", date: "Date", name: "Name", position: "Position", timeStart: "Start Time", timeEnd: "End Time", amount: "Amount", detail: "Detail" },
+        ...filteredUsers.map(item => ({
+            requestTime: item.requestTime || "",
+            date: item.date || "",
+            name: item.name || "",
+            position: item.position || "",
+            timeStart: item.timeStart || "",
+            timeEnd: item.timeEnd || "",
+            amount: String(item.amount) || "",
+            detail: item.detail || "",
+        }))
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData, { skipHeader: true });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'OT Data');
+    worksheet['!cols'] = Array(8).fill({ wch: 20 });
+
+    XLSX.writeFile(workbook, fileName);
+};
+
   return (
     
       <div className="dashboard">
@@ -243,14 +299,14 @@ function OTRequest() {
         <Layout />
         <main className="main-content">
         
-          <div class="main">
+          <div className="main">
           <div className='header-page'>
           <header>
             <h1>การขอทำงานล่วงเวลา</h1>
             {/* Add user profile and logout here */}
           </header>
           </div>
-            <div class="main-contain">
+            <div className="main-contain">
             <div className="search-field">
                 {/* <p style={{marginTop:17}}>ค้นหาพนักงาน</p> */}
                 <input style={{width:'95%',margin:5,height:40,borderRadius:5,paddingInlineStart:10,fontSize:22,alignSelf:'center',justifyContent:'center'}}
@@ -263,6 +319,7 @@ function OTRequest() {
 
                 
                 <div style={{width:'95%',alignSelf:'center'}}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 0' }}>
                   <AiOutlineDelete
                     size={42}
                     className="trash-icon"
@@ -277,6 +334,23 @@ function OTRequest() {
                       borderRadius: '5px',  
                     }}
                   />
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <Button variant="outlined" onClick={handleExportToExcel} style={{
+                      borderColor: '#000000', // Set border color
+                      borderWidth: '2px',     // Set border width
+                      color: '#000000'        // Set text color to match the border
+                    }}>
+                      <SiMicrosoftexcel size={24} color="#217346"/> Export
+                    </Button>
+                    <Button variant="outlined" onClick={() => setShowFilterModal(true)} style={{
+                      borderColor: '#000000', // Set border color
+                      borderWidth: '2px',     // Set border width
+                      color: '#000000'        // Set text color to match the border
+                    }}>
+                      <AiOutlineFilter size={24} /> Filter
+                    </Button>
+                  </div>
+                </div>
                 <TableBootstrap striped bordered hover className='table' style={{marginTop:20}}>
                   <thead>
                     <tr>
@@ -302,12 +376,12 @@ function OTRequest() {
                   <tbody>
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                   // {filteredUsers.map((item, index) => (
-                    <tr key={item.id}> 
+                    <tr key={item.uid}> 
                       <td>
                           <input
                             type="checkbox"
-                            checked={selectedOTIds.includes(item.id)}
-                            onChange={() => handleSelect(item.id)}
+                            checked={selectedOTIds.includes(item.uid)}
+                            onChange={() => handleSelect(item.uid)}
                           />
                         </td>
                       <td scope="row">{startIndex + index + 1}</td>
@@ -323,7 +397,7 @@ function OTRequest() {
                         <td>not allowed</td>
                       )}
                       <td className="center-text">
-                        <Button variant="info" onClick={()=>getOT(item.id)}>
+                        <Button variant="info" onClick={()=>getOT(item.uid)}>
                           <AiOutlineEdit size={20} /> {/* Icon for editing */}
                         </Button>
                         {/* <Button variant="danger" style={{ marginLeft: 10 }} onClick={() => handleSelect(item.id)}>
@@ -473,6 +547,38 @@ function OTRequest() {
           <Button variant="primary" onClick={handlePasswordSubmit}>
             Submit
           </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFilterModal} onHide={() => setShowFilterModal(false)}>
+        <Modal.Header closeButton>
+            <Modal.Title>Filter Options</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <FormControl fullWidth>
+                <InputLabel>Name</InputLabel>
+                <Select value={selectedName} onChange={(e) => setSelectedName(e.target.value)}>
+                    <MenuItem value="">All Names</MenuItem>
+                    {users.map((user) => (
+                        <MenuItem key={user.id} value={user.name}>{user.name}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+            <FormControl fullWidth style={{ marginTop: 20 }}>
+                <InputLabel>Month</InputLabel>
+                <Select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+                    <MenuItem value="">All Months</MenuItem>
+                    {Array.from({ length: 12 }, (_, i) => (
+                        <MenuItem key={i} value={i + 1}>
+                            {new Date(0, i).toLocaleString('default', { month: 'long' })}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button onClick={handleFilter} variant="primary">Apply Filter</Button>
+            <Button onClick={() => setShowFilterModal(false)} variant="secondary">Close</Button>
         </Modal.Footer>
       </Modal>
       </div>
