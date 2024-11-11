@@ -762,6 +762,14 @@ function CheckHistory() {
                   />
                 </div>
               )}
+              <Form.Group>
+                  <Form.Label style={{marginTop:10}}>Reason</Form.Label>
+                  <Form.Control
+                    placeholder="reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                />
+              </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>
