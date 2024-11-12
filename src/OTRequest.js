@@ -149,9 +149,9 @@ function OTRequest() {
   const sortData = (order, setData, data) => {
     const sortedData = [...data].sort((a, b) => {
       // Primary sorting: 'not allowed' (state1 === false) entries first
-      if (a.state !== b.state) {
-        return a.state1 ? 1 : -1;
-      }
+      // if (a.state !== b.state) {
+      //   return a.state1 ? 1 : -1;
+      // }
       
       // Secondary sorting: sort by date within each status group
       const dateA = parseDate(a.date);

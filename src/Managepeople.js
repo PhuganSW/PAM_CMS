@@ -48,10 +48,16 @@ function ManagePeople() {
   const [leader1,setLeader1] = useState('');
   const [leaderId1,setLeaderId1] = useState('');
   const [leaders, setLeaders] = useState([]);
+  const [checkPermission,setCheckpermission] = useState(0);
 
   const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
   const [uploading, setUploading] = useState(false);  // State to handle uploading status
   const [workplaceImageUrl, setWorkplaceImageUrl] = useState(null);
+
+  const checks=[
+    {label:'ตามพื้นที่กำหนด',value:'0'},
+    {label:'เช็คจากทุที่',value:'1'}
+  ]
 
   const handleClose = () => setShow(false);
   const handleCloseWP = () => {
@@ -111,7 +117,7 @@ function ManagePeople() {
         firestore.assignWork(companyId, showWorkPlace.id, selectedUser.id, {
             username: selectedUser.name,
             position: selectedUser.position,
-        },{wpID:showWorkPlace.id,workplace:showWorkPlace.name,newWork:true}, () => {
+        },{wpID:showWorkPlace.id,workplace:showWorkPlace.name,newWork:true,checkPermission:checkPermission}, () => {
             alert("Workplace assigned successfully!");
             handleClose();
         }, (error) => {
@@ -170,7 +176,8 @@ function ManagePeople() {
   }
 
   const getUsersByWorkplaceSuccess = (users) => {
-    setWorkplaceUsers(users);
+    const sortedUsers = users.sort((a, b) => a.username.localeCompare(b.username));
+    setWorkplaceUsers(sortedUsers);
   };
 
   const getUsersByWorkplaceUnsuccess = (error) => {
@@ -236,11 +243,22 @@ function ManagePeople() {
     };
   
     const unsubscribeLeaders = firestore.getAllLeaders(companyId, getLeadersSuccess, getLeadersUnsuccess);
-  
+
+    if (workplace.id) {
+      const unsubscribeFn = firestore.getUsersByWorkplace(
+        companyId,
+        workplace.id,
+        getUsersByWorkplaceSuccess,
+        getUsersByWorkplaceUnsuccess
+      );
+      setUnsubscribe(() => unsubscribeFn);
+    }
+
     return () => {
-      unsubscribeLeaders(); // Cleanup on unmount
+      unsubscribeLeaders();
+      if (unsubscribe) unsubscribe();
     };
-  }, [companyId]);
+  }, [workplace.id,companyId]);
 
   const onNext = () => {
     setStartIndex(startIndex + 5); // Increment the start index by 5
@@ -288,19 +306,20 @@ function ManagePeople() {
       setShowWorkPlace({ id: selectedWorkplaceId, name: selectedWorkplaceName });  // Optionally update other state
     }
   
-    if (unsubscribe) {
-      unsubscribe();
-    }
+    // if (unsubscribe) {
+    //   unsubscribe();
+    // }
   
     // Fetch related data using the selected workplace
     if (updateWorkplace) {
-      const unsubscribeFn = firestore.getUsersByWorkplace(
-        companyId,
-        selectedWorkplaceId,
-        getUsersByWorkplaceSuccess,
-        getUsersByWorkplaceUnsuccess
-      );
-      setUnsubscribe(() => unsubscribeFn);
+      if (unsubscribe) unsubscribe();
+        const unsubscribeFn = firestore.getUsersByWorkplace(
+          companyId,
+          selectedWorkplaceId,
+          getUsersByWorkplaceSuccess,
+          getUsersByWorkplaceUnsuccess
+        );
+        setUnsubscribe(() => unsubscribeFn);
     }
   
     // Fetch workplace image or other information
@@ -486,6 +505,22 @@ function ManagePeople() {
                     {leaders.map((leader, index) => (
                       <MenuItem key={index} value={leader.id}>
                         {leader.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label style={{ fontSize: 22, marginTop: 15 }}>สิทธิ์การเช็คอิน</Form.Label>
+                <FormControl variant="filled" fullWidth>
+                  {/* <InputLabel>หัวหน้างาน</InputLabel> */}
+                  <Select
+                    value={checkPermission} // Set value to leaderId for tracking
+                    onChange={(e) =>setCheckpermission(e.target.value)}
+                  >
+                    {checks.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
                       </MenuItem>
                     ))}
                   </Select>

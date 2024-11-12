@@ -469,24 +469,26 @@ function CheckHistory() {
     // Prepare data for "Check-In" sheet with title row
     const checkInData = [
         { Date: "Check-In Data", Name: "", Workplace: "", Time: "" },
-        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time" },
-        ...filteredCheckInData.map(({ date, name, workplace, time }) => ({
+        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time", Reason:"Reason" },
+        ...filteredCheckInData.map(({ date, name, workplace, time, reason }) => ({
             Date: date,
             Name: name,
             Workplace: workplace || '*นอกพื้นที่',
             Time: time,
+            Reason: reason
         }))
     ];
 
     // Prepare data for "Check-Out" sheet with title row
     const checkOutData = [
         { Date: "Check-Out Data", Name: "", Workplace: "", Time: "" },
-        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time" },
-        ...filteredCheckOutData.map(({ date, name, workplace, time }) => ({
+        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time", Reason:"Reason" },
+        ...filteredCheckOutData.map(({ date, name, workplace, time, reason }) => ({
             Date: date,
             Name: name,
             Workplace: workplace || '*นอกพื้นที่',
             Time: time,
+            Reason: reason
         }))
     ];
 
@@ -495,7 +497,7 @@ function CheckHistory() {
     const checkOutWorksheet = XLSX.utils.json_to_sheet(checkOutData, { skipHeader: true });
 
     // Set column widths for readability
-    const columnWidths = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 15 }];
+    const columnWidths = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 15 }, {wch:25}];
     checkInWorksheet['!cols'] = columnWidths;
     checkOutWorksheet['!cols'] = columnWidths;
 
@@ -510,7 +512,7 @@ function CheckHistory() {
     };
 
     // Apply the title cell style to each cell in the merged range of the title row
-    ["A1", "B1", "C1", "D1"].forEach((cell) => {
+    ["A1", "B1", "C1", "D1", "E1"].forEach((cell) => {
         checkInWorksheet[cell] = checkInWorksheet[cell] || {};
         checkInWorksheet[cell].s = titleCellStyle;
 
