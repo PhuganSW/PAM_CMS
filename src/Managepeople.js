@@ -56,7 +56,7 @@ function ManagePeople() {
 
   const checks=[
     {label:'ตามพื้นที่กำหนด',value:'0'},
-    {label:'เช็คจากทุที่',value:'1'}
+    {label:'เช็คจากทุกที่',value:'1'}
   ]
 
   const handleClose = () => setShow(false);
@@ -513,7 +513,7 @@ function ManagePeople() {
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <Form.Label style={{ fontSize: 22, marginTop: 15 }}>สิทธิ์การเช็คอิน</Form.Label>
                 <FormControl variant="filled" fullWidth>
-                  {/* <InputLabel>หัวหน้างาน</InputLabel> */}
+                  <InputLabel>สิทธิ์การเช็คอิน</InputLabel>
                   <Select
                     value={checkPermission} // Set value to leaderId for tracking
                     onChange={(e) =>setCheckpermission(e.target.value)}

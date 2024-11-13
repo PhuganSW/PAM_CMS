@@ -376,7 +376,7 @@ function OTRequest() {
                   <tbody>
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                   // {filteredUsers.map((item, index) => (
-                    <tr key={item.uid}> 
+                    <tr key={item.uid} style={{color:item.state?'black':'red'}}> 
                       <td>
                           <input
                             type="checkbox"

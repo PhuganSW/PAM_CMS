@@ -44,12 +44,12 @@
 
 @media (min-width: 768px) and (max-width: 1179px) {
   .table-container {
-      flex-direction: row;
-      justify-content: space-between;
+      flex-direction: column;
+      /* justify-content: space-between; */
   }
 
   .table-section {
-      width: 48%; /* Ensure tables don't overlap and take 48% width */
+      width: 90%; /* Ensure tables don't overlap and take 48% width */
   }
 }
   

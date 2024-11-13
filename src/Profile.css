@@ -183,12 +183,12 @@ color: #FFF;
     .main-content {
       /* padding: 10px; */
       padding-left: 40px;
-      
+      overflow-x: scroll;
     }
   
     .main-contain {
       padding: 10px;
-      width: 100%; /* Ensure it uses full width on very small screens */
+      width: 100% ; /* Ensure it uses full width on very small screens */
       height: auto;
       /* overflow-y: scroll; */
     }
@@ -224,8 +224,8 @@ color: #FFF;
     .Previous-button {
       display: flex;
       width: 100%;
-      /* padding: 10px; */
-      /* margin: 10px 0; */
+      padding: 10px;
+      margin: 10px 0;
       align-items: center;
       justify-content: center;
     }

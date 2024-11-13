@@ -657,8 +657,8 @@ function CheckHistory() {
                   </tbody>
                 </TableBootstrap>
                 <div>
-                  <button className='Previous-button' style={{width:'20%'}} onClick={onPreviousIn}>Previous</button>
-                  <button className='Next-button' style={{width:'20%'}} onClick={onNextIn}>Next</button>
+                  <button className='Previous-button' style={{minWidth:'20%'}} onClick={onPreviousIn}>Previous</button>
+                  <button className='Next-button' style={{minWidth:'20%',}} onClick={onNextIn}>Next</button>
                 </div>
                 </div>
                 
@@ -698,8 +698,8 @@ function CheckHistory() {
                   </tbody>
                 </TableBootstrap>
                 <div>
-                  <button className='Previous-button' style={{width:'20%'}} onClick={onPreviousOut}>Previous</button>
-                  <button className='Next-button' style={{width:'20%'}} onClick={onNextOut}>Next</button>
+                  <button className='Previous-button' style={{minWidth:'20%'}} onClick={onPreviousOut}>Previous</button>
+                  <button className='Next-button' style={{minWidth:'20%'}} onClick={onNextOut}>Next</button>
                 </div>
                 </div>
               </div>
