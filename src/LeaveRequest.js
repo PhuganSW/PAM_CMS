@@ -496,7 +496,7 @@ function LeaveRequest() {
                   <tbody>
                   {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => ( */}
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
-                    <tr key={item.id}>
+                    <tr key={item.id} style={{color:item.state?'black':'red'}}>
                       <td>
                         <input
                           type="checkbox"

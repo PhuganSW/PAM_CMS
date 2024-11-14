@@ -19,7 +19,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // Track password visibility
   const { setCurrentUser, setCompanyId, companyId, setUserData } = useContext(UserContext);
 
-  const allowedTestEmails = ['admin.miscible@pam.com','sisira.w@miscible.com','hr.miscible@pam.com','test@test.com']
+  const allowedTestEmails = ['admin.miscible@pam.com','sisira.w@miscible.com','hr.miscible@pam.com','admin.demo@pam.com']
 
   const getAccountS = (data) => {
     if (data) {
