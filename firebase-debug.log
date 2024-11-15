@@ -1,0 +1,101 @@
+[debug] [2024-11-15T09:34:59.837Z] ----------------------------------------------------------------------
+[debug] [2024-11-15T09:34:59.840Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Miscible\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js functions:shell
+[debug] [2024-11-15T09:34:59.840Z] CLI Version:   13.25.0
+[debug] [2024-11-15T09:34:59.840Z] Platform:      win32
+[debug] [2024-11-15T09:34:59.840Z] Node Version:  v21.6.2
+[debug] [2024-11-15T09:34:59.840Z] Time:          Fri Nov 15 2024 16:34:59 GMT+0700 (Indochina Time)
+[debug] [2024-11-15T09:34:59.840Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-11-15T09:34:59.890Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-11-15T09:34:59.890Z] > authorizing via signed-in user (sisira.w@ku.th)
+[debug] [2024-11-15T09:34:59.890Z] [iam] checking project pamproject-a57c5 for permissions ["firebase.projects.get"]
+[debug] [2024-11-15T09:34:59.891Z] Checked if tokens are valid: true, expires at: 1731666362759
+[debug] [2024-11-15T09:34:59.891Z] Checked if tokens are valid: true, expires at: 1731666362759
+[debug] [2024-11-15T09:34:59.892Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/pamproject-a57c5:testIamPermissions [none]
+[debug] [2024-11-15T09:34:59.892Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/pamproject-a57c5:testIamPermissions x-goog-quota-user=projects/pamproject-a57c5
+[debug] [2024-11-15T09:34:59.892Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pamproject-a57c5:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-11-15T09:35:01.060Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/pamproject-a57c5:testIamPermissions 200
+[debug] [2024-11-15T09:35:01.060Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pamproject-a57c5:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-11-15T09:35:01.064Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-11-15T09:35:01.065Z] defaultcredentials: writing to file C:\Users\Miscible\AppData\Roaming\firebase\sisira_w_ku.th_application_default_credentials.json
+[debug] [2024-11-15T09:35:01.066Z] DEBUG: Setting GAC to C:\Users\Miscible\AppData\Roaming\firebase\sisira_w_ku.th_application_default_credentials.json
+[debug] [2024-11-15T09:35:01.067Z] Checked if tokens are valid: true, expires at: 1731666362759
+[debug] [2024-11-15T09:35:01.067Z] Checked if tokens are valid: true, expires at: 1731666362759
+[debug] [2024-11-15T09:35:01.067Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/pamproject-a57c5/adminSdkConfig [none]
+[debug] [2024-11-15T09:35:02.274Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/pamproject-a57c5/adminSdkConfig 200
+[debug] [2024-11-15T09:35:02.274Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/pamproject-a57c5/adminSdkConfig {"projectId":"pamproject-a57c5","storageBucket":"pamproject-a57c5.appspot.com","locationId":"asia-southeast1"}
+[debug] [2024-11-15T09:35:02.282Z] [functions] Watching "D:\React\myapp\functions" for Cloud Functions...
+[debug] [2024-11-15T09:35:02.285Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2024-11-15T09:35:03.364Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.1.1",
+    "firebase-functions": "^5.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2024-11-15T09:35:03.364Z] Building nodejs source
+[debug] [2024-11-15T09:35:03.364Z] Failed to find version of module node: reached end of search path D:\React\myapp\functions\node_modules
+[warn] !  functions: Your requested "node" version "18" doesn't match your global version "21". Using node@21 from host. 
+[info] i  functions: You are using a version of firebase-functions SDK (5.0.1) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly 
+[debug] [2024-11-15T09:35:03.366Z] Could not find functions.yaml. Must use http discovery
+[debug] [2024-11-15T09:35:03.372Z] Found firebase-functions binary at 'D:\React\myapp\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8247
+
+[debug] [2024-11-15T09:35:03.696Z] Got response from /__/functions.yaml {"endpoints":{"deleteUser":{"platform":"gcfv1","labels":{},"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"callableTrigger":{},"entryPoint":"deleteUser"},"addAdminRole":{"platform":"gcfv1","labels":{},"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"callableTrigger":{},"entryPoint":"addAdminRole"},"resetUserPassword":{"platform":"gcfv1","labels":{},"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"callableTrigger":{},"entryPoint":"resetUserPassword"},"autoDeleteExpiredRecords":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"scheduleTrigger":{"schedule":"every 24 hours","retryConfig":{"retryCount":null,"maxDoublings":null,"maxRetryDuration":null,"maxBackoffDuration":null,"minBackoffDuration":null},"timeZone":null},"labels":{},"entryPoint":"autoDeleteExpiredRecords"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}]}
+[debug] [2024-11-15T09:35:08.721Z] [functions] Loaded functions definitions from source: deleteUser, addAdminRole, resetUserPassword, autoDeleteExpiredRecords.
+[debug] [2024-11-15T09:35:08.722Z] [functions[us-central1-deleteUser]] http function initialized (http://127.0.0.1:5000/pamproject-a57c5/us-central1/deleteUser).
+[debug] [2024-11-15T09:35:08.722Z] [functions[us-central1-addAdminRole]] http function initialized (http://127.0.0.1:5000/pamproject-a57c5/us-central1/addAdminRole).
+[debug] [2024-11-15T09:35:08.722Z] [functions[us-central1-resetUserPassword]] http function initialized (http://127.0.0.1:5000/pamproject-a57c5/us-central1/resetUserPassword).
+[debug] [2024-11-15T09:35:08.723Z] [functions[us-central1-autoDeleteExpiredRecords]] function ignored because the pubsub emulator does not exist or is not running.
+[info] i  functions: Loaded functions: deleteUser, addAdminRole, resetUserPassword, autoDeleteExpiredRecords 
+[warn] !  functions: The following emulators are not running, calls to these services will affect production: firestore, database, pubsub, storage, eventarc, tasks 
+[debug] [2024-11-15T09:35:26.289Z] shell:autoDeleteExpiredRecords: trigger={"entryPoint":"autoDeleteExpiredRecords","platform":"gcfv1","region":"us-central1","name":"autoDeleteExpiredRecords","id":"us-central1-autoDeleteExpiredRecords","codebase":"default","availableMemoryMb":256,"labels":{"EVENTARC_CLOUD_EVENT_SOURCE":"cloudfunctions-emulated.googleapis.com/projects/pamproject-a57c5/locations/us-central1/functions/autoDeleteExpiredRecords"},"timeoutSeconds":60,"secretEnvironmentVariables":[],"eventTrigger":{"eventType":"pubsub","resource":""},"schedule":{"schedule":"every 24 hours","timeZone":null,"retryConfig":{"maxBackoffSeconds":null,"minBackoffSeconds":null,"maxRetrySeconds":null,"retryCount":null,"maxDoublings":null}}}
+[debug] [2024-11-15T09:35:26.289Z] shell:autoDeleteExpiredRecords: opts={}, data={}
+[debug] [2024-11-15T09:35:26.300Z] DEBUG: [worker-pool] addWorker(us-central1-autoDeleteExpiredRecords)
+[debug] [2024-11-15T09:35:26.301Z] DEBUG: [worker-pool] Adding worker with key us-central1-autoDeleteExpiredRecords, total=1
+[info] >  (node:91116) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. {"user":"(node:91116) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"\u001b[90m> \u001b[39m (node:91116) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."}}
+[info] >  (Use `node --trace-deprecation ...` to show where the warning was created) {"user":"(Use `node --trace-deprecation ...` to show where the warning was created)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"\u001b[90m> \u001b[39m (Use `node --trace-deprecation ...` to show where the warning was created)"}}
+[debug] [2024-11-15T09:35:27.357Z] DEBUG: [runtime-status] [91116] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.1.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2024-11-15T09:35:27.358Z] DEBUG: [runtime-status] [91116] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.0.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2024-11-15T09:35:27.358Z] DEBUG: [runtime-status] [91116] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}]
+[debug] [2024-11-15T09:35:27.359Z] DEBUG: [runtime-status] [91116] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.0.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2024-11-15T09:35:27.517Z] DEBUG: [runtime-status] [91116] Checked functions.config() {"config":{}}
+[debug] [2024-11-15T09:35:27.517Z] DEBUG: [runtime-status] [91116] firebase-functions has been stubbed. {"functionsResolution":{"declared":true,"installed":true,"version":"5.0.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}}
+[debug] [2024-11-15T09:35:27.518Z] DEBUG: [runtime-status] [91116] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.0.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2024-11-15T09:35:27.518Z] DEBUG: [runtime-status] [91116] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.1.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2024-11-15T09:35:27.520Z] DEBUG: [runtime-status] [91116] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.0.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2024-11-15T09:35:27.520Z] DEBUG: [runtime-status] [91116] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"12.1.1","resolution":"D:\\React\\myapp\\functions\\node_modules\\firebase-admin\\lib\\index.js"}}
+[debug] [2024-11-15T09:35:27.521Z] DEBUG: [runtime-status] [91116] initializeApp(DEFAULT) {"storageBucket":"pamproject-a57c5.appspot.com","projectId":"pamproject-a57c5"}
+[warn] !  functions: The Cloud Firestore emulator is not running, so calls to Firestore will affect production. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"The Cloud Firestore emulator is not running, so calls to Firestore will affect production."}}
+[debug] [2024-11-15T09:35:27.528Z] DEBUG: [runtime-status] [91116] Functions runtime initialized. {"cwd":"D:\\React\\myapp\\functions","node_version":"21.6.2"}
+[debug] [2024-11-15T09:35:27.529Z] DEBUG: [runtime-status] [91116] Listening to port: \\?\pipe\fire_emu_e765b437199168b3
+[debug] [2024-11-15T09:35:27.618Z] DEBUG: [worker-us-central1-autoDeleteExpiredRecords-8fd18ee0-4e97-4632-9fbc-0e3ec88b6fcd]: IDLE
+[debug] [2024-11-15T09:35:27.631Z] DEBUG: [runtime-status] [91116] RunBackground {"data":{},"context":{"eventId":"50c44e5e-7358-483c-bc42-b63b6c8b8ccb","timestamp":"2024-11-15T09:35:26.290Z","eventType":"pubsub","auth":{"admin":false}}}
+[warn] !  Google API requested!
+   - URL: "https://oauth2.googleapis.com/token"
+   - Be careful, this may be a production service. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"Google API requested!\n   - URL: \"https://oauth2.googleapis.com/token\"\n   - Be careful, this may be a production service."}}
+[info] >  Processing company: demo {"user":"Processing company: demo","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"\u001b[90m> \u001b[39m Processing company: demo"}}
+[info] >  No expired records found in leaveRequest for company: demo {"user":"No expired records found in leaveRequest for company: demo","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"\u001b[90m> \u001b[39m No expired records found in leaveRequest for company: demo"}}
+[info] >  No expired records found in otRequest for company: demo {"user":"No expired records found in otRequest for company: demo","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"\u001b[90m> \u001b[39m No expired records found in otRequest for company: demo"}}
+[info] >  All expired records deleted successfully. {"user":"All expired records deleted successfully.","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-autoDeleteExpiredRecords"},"extension":{},"message":"\u001b[90m> \u001b[39m All expired records deleted successfully."}}

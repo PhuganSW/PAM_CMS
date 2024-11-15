@@ -518,7 +518,8 @@ class FireStore{
       const allLeave = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        if(data.state){
+        //let deny = doc.data() || true
+        if(data.state || data.deny){
           allLeave.push({
             id:doc.id,...doc.data()
             // dateStart: data.dateStart,
@@ -582,7 +583,7 @@ class FireStore{
       const allOT = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        if(data.status){
+        if(data.status || data.deny){
           allOT.push({
             uid:doc.id,
             date: data.date,

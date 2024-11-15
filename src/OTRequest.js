@@ -67,7 +67,7 @@ function OTRequest() {
         
       doc.forEach((item) => {
         ots.push({uid: item.uid,date:item.date, name: item.name,position:item.position,timeStart:item.timeStart,timeEnd:item.timeEnd,
-                  amount:item.amount,detail:item.detail,requestTime:item.requestTime, state:item.state1});
+                  amount:item.amount,detail:item.detail,requestTime:item.requestTime, state:item.state1,deny:item.deny});
       });
       setAllOT(ots);
       sortData(sortOrder, setFilteredUsers, ots);
@@ -156,7 +156,14 @@ function OTRequest() {
       // Secondary sorting: sort by date within each status group
       const dateA = parseDate(a.date);
       const dateB = parseDate(b.date);
-      return order === 'asc' ? dateA - dateB : dateB - dateA;
+      if (dateA < dateB) return order === 'asc' ? -1 : 1;
+      if (dateA > dateB) return order === 'asc' ? 1 : -1;
+
+      // If dates are the same, sort by requestTime
+      const timeA = a.requestTime ? new Date(`1970-01-01T${a.requestTime}`).getTime() : 0;
+      const timeB = b.requestTime ? new Date(`1970-01-01T${b.requestTime}`).getTime() : 0;
+
+      return order === 'asc' ? timeA - timeB : timeB - timeA;
     });
   
     setData(sortedData);
@@ -376,7 +383,7 @@ function OTRequest() {
                   <tbody>
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
                   // {filteredUsers.map((item, index) => (
-                    <tr key={item.uid} style={{color:item.state?'black':'red'}}> 
+                    <tr key={item.uid} style={{color:item.state||item.deny?'black':'red'}}> 
                       <td>
                           <input
                             type="checkbox"
@@ -391,11 +398,13 @@ function OTRequest() {
                       </td>
                       <td>{item.name}</td>
                       <td>{item.requestTime}</td>
-                      {item.state ? (
-                        <td>allowed</td>
-                      ) : (
-                        <td>not allowed</td>
-                      )}
+                      {item.deny ? (
+                          <td>Deny</td>
+                        ) : item.state ? (
+                          <td>allowed</td>
+                        ) : (
+                          <td>not allowed</td>
+                        )}
                       <td className="center-text">
                         <Button variant="info" onClick={()=>getOT(item.uid)}>
                           <AiOutlineEdit size={20} /> {/* Icon for editing */}

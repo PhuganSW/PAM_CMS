@@ -314,14 +314,20 @@ function LeaveRequest() {
   const sortData = (order, setData, data) => {
     const sortedData = [...data].sort((a, b) => {
       // Primary sorting: 'not allowed' (state1 === false) entries first
-      if (a.state1 !== b.state1) {
-        return a.state1 ? 1 : -1;
-      }
+      // if (a.state1 !== b.state1) {
+      //   return a.state1 ? 1 : -1;
+      // }
       
       // Secondary sorting: sort by date within each status group
-      const dateA = parseDate(a.dateStart);
-      const dateB = parseDate(b.dateStart);
-      return order === 'asc' ? dateA - dateB : dateB - dateA;
+      const dateA = parseDate(a.requestDate||a.dateStart);
+      const dateB = parseDate(b.requestDate||b.dateStart);
+      if (dateA < dateB) return order === 'asc' ? -1 : 1;
+      if (dateA > dateB) return order === 'asc' ? 1 : -1;
+
+      // If dates are the same, sort by requestTime
+      const timeA = a.requestTime ? new Date(`1970-01-01T${a.requestTime}`).getTime() : 0;
+      const timeB = b.requestTime ? new Date(`1970-01-01T${b.requestTime}`).getTime() : 0;
+      return order === 'asc' ? timeA - timeB : timeB - timeA;
     });
   
     setData(sortedData);
@@ -496,7 +502,7 @@ function LeaveRequest() {
                   <tbody>
                   {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => ( */}
                   {filteredUsers.slice(startIndex, endIndex).map((item, index) => (
-                    <tr key={item.id} style={{color:item.state?'black':'red'}}>
+                    <tr key={item.id} style={{color:item.state1||item.deny?'black':'red'}}>
                       <td>
                         <input
                           type="checkbox"
@@ -507,15 +513,17 @@ function LeaveRequest() {
                       <td>{startIndex + index + 1}</td>
                       {/* <th scope="row">{index + 1}</th> */}
                       <td>
-                        {item.dateStart}
+                        {item.requestDate||item.dateStart}
                       </td>
                       <td>{item.name}</td>
                       <td>{item.requestTime}</td>
-                      {item.state1 ? (
-                        <td>allowed</td>
-                      ) : (
-                        <td>not allowed</td>
-                      )}
+                      {item.deny ? (
+                          <td>Deny</td>
+                        ) : item.state1 ? (
+                          <td>allowed</td>
+                        ) : (
+                          <td>not allowed</td>
+                        )}
                       <td className="center-text">
                         <Button variant="info" onClick={()=>getLeave(item.id)}>
                           <AiOutlineEdit size={20} /> {/* Icon for editing */}

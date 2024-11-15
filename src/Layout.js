@@ -51,7 +51,7 @@ const Layout = ({ children }) => {
     // Listen for new leave requests from Firestore
     const unsubscribe = firestore.getAllLeave(companyId, (allLeave) => {
       // Check if there are any requests with state === true
-      const hasNewRequests = allLeave.some(leave => leave.state1 === false);
+      const hasNewRequests = allLeave.some(leave => leave.state1 === false && leave.deny != true);
 
       if (hasNewRequests) {
         setNewLeaveRequests(true); // Set notification flag to true when new requests are detected
@@ -79,7 +79,7 @@ const Layout = ({ children }) => {
     // Listen for new leave requests from Firestore
     const unsubscribe = firestore.getAllOT(companyId, (allOt) => {
       // Check if there are any requests with state === true
-      const hasNewRequests = allOt.some(ot => ot.state1 === false);
+      const hasNewRequests = allOt.some(ot => ot.state1 === false && ot.deny != true);
 
       if (hasNewRequests) {
         setNewOtRequests(true); // Set notification flag to true when new requests are detected
