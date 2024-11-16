@@ -11,4 +11,4 @@ const { autoDeleteExpiredRecords } = require('./src/adminTools');
 exports.deleteUser = deleteUser;
 exports.addAdminRole = addAdminRole;
 exports.resetUserPassword = resetUserPassword;
-exports.autoDeleteExpiredRecords = autoDeleteExpiredRecords;
+//exports.autoDeleteExpiredRecords = autoDeleteExpiredRecords;

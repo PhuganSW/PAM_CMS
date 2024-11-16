@@ -53,6 +53,7 @@ function LeaveRequest() {
   const [filteredLeaves, setFilteredLeaves] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [users, setUsers] = useState([]);
+  const [deny,setDeny]= useState(false)
   const { setCurrentUser, companyId,setNewLeaveRequests,newLeaveRequests,userData } = useContext(UserContext);
 
   const [sortOrder, setSortOrder] = useState('desc'); // State to track sorting order for dates
@@ -98,6 +99,7 @@ function LeaveRequest() {
     setState(data.state)
     setState1(data.state1)
     setImageURLs(data.fileURLs || []);
+    setDeny(data.deny || false)
     handleShow()
   }
 
@@ -187,7 +189,14 @@ function LeaveRequest() {
   const updateLeaveAndWelthfare = async (leaveId, userId, updatedWelthData) => {
     try {
       // First, update the leave request status
-      await firestore.updateLeave(companyId, leaveId, { state1: true },allowSuc,allowUnsuc);
+      let item ={
+        state1: true
+      }
+      if(deny){
+        item.deny=false
+        item.state=true
+      }
+      await firestore.updateLeave(companyId, leaveId, item,allowSuc,allowUnsuc);
   
       // Then, update the user's remaining leave days in the welthfare collection
       await firestore.updateWelth(companyId, userId, updatedWelthData,allowUnsuc);
@@ -222,16 +231,30 @@ function LeaveRequest() {
 
   useEffect(() => {
     // Fetch all leave data from Firestore
-    firestore.getAllLeave(companyId, (data) => {
-      setAllLeave(data);
-      sortData(sortOrder, setFilteredUsers, data); // Initially sort by date
-      if (data.length > 0  && data.state1 == false) {
-        console.log('check state')
-        setNewLeaveRequests(true);  // Only set to true if there are new requests
-      }
-      firestore.getAllUser(companyId, setUsers, console.error);
-    }, console.error);
+   
+    const cleanupAndFetch = async () => {
+      await firestore.autoDeleteOldLeave(
+          companyId,
+          (deleteCount) => {
+              console.log(`${deleteCount} old leave records were deleted.`);
+          },
+          (error) => {
+              console.error("Error during auto-delete process:", error);
+          }
+      );
 
+      firestore.getAllLeave(companyId, (data) => {
+        setAllLeave(data);
+        sortData(sortOrder, setFilteredUsers, data); // Initially sort by date
+        if (data.length > 0  && data.state1 == false) {
+          console.log('check state')
+          setNewLeaveRequests(true);  // Only set to true if there are new requests
+        }
+        firestore.getAllUser(companyId, setUsers, console.error);
+      }, console.error);
+  };
+
+  cleanupAndFetch();
     
   }, [companyId, sortOrder,]);
 

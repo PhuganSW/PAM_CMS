@@ -48,6 +48,7 @@ function OTRequest() {
   const [selectedName, setSelectedName] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [deny,setDeny]= useState(false)
   const { setCurrentUser, companyId, userData } = useContext(UserContext);
 
   const handleClose = () => setShow(false);
@@ -89,7 +90,7 @@ function OTRequest() {
     setTimeEnd(data.timeEnd)
     setAmount(data.amount)
     setDetail(data.detail)
-    
+    setDeny(data.deny || false)
     if(data.status1){
       setStatus("Allowed")
     }else{
@@ -104,6 +105,10 @@ function OTRequest() {
     let item={
       status1:true
     }
+    if(deny){
+      item.deny=false
+      item.status=true
+    }
     firestore.updateOT(companyId,selectID,item,allowSuc,allowUnsuc)
   }
 
@@ -117,8 +122,23 @@ function OTRequest() {
   }
 
   useEffect(() => {
-    firestore.getAllOT(companyId,getAllOTSuccess,getAllOTUnsuccess)
+    
     firestore.getAllUser(companyId, setUsers, console.error);
+    const cleanupAndFetch = async () => {
+      await firestore.autoDeleteOldOT(
+        companyId,
+        (deleteCount) => {
+          console.log(`${deleteCount} old OT records were deleted.`);
+        },
+        (error) => {
+          console.error("Error during auto-delete process:", error);
+        }
+      );
+  
+      firestore.getAllOT(companyId,getAllOTSuccess,getAllOTUnsuccess)
+    };
+  
+    cleanupAndFetch();
   }, []);
 
   const onNext = () => {

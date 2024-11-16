@@ -314,11 +314,26 @@ function CheckHistory() {
 
     const unsubscribeUsers = firestore.getAllUser(companyId, setUsers, console.error);
 
+    const cleanupOldData = async () => {
+      await firestore.cleanupOldCheckInOut(
+        companyId,
+        (deleteCount) => console.log(`${deleteCount} old check-in/out records were cleaned up.`),
+        (error) => console.error("Error during cleanup:", error)
+      );
+    };
+  
+    cleanupOldData();
+
+    const intervalId = setInterval(() => {
+      cleanupOldData();
+    }, 24 * 60 * 60 * 1000); // Run once every 24 hours
+
     return () => {
       unsubscribeDefaultTimes();
       unsubscribeIn();
       unsubscribeOut();
       unsubscribeUsers();
+      clearInterval(intervalId);
     };
   }, [companyId, sortOrder, sortOrderOut]);
 
@@ -611,9 +626,9 @@ function CheckHistory() {
                 >
                   <AiOutlineFilter size={24} />
                 </Button>
-                <Button onClick={handleTimeModalShow} variant="info" title="ตั้งเวลาเข้า-ออก" style={{ marginLeft: '5px' }} >
+                {/* <Button onClick={handleTimeModalShow} variant="info" title="ตั้งเวลาเข้า-ออก" style={{ marginLeft: '5px' }} >
                  <IoTime />
-                </Button>
+                </Button> */}
                 <Button onClick={() => handleNewEntry(true)} variant="success" style={{ marginLeft: '5px' }}>Add Check-In</Button>
                 <Button onClick={() => handleNewEntry(false)} variant="info" style={{ marginLeft: '5px' }}>Add Check-Out</Button>
               </div>

@@ -112,7 +112,7 @@ const Layout = ({ children }) => {
     localStorage.removeItem('companyId');  // Clear companyId from localStorage
     localStorage.removeItem('userData'); // Clear companyId from localStorage
     localStorage.removeItem('sidebarOpen');
-    navigate('/');  // Redirect to login company page
+    navigate('/login_company');  // Redirect to login company page
   };
 
   const logout = (e) => {

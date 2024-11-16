@@ -20,6 +20,8 @@ import Form from 'react-bootstrap/Form';
 import { UserContext } from './UserContext';
 import LocationPickerMap from './LocationPickerMap';
 import { name } from 'dayjs/locale/th';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
 
 function ManagePeople() {
   const navigate = useNavigate();
@@ -49,6 +51,8 @@ function ManagePeople() {
   const [leaderId1,setLeaderId1] = useState('');
   const [leaders, setLeaders] = useState([]);
   const [checkPermission,setCheckpermission] = useState(0);
+  const [defaultCheckInTime, setDefaultCheckInTime] = useState('08:00'); // Default check-in time
+  const [defaultCheckOutTime, setDefaultCheckOutTime] = useState('17:00');
 
   const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
   const [uploading, setUploading] = useState(false);  // State to handle uploading status
@@ -147,6 +151,8 @@ function ManagePeople() {
             name:leader,
             leaderId1:leaderId1,
             name1:leader1,
+            defaultCheckInTime:defaultCheckInTime,
+            defaultCheckOutTime:defaultCheckOutTime,
         }, () => {
             alert("Workplace update successfully!");
             handleCloseWP();
@@ -209,6 +215,8 @@ function ManagePeople() {
         setLeader(workplaceDoc.data().name || '')
         setLeaderId1(workplaceDoc.data().leaderId1 || '')
         setLeader1(workplaceDoc.data().name1 || '')
+        setDefaultCheckInTime(workplaceDoc.data().defaultCheckInTime || '08:00')
+        setDefaultCheckOutTime(workplaceDoc.data().defaultCheckOutTime || '17:00')
       } else {
         setWorkplaceImageUrl(null); // Clear if no image
         console.log("No image URL found for this workplace.");
@@ -596,6 +604,42 @@ function ManagePeople() {
                   </Select>
                 </FormControl>
               </Form.Group>
+             
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Default Check-In Time</label>
+                  <Flatpickr
+                    data-enable-time
+                    value={defaultCheckInTime}
+                    onChange={([date]) => setDefaultCheckInTime(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }))}
+                    options={{
+                      noCalendar: true,
+                      enableTime: true,
+                      dateFormat: 'H:i', // 24-hour format
+                      time_24hr: true,
+                      inline: true // Display inline to ensure visibility and interactivity
+                    }}
+                    className="form-control"
+                  />
+                </div>
+                <div>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Default Check-Out Time</label>
+                  <Flatpickr
+                    data-enable-time
+                    value={defaultCheckOutTime}
+                    onChange={([date]) => setDefaultCheckOutTime(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }))}
+                    options={{
+                      noCalendar: true,
+                      enableTime: true,
+                      dateFormat: 'H:i', // 24-hour format
+                      time_24hr: true,
+                      inline: true // Display inline to ensure visibility and interactivity
+                    }}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+        
               <div style={{ marginTop: '15px' }}>
                 <Form.Label>พิกัด (Latitude, Longitude)</Form.Label>
                 <LocationPickerMap lat={lat} lon={lon} showSearch={true} onLocationSelect={onLocationSelect} />

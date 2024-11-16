@@ -1322,6 +1322,159 @@ class FireStore{
     }
   };
 
+  autoDeleteOldOT = async (companyId, success, unsuccess) => {
+    const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+    const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
+    const currentDate = new Date();
+    const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
+
+    // Helper function to parse dd/mm/yyyy to a Date object
+    const parseDate = (dateString) => {
+        const [day, month, year] = dateString.split('/');
+        return new Date(`${year}-${month}-${day}`);
+    };
+
+    try {
+        const otCollection = collection(this.db, "companies", companyId, "otRequest");
+        const q = query(otCollection, where("status1", "==", true));
+        const querySnapshot = await getDocs(q);
+        const batch = writeBatch(this.db); // Batch for efficient deletion
+        let deleteCount = 0;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.date) {
+                const otDate = parseDate(data.date);
+                if (otDate <= thresholdDate) {
+                    batch.delete(doc.ref);
+                    deleteCount++;
+                }
+            }
+        });
+
+        if (deleteCount > 0) {
+            await batch.commit(); // Commit batch deletion
+            console.log(`${deleteCount} OT records deleted successfully.`);
+        }
+
+        if (success) {
+            success(deleteCount);
+        }
+    } catch (error) {
+        console.error("Error deleting old OT records:", error);
+        if (unsuccess) {
+            unsuccess(error);
+        }
+    }
+};
+
+
+autoDeleteOldLeave = async (companyId, success, unsuccess) => {
+  const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+  const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
+  const currentDate = new Date();
+  const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
+
+  // Helper function to parse dd/mm/yyyy to a Date object
+  const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/');
+      return new Date(`${year}-${month}-${day}`);
+  };
+
+  try {
+      const leaveCollection = collection(this.db, "companies", companyId, "leaveRequest");
+      const q = query(leaveCollection, where("state1", "==", true));
+      const querySnapshot = await getDocs(q);
+
+      const batch = writeBatch(this.db); // Batch for efficient deletion
+      let deleteCount = 0;
+
+      querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.dateEnd) {
+              const leaveEndDate = parseDate(data.dateEnd);
+              // Compare parsed leaveEndDate with thresholdDate
+              if (leaveEndDate <= thresholdDate) {
+                  batch.delete(doc.ref);
+                  deleteCount++;
+              }
+          }
+      });
+
+      if (deleteCount > 0) {
+          await batch.commit(); // Commit batch deletion
+          console.log(`${deleteCount} leave records deleted successfully.`);
+      }
+
+      if (success) {
+          success(deleteCount);
+      }
+  } catch (error) {
+      console.error("Error deleting old leave records:", error);
+      if (unsuccess) {
+          unsuccess(error);
+      }
+  }
+};
+
+cleanupOldCheckInOut = async (companyId, success, unsuccess) => {
+  const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+  const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
+  const currentDate = new Date();
+  const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
+
+  // Helper function to parse dd/mm/yyyy to a Date object
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  try {
+    // Cleanup Check-In records
+    const checkinCollection = collection(this.db, "companies", companyId, "checkin");
+    const checkinQuery = query(checkinCollection);
+    const checkinSnapshot = await getDocs(checkinQuery);
+
+    const batch = writeBatch(this.db); // Batch for efficient deletion
+    let deleteCount = 0;
+
+    checkinSnapshot.forEach((doc) => {
+      const data = doc.data();
+      const recordDate = parseDate(data.date);
+      if (recordDate <= thresholdDate) {
+        batch.delete(doc.ref);
+        deleteCount++;
+      }
+    });
+
+    // Cleanup Check-Out records
+    const checkoutCollection = collection(this.db, "companies", companyId, "checkout");
+    const checkoutQuery = query(checkoutCollection);
+    const checkoutSnapshot = await getDocs(checkoutQuery);
+
+    checkoutSnapshot.forEach((doc) => {
+      const data = doc.data();
+      const recordDate = parseDate(data.date);
+      if (recordDate <= thresholdDate) {
+        batch.delete(doc.ref);
+        deleteCount++;
+      }
+    });
+
+    // Commit the batch deletion
+    if (deleteCount > 0) {
+      await batch.commit();
+      console.log(`${deleteCount} old check-in/out records deleted successfully.`);
+    }
+
+    if (success) success(deleteCount);
+  } catch (error) {
+    console.error("Error deleting old check-in/out records:", error);
+    if (unsuccess) unsuccess(error);
+  }
+};
+
+
 
 }
 
