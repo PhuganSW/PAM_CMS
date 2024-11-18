@@ -6,7 +6,7 @@ admin.initializeApp();
 
 // Import and export other modules
 const { deleteUser, addAdminRole, resetUserPassword } = require('./src/userManagement');
-const { autoDeleteExpiredRecords } = require('./src/adminTools');
+//const { autoDeleteExpiredRecords } = require('./src/adminTools');
 
 exports.deleteUser = deleteUser;
 exports.addAdminRole = addAdminRole;

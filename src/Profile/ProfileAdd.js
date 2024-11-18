@@ -88,7 +88,8 @@ function ProfileAdd() {
 
   const levelOptions = [
     {label:'Employee',value:'employee'},
-    {label:'Leader',value:'leader'}
+    {label:'Leader',value:'leader'},
+    {label:'Master',value:'master'}
   ]
 
   const defaultMen = "https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/333.png?alt=media&token=f5b9e3a6-8644-417e-a366-c4cddac12007"

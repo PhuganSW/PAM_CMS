@@ -29,9 +29,12 @@ function ProfileRole() {
   const [role5,setRole5] = useState('');
   const [other,setOther] = useState('');
   const [startIndex, setStartIndex] = useState(0);
-const [endIndex, setEndIndex] = useState(10);
+  const [endIndex, setEndIndex] = useState(10);
 
-  const SaveSuc=()=> navigate('/profile', { state: { startIndex, endIndex } });
+  const SaveSuc=()=> {
+    alert('Save data success!!')
+    navigate('/profile', { state: { startIndex, endIndex } });
+  }
   const SaveUnsuc=(e)=>{
     try{
         let item= {
@@ -41,6 +44,7 @@ const [endIndex, setEndIndex] = useState(10);
             role4:role4,
             role5:role5,
             other:other,
+            newRead:true,
         }
         firestore.addUserRole(companyId,uid,item,()=>navigate('/profile', { state: { startIndex, endIndex } }),(e)=>console.log(e))
     }catch{
@@ -56,6 +60,7 @@ const [endIndex, setEndIndex] = useState(10);
         role4:role4,
         role5:role5,
         other:other,
+        newRead:true,
     }
     firestore.updateUserRole(companyId,uid,item,SaveSuc,SaveUnsuc)
   }
@@ -180,7 +185,7 @@ const [endIndex, setEndIndex] = useState(10);
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile', { state: { startIndex, endIndex } })}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/profile', { state: { startIndex, endIndex } })}>ย้อนกลับ</button>
               </div>
 
             </div>
