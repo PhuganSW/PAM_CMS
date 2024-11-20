@@ -1104,7 +1104,7 @@ class FireStore{
 
   getAllLeaders = (companyId, success, unsuccess) => {
     const usersCollection = collection(this.db, "companies", companyId, "users");
-    const leadersQuery = query(usersCollection, where("level", "==", "leader"), orderBy("name", "asc")); // Filter for leaders
+    const leadersQuery = query(usersCollection,  where("level", "in", ["leader", "master"]), orderBy("name", "asc")); // Filter for leaders
   
     const unsubscribe = onSnapshot(
       leadersQuery,
