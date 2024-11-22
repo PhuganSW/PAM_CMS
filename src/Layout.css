@@ -167,6 +167,50 @@ body {
     margin-left: 8px;
     margin-top: -8px;
   }
+
+  /* Sub-menu styles */
+.sub-menu {
+  list-style: none;
+  margin: 10px 0 10px 20px;
+  padding: 0;
+  display: none; /* Initially hidden */
+}
+
+.sub-menu li {
+  margin: 5px 0;
+}
+
+.sub-menu li a {
+  font-size: 18px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.sub-menu li a:hover {
+  font-weight: bold;
+  color: #69f9f9;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-toggle i {
+  margin-right: 10px;
+}
+
+.sidebar.open .sub-menu {
+  display: block; /* Show sub-menu when sidebar is open */
+}
   
   @media (min-width: 767px) {
     .layout {
