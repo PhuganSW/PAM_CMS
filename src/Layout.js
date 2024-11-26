@@ -152,13 +152,13 @@ const Layout = ({ children }) => {
                 </Link>
               </li>
 
-              {/* <li className={isActive("/profile") ? "active" : ""}>
+              <li className={isActive("/profile") ? "active" : ""}>
                 <Link to="/profile">
                   <i className="fas fa-user"></i>
                   <span>การจัดการข้อมูลพนักงาน</span>
                 </Link>
-              </li> */}
-              <li>
+              </li>
+              {/* <li>
                 <button className="menu-toggle" onClick={toggleSubMenu}>
                   <i className="fas fa-users-cog"></i>
                   <span>การจัดการข้อมูล</span>
@@ -180,7 +180,7 @@ const Layout = ({ children }) => {
                     </li>
                   </ul>
                 )}
-              </li>
+              </li> */}
 
               <li className={isActive("/welthfare") ? "active" : ""}>
                 <Link to="/welthfare">

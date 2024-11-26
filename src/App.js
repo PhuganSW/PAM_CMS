@@ -34,6 +34,7 @@ import ProfileSalary from './Profile/ProfileSalary';
 import Register from './Register';
 import SplashScreen from './SplashScreen';
 import Service from './Service';
+import LoginAdmin from './LoginAdmin';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -84,6 +85,7 @@ function App() {
           <Route path="/network" element={<ProtectedRoute><Network /></ProtectedRoute>} />
           <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
           <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
+          <Route path="/login_admin" element={<LoginAdmin />} />
         </Routes>
       </Router>
     </UserProvider>

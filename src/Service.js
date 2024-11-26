@@ -12,10 +12,10 @@ const Navbar = () => {
       <div className="navbar-logo">
         <img src={logo} alt="PAM Logo" className="navbar-logo-image" />
       </div>
-      <div className="navbar-buttons">
+      {/* <div className="navbar-buttons">
       <button className="navbar-button sign-up" onClick={() => navigate('/register')}>Sign Up</button>
       <button className="navbar-button sign-in" onClick={() => navigate('/login_company')}>Sign In</button>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -24,8 +24,8 @@ const Service = () => {
   return (
     <div className="container">
       <Navbar />
-      <div className="background-overlay">
-      <div className="key-features">
+      {/* <div className="background-overlay"> */}
+      {/* <div className="key-features">
         <h2>Key Feature</h2>
         <ul>
           <li>Dashboard สรุปข้อมูล</li>
@@ -33,8 +33,12 @@ const Service = () => {
           <li>จัดการเรื่องเงินเดือน</li>
           <li>จัดการสิทธิพนักงาน</li>
         </ul>
+      </div> */}
+      <div style={{display:'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+        <p style={{fontSize:56}}>Coming Soon...</p>
       </div>
-      </div>
+      
+      {/* </div> */}
     </div>
   );
 };
