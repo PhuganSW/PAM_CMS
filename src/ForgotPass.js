@@ -16,7 +16,7 @@ const ForgotPass = () => {
           email,
           () => {
             alert("Check your email for reset password instructions.");
-            navigate("/");
+            navigate("/login_company");
           },
           (error) => {
             alert("Error resetting password: " + error.message);

@@ -24,6 +24,39 @@ class FireStore{
     }
   }
 
+  checkPlan=async(companyId,success,unsuccess)=>{
+    try {
+      const subCollectionRef = collection(this.db, `companies/${companyId}/account_cms`);
+      const subCollectionSnapshot = await getDocs(subCollectionRef);
+  
+      if (!subCollectionSnapshot.empty) {
+        success(true);
+      } else {
+        unsuccess(false);
+      }
+    } catch (error) {
+      unsuccess(false);
+    }
+  }
+
+  getAdminUser=async(companyId,id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "account_cms", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        //console.log("No such document!");
+        unsuccess()
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
+
   addAccount= async (companyId,id,item)=>{
     try {
       const docRef = await setDoc(doc(this.db, "companies", companyId, "account_cms", id), item);

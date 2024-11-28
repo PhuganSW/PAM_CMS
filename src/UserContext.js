@@ -6,7 +6,8 @@ import firestore from './Firebase/Firestore';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => JSON.parse(localStorage.getItem('userData')) || null);
+  const [currentAdmin, setCurrentAdmin] = useState(() => JSON.parse(localStorage.getItem('adminData')) || null);
   const [companyId, setCompanyId] = useState(localStorage.getItem('companyId') || null);
   const [userData, setUserData] = useState(null); // Store Firestore user data
   const [loading, setLoading] = useState(true);  // Set loading to true initially
@@ -14,80 +15,57 @@ export const UserProvider = ({ children }) => {
   const [newOtRequests, setNewOtRequests] = useState(false);
 
   useEffect(() => {
+    const isAdminMode = localStorage.getItem('isAdminMode') === 'true';
 
-    // const timeoutId = setTimeout(() => {
-    //   // Reset state after 1 minute if still loading
-    //   if (loading) {
-    //     setLoading(false);
-    //     setCurrentUser(null);
-    //     setCompanyId(null);
-    //   }
-    // }, 60000); // 1 minute timeout (60000 ms)
-    // Listen for Firebase authentication changes
-    const unsubscribe = auth.checksignin((user) => {
-      if (user) {
-        //clearTimeout(timeoutId);
-        setCurrentUser(user);  // Set user if authenticated
-        const storedCompanyId = localStorage.getItem('companyId');
-        if (storedCompanyId) {
-          setCompanyId(storedCompanyId);  // Retrieve companyId from localStorage
-
-          // firestore.getAccount(storedCompanyId, user.uid, (accountData) => {
-          //   setUserData(accountData); // Store Firestore user data
-          //   setLoading(false);  // Stop loading after data is fetched
-          // }, () => {
-          //   console.error("Error fetching user data from Firestore");
-          //   setLoading(false); // Stop loading even if there's an error
-          // });
-          fetchAccountData(storedCompanyId, user.uid);
-        }else {
-          // If no companyId is found in localStorage, log out the user
-          handleInvalidState();
-        }
+    // หากอยู่ใน Admin Mode ไม่โหลดข้อมูล User
+    if (!isAdminMode) {
+      const storedUser = JSON.parse(localStorage.getItem('userData'));
+      const storedAdmin = JSON.parse(localStorage.getItem('adminData'));
+      if (storedUser) {
+        setCurrentUser(storedUser);
+        setLoading(false);
       } else {
-        handleInvalidState();
-        // setCurrentUser(null);  // Clear user state if not authenticated
-        // setCompanyId(null);    // Clear companyId if not authenticated
-        // setUserData(null);    // Clear Firestore user data
-        // setLoading(false); 
+        setLoading(false);
       }
-      // setLoading(false);  // Stop loading after the check is complete
-    });
-    const handleInvalidState = () => {
-      // Clear all states and prevent navigation to home
+
+      const unsubscribe = auth.checksignin((user) => {
+        if (user) {
+          const storedCompanyId = localStorage.getItem('companyId');
+          if (storedCompanyId) {
+            firestore.getAccount(storedCompanyId, user.uid, (accountData) => {
+              localStorage.setItem('userData', JSON.stringify(accountData));
+              setCurrentUser(accountData);
+              setLoading(false);
+            }, () => handleLogout(false));
+          } else {
+            handleLogout(false);
+          }
+        } else {
+          handleLogout(false);
+        }
+      });
+
+      return () => unsubscribe && unsubscribe();
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+
+  const handleLogout = (clearAll = true) => {
+    if (clearAll) {
       setCurrentUser(null);
       setCompanyId(null);
-      setUserData(null);
-      setLoading(false);
       localStorage.removeItem('companyId');
-    };
-
-    const fetchAccountData = (companyId, userId) => {
-      // Fetch the user's account data from Firestore using the companyId and userId
-      firestore.getAccount(companyId, userId, (accountData) => {
-        if (accountData) {
-          setUserData(accountData); // Store Firestore user data
-        } else {
-          console.error("Account not found for the provided companyId.");
-          handleInvalidState();  // Clear state if account data is not found
-        }
-        setLoading(false);  // Stop loading after data is fetched
-      }, (error) => {
-        console.error("Error fetching user data from Firestore:", error);
-        handleInvalidState();  // Clear state if there was an error fetching data
-      });
-    };
-
-    return () => {
-      // Ensure unsubscribe is called on component unmount
-      if (unsubscribe) unsubscribe();
-      //clearTimeout(timeoutId);
-    };
-  }, []);
+      localStorage.removeItem('userData');
+      setLoading(false)
+    }
+  };
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser, companyId, setCompanyId,userData, setUserData,
-                                   loading, newLeaveRequests, setNewLeaveRequests, newOtRequests, setNewOtRequests }}>
+                                   loading,setLoading, newLeaveRequests, setNewLeaveRequests, newOtRequests, setNewOtRequests, handleLogout,
+                                   currentAdmin,setCurrentAdmin, }}>
       {children}
     </UserContext.Provider>
   );

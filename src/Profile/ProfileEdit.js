@@ -291,6 +291,7 @@ function ProfileEdit() {
   };
 
   const addOldValueToOptions = (oldValue, options) => {
+    
     const trimmedOldValue = oldValue ? oldValue.trim() : '';
     if (trimmedOldValue && !options.includes(trimmedOldValue)) {
       console.log("Adding old value to options:", trimmedOldValue); // Debug log
@@ -301,6 +302,7 @@ function ProfileEdit() {
 
   const fetchDropdownOptions = async () => {
     try {
+      console.log(prefixth)
       const prefixThOptionsData = await firestore.getDropdownOptions(companyId, 'prefixTh');
       const loadedPrefixThOptions = prefixThOptionsData.map(option => option.name.trim()); // Trim options to match
       const updatedPrefixThOptions = addOldValueToOptions(prefixth, loadedPrefixThOptions);
@@ -336,22 +338,52 @@ function ProfileEdit() {
   };
 
   useEffect(() => {
-    if (location.state && location.state.uid) {
-      console.log(location.state.uid)
-      setUid(location.state.uid);
-      firestore.getUser(companyId,location.state.uid, getUserSuccess, getUserUnsuccess);
-      firestore.getUsername(companyId,location.state.uid, getUsernameSuc, getUsernameUnsuc)
-    } else {
-      console.warn('No ID found in location state');
+    if (prefixth) {
+      fetchDropdownOptions();
     }
-    if (location.state) {
-      setStartIndex(location.state.startIndex || 0);
-      setEndIndex(location.state.endIndex || 10);
-      setSearch(location.state.search || '');
-      setSearchQuery(location.state.searchQuery || '');
-      setFilterPosition(location.state.position || '');
-    }
-    fetchDropdownOptions();
+  }, [prefixth]); // รัน fetchDropdownOptions เมื่อ prefixTh มีค่า
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (location.state && location.state.uid) {
+        console.log(location.state.uid);
+        setUid(location.state.uid);
+  
+        // เรียกข้อมูลผู้ใช้ก่อน
+        await new Promise((resolve) => {
+          firestore.getUser(
+            companyId,
+            location.state.uid,
+            (data) => {
+              getUserSuccess(data);
+              resolve(); // รอให้ข้อมูลถูกโหลด
+            },
+            (error) => {
+              getUserUnsuccess(error);
+              resolve(); // แม้เกิดข้อผิดพลาด ให้ resolve ต่อ
+            }
+          );
+        });
+  
+        // เรียกข้อมูล username
+        firestore.getUsername(companyId, location.state.uid, getUsernameSuc, getUsernameUnsuc);
+      } else {
+        console.warn('No ID found in location state');
+      }
+  
+      if (location.state) {
+        setStartIndex(location.state.startIndex || 0);
+        setEndIndex(location.state.endIndex || 10);
+        setSearch(location.state.search || '');
+        setSearchQuery(location.state.searchQuery || '');
+        setFilterPosition(location.state.position || '');
+      }
+  
+      // โหลดข้อมูล Dropdown หลังจากข้อมูลผู้ใช้ถูกตั้งค่าแล้ว
+      //fetchDropdownOptions();
+    };
+  
+    loadData();
   }, [location.state]);
 
   return (
@@ -403,7 +435,7 @@ function ProfileEdit() {
                 >
                   {prefixThOptions.map((option, index) => (
                   <MenuItem key={index} value={option}>
-                    {option}
+                    {prefixth && option}
                   </MenuItem>
                 ))}
                 </TextField>

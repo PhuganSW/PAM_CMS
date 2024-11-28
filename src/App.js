@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { UserProvider, UserContext } from './UserContext';
+import { AdminProvider, AdminContext } from './AdminContext';
 import Login from './Login';
 import Home from './Home';
 import ProfileManage from './Profile/ProfileManage';
@@ -35,6 +36,9 @@ import Register from './Register';
 import SplashScreen from './SplashScreen';
 import Service from './Service';
 import LoginAdmin from './LoginAdmin';
+import ApprovePlan from './ApprovePlan';
+import ResetPassword from './ResetPassword';
+import NotFound from './NotFound';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -42,7 +46,7 @@ function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false); // Hide the splash screen after 3 seconds
-    }, 3000); // Duration of the splash screen (3000ms = 3 seconds)
+    }, 2000); // Duration of the splash screen (3000ms = 3 seconds)
 
     return () => clearTimeout(timer); // Cleanup the timer on unmount
   }, []);
@@ -52,7 +56,9 @@ function App() {
   }
   
   return (
+    <>
     <UserProvider>
+    <AdminProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Service />}/>
@@ -60,9 +66,11 @@ function App() {
           <Route path="/login" element={<ProtectedLogin><Login /></ProtectedLogin>} />
           <Route path="/register" element={<Register />}/>
           <Route path="/forgot_password" element={<ForgotPass />} />
-          <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><ProfileManage /></ProtectedRoute>} />
-          <Route path="/checkin_history" element={<ProtectedRoute><CheckHistory /></ProtectedRoute>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/login_admin" element={<LoginAdmin />} />
+          <Route path="/home" element={<ProtectedUserRoute><Home /></ProtectedUserRoute>} />
+          <Route path="/profile" element={<ProtectedUserRoute><ProfileManage /></ProtectedUserRoute>} />
+          <Route path="/checkin_history" element={<ProtectedUserRoute><CheckHistory /></ProtectedUserRoute>} />
           <Route path="/leave_request" element={<ProtectedRoute><LeaveRequest /></ProtectedRoute>} />
           <Route path="/ot_request" element={<ProtectedRoute><OTRequest /></ProtectedRoute>} />
           <Route path="/welthfare" element={<ProtectedRoute><Welthfare /></ProtectedRoute>} />
@@ -85,10 +93,14 @@ function App() {
           <Route path="/network" element={<ProtectedRoute><Network /></ProtectedRoute>} />
           <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
           <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
-          <Route path="/login_admin" element={<LoginAdmin />} />
+
+          <Route path="/approve_plan" element={<ProtectedAdminRoute><ApprovePlan /></ProtectedAdminRoute>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      </AdminProvider>
     </UserProvider>
+    </>
   );
 }
 
@@ -118,7 +130,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!currentUser) {
-    return <Navigate to="/" />;  // Redirect to the login company page if not logged in
+    return <Navigate to="/login_company" />;  // Redirect to the login company page if not logged in
   }
 
   return children;
@@ -130,6 +142,36 @@ const ProtectedLogin = ({ children }) => {
 
   if (currentUser && companyId) {
     return <Navigate to="/home" />;  // Redirect to home if already logged in
+  }
+
+  return children;
+};
+
+const ProtectedUserRoute = ({ children }) => {
+  const { currentUser, loading,setLoading } = useContext(UserContext);
+
+  if (loading) return <div>Loading...</div>;
+
+  // หากอยู่ใน Admin Mode หรือไม่มี currentUser ให้ Redirect ไปหน้า Login User
+  if (localStorage.getItem('isAdminMode') === 'true' || !currentUser) {
+    localStorage.setItem('isAdminMode', 'false'); // เปลี่ยนโหมดเป็น User
+    setLoading(false)
+    return <Navigate to="/login_company" />;
+  }
+
+  return children;
+};
+
+const ProtectedAdminRoute = ({ children }) => {
+  const { currentAdmin, loadingAdmin,setLoadingAdmin } = useContext(AdminContext);
+  console.log('currentAdmin:',currentAdmin)
+  if (loadingAdmin) return <div>Loading...</div>;
+
+  // หากอยู่ใน User Mode หรือไม่มี currentAdmin ให้ Redirect ไปหน้า Login Admin
+  if (localStorage.getItem('isAdminMode') !== 'true' || !currentAdmin) {
+    localStorage.setItem('isAdminMode', 'true'); // เปลี่ยนโหมดเป็น Admin
+    setLoadingAdmin(false)
+    return <Navigate to="/login_admin" />;
   }
 
   return children;

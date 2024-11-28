@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   // const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1024); // Check if it's mobile view
   const navigate = useNavigate();
   const location = useLocation();
-  const { companyId, setCurrentUser, setCompanyId,setUserData,userData,newLeaveRequests, setNewLeaveRequests,newOtRequests,setNewOtRequests } = useContext(UserContext);
+  const { companyId, setCurrentUser, setCompanyId,setUserData,userData,newLeaveRequests, setNewLeaveRequests,newOtRequests,setNewOtRequests,setLoading } = useContext(UserContext);
 
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const savedSidebarState = localStorage.getItem('sidebarOpen');
@@ -118,6 +118,7 @@ const Layout = ({ children }) => {
     localStorage.removeItem('userData'); // Clear companyId from localStorage
     localStorage.removeItem('sidebarOpen');
     navigate('/login_company');  // Redirect to login company page
+    setLoading(false)
   };
 
   const logout = (e) => {

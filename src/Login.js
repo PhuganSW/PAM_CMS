@@ -26,8 +26,9 @@ const Login = () => {
       // Save companyId to local storage to persist across refreshes
       console.log(data);
       setUserData(data);
+      setCurrentUser(data);
       localStorage.setItem('userData', JSON.stringify(data));
-      navigate("/home"); // Only navigate if account is found
+      navigate('/home'); // Only navigate if account is found
     } else {
       getAccountUn();
     }

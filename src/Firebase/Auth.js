@@ -91,17 +91,35 @@ class Auth {
     });
   }
 
+//   resetPassword = (email, success, unsuccess) => {
+//     sendPasswordResetEmail(this.auth, email)
+//       .then(() => {
+//         console.log('Password reset email sent!');
+//         success();
+//       })
+//       .catch((error) => {
+//         console.error('Error sending password reset email:', error);
+//         unsuccess(error);
+//       });
+// };
+
   resetPassword = (email, success, unsuccess) => {
+    const actionCodeSettings = {
+      // URL you want to redirect back to, where the user will reset their password.
+      url: 'http://localhost:3000/reset-password',
+      handleCodeInApp: true, // This should be true if you want to handle the reset within your app
+    };
+
     sendPasswordResetEmail(this.auth, email)
-      .then(() => {
-        console.log('Password reset email sent!');
-        success();
-      })
-      .catch((error) => {
-        console.error('Error sending password reset email:', error);
-        unsuccess(error);
-      });
-};
+    .then(() => {
+      console.log('Password reset email sent!');
+      success();
+    })
+    .catch((error) => {
+      console.error('Error sending password reset email:', error);
+      unsuccess(error);
+    });
+  };
 
   deleteUser = (uid, success, unsuccess) => {
     const deleteUserFunction = httpsCallable(this.functions, 'deleteUser');
