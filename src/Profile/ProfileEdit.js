@@ -340,6 +340,8 @@ function ProfileEdit() {
   useEffect(() => {
     if (prefixth) {
       fetchDropdownOptions();
+    }else{
+      fetchDropdownOptions();
     }
   }, [prefixth]); // รัน fetchDropdownOptions เมื่อ prefixTh มีค่า
 
@@ -435,7 +437,7 @@ function ProfileEdit() {
                 >
                   {prefixThOptions.map((option, index) => (
                   <MenuItem key={index} value={option}>
-                    {prefixth && option}
+                    {option}
                   </MenuItem>
                 ))}
                 </TextField>

@@ -23,6 +23,7 @@ export const UserProvider = ({ children }) => {
       const storedAdmin = JSON.parse(localStorage.getItem('adminData'));
       if (storedUser) {
         setCurrentUser(storedUser);
+        setUserData(storedUser)
         setLoading(false);
       } else {
         setLoading(false);
@@ -35,6 +36,7 @@ export const UserProvider = ({ children }) => {
             firestore.getAccount(storedCompanyId, user.uid, (accountData) => {
               localStorage.setItem('userData', JSON.stringify(accountData));
               setCurrentUser(accountData);
+              setUserData(accountData)
               setLoading(false);
             }, () => handleLogout(false));
           } else {
@@ -56,6 +58,7 @@ export const UserProvider = ({ children }) => {
     if (clearAll) {
       setCurrentUser(null);
       setCompanyId(null);
+      setUserData(null)
       localStorage.removeItem('companyId');
       localStorage.removeItem('userData');
       setLoading(false)
