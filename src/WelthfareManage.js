@@ -9,6 +9,10 @@ import MenuItem from '@mui/material/MenuItem';
 import firestore from './Firebase/Firestore';
 import Layout from './Layout';
 import { UserContext } from './UserContext';
+import "bootstrap/dist/css/bootstrap.min.css";
+import TableBootstrap from "react-bootstrap/Table";
+import { AiOutlineEdit } from "react-icons/ai";
+import Button from 'react-bootstrap/Button';
 
 function WelthfareManage() {
   const navigate = useNavigate();
@@ -31,6 +35,16 @@ function WelthfareManage() {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const { setCurrentUser, companyId } = useContext(UserContext);
+  const [editingField, setEditingField] = useState(null);
+  const [data, setData] = useState([
+    { type: 'ลากิจ', total: 0, used: 0, remaining: 0 },
+    { type: 'ลาป่วย', total: 0, used: 0, remaining: 0 },
+    { type: 'ลาพักร้อน', total: 0, used: 0, remaining: 0 },
+    { type: 'ลาคลอด', total: 0, used: 0, remaining: 0 },
+    { type: 'ลาบวช', total: 0, used: 0, remaining: 0 },
+    { type: 'ลาด้วยสิทธิ์อื่นๆ', total: 0, used: 0, remaining: 0 },
+  ]);
+
 
   const handleNumberInput = (e) => {
     const { value } = e.target;
@@ -59,18 +73,18 @@ function WelthfareManage() {
 
   const getWelSuc=(data)=>{
     let item = data
-    setAbsence(item.absence)
-    setAbsenceR(item.absenceR)
-    setSick(item.sick)
-    setSickR(item.sickR)
-    setHoliday(item.holiday)
-    setHolidayR(item.holidayR)
-    setMaternity(item.maternity)
-    setMaternityR(item.maternityR)
-    setKama(item.kama)
-    setKamaR(item.kamaR)
-    setOther(item.other)
-    setOtherR(item.otherR)
+    setAbsence(Number(item.absence))
+    setAbsenceR(Number(item.absenceR))
+    setSick(Number(item.sick))
+    setSickR(Number(item.sickR))
+    setHoliday(Number(item.holiday))
+    setHolidayR(Number(item.holidayR))
+    setMaternity(Number(item.maternity))
+    setMaternityR(Number(item.maternityR))
+    setKama(Number(item.kama))
+    setKamaR(Number(item.kamaR))
+    setOther(Number(item.other))
+    setOtherR(Number(item.otherR))
   }
   
   const getWelunsuc=(err)=>{
@@ -113,6 +127,14 @@ function WelthfareManage() {
     }
   }, [location.state]);
 
+  const handleEdit = (index, field) => {
+    setEditingField({ index, field });
+  };
+
+  const handleBlur = () => {
+    setEditingField(null);
+  };
+
   return (
     
       <div className="dashboard">
@@ -128,8 +150,8 @@ function WelthfareManage() {
               </header>
             </div>
             <div className="main-contain">
-              <p style={{fontSize:28,marginLeft:15,marginTop:20}}>ชื่อ - นามสกุล: {name}</p>
-              <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
+              <p style={{fontSize:28,marginLeft:'2.5%',marginTop:20}}>ชื่อ - นามสกุล: {name}</p>
+              {/* <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
                 <div className="form-row" style={{display: 'flex', marginBottom: '20px'}}>
                   <TextField
                     label="สิทธิ์ลากิจที่เหลือ"
@@ -256,8 +278,223 @@ function WelthfareManage() {
                     onChange={(e) => handleNumberInput(e) && setOther(e.target.value)}
                   />
                 </div>
-              </div>
-              <div style={{display:'flex', flexDirection:'row',justifyContent:'center',width:'100%'}}>
+              </div> */}
+              
+              <TableBootstrap striped bordered hover className='table' style={{width:'95%',alignSelf:'center',tableLayout: 'fixed', }}>
+                  <thead>
+                    <tr>             
+                      <th scope="col">สิทธิ์</th>
+                      <th>
+                        วันลาตามสิทธิ์ 
+                      </th>
+                      <th>
+                        จำนวนวันที่ถูกใช้
+                      </th>
+                      <th>จำนวนวันคงเหลือ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {/* {filteredUsers.slice(startIndex, endIndex).map((item, index) => (  */}
+                  {/* // {filteredUsers.map((item, index) => ( */}
+                    <tr key={0}> 
+                      <td scope="row">ลากิจ</td>
+                      <td  onClick={() => handleEdit(0,'used')} style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 0 && editingField?.field === 'used' ? (
+                        <input
+                          type="number"
+                          value={absence}
+                          onChange={(e) => setAbsence(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        absence
+                      )}
+                      </td>
+                      <td>{(absence-absenceR)}</td>
+                      <td onClick={() => handleEdit(0,'remain')} style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 0 && editingField?.field === 'remain' ? (
+                        <input
+                          type="number"
+                          value={absenceR}
+                          onChange={(e) => setAbsenceR(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        absenceR
+                      )}</td>
+                    </tr>
+                    <tr key={1}> 
+                      <td scope="row">ลาป่วย</td>
+                      {/* <th scope="row">{index + 1}</th> */}
+                      <td  onClick={() => handleEdit(1,'used')} style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 1 && editingField?.field === 'used' ? (
+                        <input
+                          type="number"
+                          value={sick}
+                          onChange={(e) => setSick(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        sick
+                      )}
+                      </td>
+                      <td>{(sick-sickR)}</td>
+                      <td onClick={() => handleEdit(1,'remain')} style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 1 && editingField?.field === 'remain' ? (
+                        <input
+                          type="number"
+                          value={sickR}
+                          onChange={(e) => setSickR(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        sickR
+                      )}</td>
+                    </tr>
+                    <tr key={2}> 
+                      <td scope="row">ลาพักร้อน</td>
+                      {/* <th scope="row">{index + 1}</th> */}
+                      <td   onClick={() => handleEdit(2,'used')} style={{ cursor: 'pointer' }}>
+                        {/* {holiday} */}
+                        {editingField?.index === 2 && editingField?.field === 'used' ? (
+                        <input
+                          type="number"
+                          value={holiday}
+                          onChange={(e) => setHoliday(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        holiday
+                      )}
+                      </td>
+                      <td>{(holiday-holidayR)}</td>
+                      <td onClick={() => handleEdit(2,'remain')}  style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 2 && editingField?.field === 'remain' ? (
+                        <input
+                          type="number"
+                          value={holidayR}
+                          onChange={(e) => setHolidayR(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        holidayR
+                      )}</td>
+                    </tr>
+                    <tr key={3}> 
+                      <td scope="row">ลาคลอด</td>
+                      {/* <th scope="row">{index + 1}</th> */}
+                      <td   onClick={() => handleEdit(3,'used')} style={{ cursor: 'pointer' }}>
+                        {/* {holiday} */}
+                        {editingField?.index === 3 && editingField?.field === 'used' ? (
+                        <input
+                          type="number"
+                          value={maternity}
+                          onChange={(e) => setMaternity(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        maternity
+                      )}
+                      </td>
+                      <td>{(maternity-maternityR)}</td>
+                      <td onClick={() => handleEdit(3,'remain')}  style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 3 && editingField?.field === 'remain' ? (
+                        <input
+                          type="number"
+                          value={maternityR}
+                          onChange={(e) => setMaternityR(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        maternityR
+                      )}</td>
+                    </tr>
+                    <tr key={4}> 
+                      <td scope="row">ลาบวช</td>
+                      {/* <th scope="row">{index + 1}</th> */}
+                      <td   onClick={() => handleEdit(4,'used')} style={{ cursor: 'pointer' }}>
+                        {/* {holiday} */}
+                        {editingField?.index === 4 && editingField?.field === 'used' ? (
+                        <input
+                          type="number"
+                          value={kama}
+                          onChange={(e) => setKama(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        kama
+                      )}
+                      </td>
+                      <td>{(kama-kamaR)}</td>
+                      <td onClick={() => handleEdit(4,'remain')}  style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 4 && editingField?.field === 'remain' ? (
+                        <input
+                          type="number"
+                          value={kamaR}
+                          onChange={(e) => setKamaR(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        kamaR
+                      )}</td>
+                    </tr>
+                    <tr key={5}> 
+                      <td scope="row">ลาด้วยสิทธิ์อื่นๆ</td>
+                      {/* <th scope="row">{index + 1}</th> */}
+                      <td   onClick={() => handleEdit(5,'used')} style={{ cursor: 'pointer' }}>
+                        {/* {holiday} */}
+                        {editingField?.index === 5 && editingField?.field === 'used' ? (
+                        <input
+                          type="number"
+                          value={other}
+                          onChange={(e) => setOther(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        other
+                      )}
+                      </td>
+                      <td>{(other-otherR)}</td>
+                      <td onClick={() => handleEdit(5,'remain')}  style={{ cursor: 'pointer' }}>
+                        {editingField?.index === 5 && editingField?.field === 'remain' ? (
+                        <input
+                          type="number"
+                          value={otherR}
+                          onChange={(e) => setOtherR(e.target.value)}
+                          onBlur={handleBlur}
+                          autoFocus
+                          style={{  border: 'none', background: 'transparent', textAlign: 'left' }}
+                        />
+                      ) : (
+                        otherR
+                      )}</td>
+                    </tr>
+                  {/* ))} */}
+                </tbody>
+                </TableBootstrap>
+                <div style={{display:'flex', flexDirection:'row',justifyContent:'center',width:'100%'}}>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
                 <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/welthfare', { state: { startIndex, endIndex } })}>ย้อนกลับ</button>
               </div>
