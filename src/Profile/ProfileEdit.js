@@ -18,6 +18,11 @@ import { UserContext } from '../UserContext';
 import Modal from 'react-bootstrap/Modal'; // Import Bootstrap modal
 import Button from 'react-bootstrap/Button'; // Import Bootstrap button
 import { AiFillWarning,AiOutlineMan,AiOutlineWoman } from "react-icons/ai";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import 'dayjs/locale/th'
 import { hashPassword } from '../hashPassword';
 
 function ProfileEdit() {
@@ -31,7 +36,7 @@ function ProfileEdit() {
   const [name, setName] = useState('');
   const [nameEng, setNameEng] = useState('');
   const [position, setPosition] = useState('');
-  const [firstDay, setFirstDay] = useState('');
+  const [firstDay, setFirstDay] = useState(null);
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -58,6 +63,9 @@ function ProfileEdit() {
   const [wealthHos, setWealthHos] = useState('');
   const [jobDesc,setJobDesc] = useState('');
   const [duty,setDuty] = useState('');
+  const [nickNameTh,setNickNameTH] = useState('');
+  const [nickNameEn,setNickNameEN] = useState('');
+  const [birthDay,setBirthDay] = useState(null);
 
   const [costL, setCostL] = useState(0); // ค่าครองชีพ
   const [ot, setOT] = useState(0); // ค่าล่วงเวลา
@@ -130,7 +138,7 @@ function ProfileEdit() {
     setNameEng(data.FName + " " + data.LName);
     setSex(data.sex);
     setPosition(data.position);
-    setFirstDay(data.workstart);
+    setFirstDay(dayjs(data.workstart, 'DD-MM-YYYY'));
     setAddress(data.address);
     setEmail(data.email);
     setPhone(data.phone);
@@ -169,6 +177,9 @@ function ProfileEdit() {
     setAllDeposit(data.allDeposit)
     setAllInsurance(data.allInsurance)
     setDepartment(data.department)
+    setNickNameTH(data.nickNameTh);
+    setNickNameEN(data.nickNameEn);
+    setBirthDay(dayjs(data.birthDay, 'DD-MM-YYYY'));
   };
 
   const getUserUnsuccess = (e) => {
@@ -235,6 +246,8 @@ function ProfileEdit() {
     } else {
       imageUrl = image_off; // Keep the existing URL if no new image is uploaded
     }
+    const formattedFirstDay = firstDay ? firstDay.format('DD/MM/YYYY') : null;
+    const formattedBirthDay = birthDay ? birthDay.format('DD/MM/YYYY') : null;
   
     var nameth = name.split(" ");
     var nameEn = nameEng.split(" ");
@@ -247,7 +260,7 @@ function ProfileEdit() {
       FName: nameEn[0] || '',
       LName: nameEn[1] || '',
       position: position || '',
-      workstart: firstDay || '',
+      workstart: formattedFirstDay || '',
       address: address || '',
       phone: phone || '',
       email: email || '',
@@ -269,6 +282,9 @@ function ProfileEdit() {
       Ldrug: Ldrug || '',
       wealthHos: wealthHos || '',
       department:department || '',
+      nickNameTh:nickNameTh || '',
+      nickNameEn:nickNameEn || '',
+      birthDay:formattedBirthDay || '',
     };
   
     firestore.updateUser(companyId, uid, item, updateSuccess, updateUnsuccess);
@@ -504,6 +520,39 @@ function ProfileEdit() {
                 ))}
               </TextField>
             </div>
+            <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                <TextField
+                  className="form-field"
+                  label="ชื่อเล่น"
+                  variant="filled"
+                  style={{ width: '35%',marginRight:'1%'}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={nickNameTh}
+                  onChange={(e) => setNickNameTH(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ชื่อเล่น(ภาษาอังกฤษ)"
+                  variant="filled"
+                  style={{ width: '35%',marginRight:'1%'}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={nickNameEn}
+                  onChange={(e) => setNickNameEN(e.target.value)}
+                />
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
+                      <DatePicker
+                      label="วันเกิด"
+                      value={birthDay}
+                      onChange={(newValue) => setBirthDay(newValue)}
+                      //disabled={!editable}
+                      sx={{
+                        width: '28%', // Set the width
+                      }}
+                      />
+                </LocalizationProvider>
+              </div>
             <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
               <TextField
                 className="form-field"
@@ -594,16 +643,17 @@ function ProfileEdit() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
-              <TextField
-                className="form-field"
-                label="วันเข้าทำงาน"
-                variant="filled"
-                style={{ width: '28%' }}
-                InputLabelProps={{ style: { color: '#000' } }}
-                InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                value={firstDay}
-                onChange={(e) => setFirstDay(e.target.value)}
-              />
+              <LocalizationProvider className="form-field" dateAdapter={AdapterDayjs} adapterLocale="th">
+                        <DatePicker
+                        label="วันเข้าทำงาน"
+                        value={firstDay}
+                        onChange={(newValue) => setFirstDay(newValue)}
+                        //disabled={!editable}
+                        sx={{
+                          width: '28%', // Set the width
+                        }}
+                        />
+                  </LocalizationProvider>
               
             </div>
             <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>

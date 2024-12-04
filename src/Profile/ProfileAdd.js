@@ -17,6 +17,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Layout from '../Layout';
 import { sha256 } from 'crypto-hash';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
 import { validateDate } from '@mui/x-date-pickers/internals';
 import { Label } from '@mui/icons-material';
 //import { image } from 'html2canvas/dist/types/css/types/image';
@@ -40,7 +45,7 @@ function ProfileAdd() {
   const [name,setName] = useState('');
   const [nameEng,setNameEng] = useState('');
   const [position,setPosition] = useState('');
-  const [firstDay,setFirstDay] = useState('');
+  const [firstDay,setFirstDay] = useState(null);
   const [address,setAddress] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
@@ -65,6 +70,9 @@ function ProfileAdd() {
   const [Ldrug,setLdrug] = useState('');
   const [wealthHos,setWealthHos] = useState('');
   const [department,setDepartment] =useState('');
+  const [nickNameTh,setNickNameTH] = useState('');
+  const [nickNameEn,setNickNameEN] = useState('');
+  const [birthDay,setBirthDay] = useState(null);
 
   const [prefixThOptions, setPrefixThOptions] = useState([]);
   const [prefixEnOptions, setPrefixEnOptions] = useState([]);
@@ -182,6 +190,8 @@ function ProfileAdd() {
 
     var nameth = name.split(" ")
     var nameEn = nameEng.split(" ")
+    const formattedFirstDay = firstDay ? firstDay.format('DD/MM/YYYY') : null;
+    const formattedBirthDay = birthDay ? birthDay.format('DD/MM/YYYY') : null;
     let item ={
       prefixth:prefixth,
       prefixEn:prefixEn,
@@ -191,7 +201,7 @@ function ProfileAdd() {
       FName:nameEn[0],
       LName:nameEn[1],
       position:position,
-      workstart:firstDay,
+      workstart:formattedFirstDay,
       address:address,
       phone:phone,
       email:email,
@@ -200,6 +210,9 @@ function ProfileAdd() {
       quote:'',
       // image:'https://firebasestorage.googleapis.com/v0/b/pamproject-a57c5.appspot.com/o/image-10.png?alt=media&token=db1833a9-afab-4b4f-808c-2fe62c29b4cc',
       image_off:imageUrl,
+      nickNameTh:nickNameTh,
+      nickNameEn:nickNameEn,
+      birthDay:formattedBirthDay,
       
       nat_id:nat_id,
       personal_status:personal_status,
@@ -298,6 +311,9 @@ function ProfileAdd() {
     setBlood_type(data.blood_type);
     setLdrug(data.Ldrug);
     setDepartment(data.department)
+    setNickNameTH(data.nickNameTh);
+    setNickNameEN(data.nickNameEn);
+    setBirthDay(data.birthDay);
   };
 
   const getUserUnsuccess = (e) => {
@@ -411,7 +427,7 @@ function ProfileAdd() {
                 />
                 <TextField
                   className="form-field"
-                  label="ชื่อ-นามสกุล ภาษาอังกฤษ"
+                  label="ชื่อ-นามสกุล(ภาษาอังกฤษ)"
                   variant="filled"
                   style={{ width: '35%',marginRight:'1%'}}
                   InputLabelProps={{ style: { color: '#000' } }}
@@ -435,6 +451,40 @@ function ProfileAdd() {
                     </MenuItem>
                   ))}
                 </TextField>
+              </div>
+              <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                <TextField
+                  className="form-field"
+                  label="ชื่อเล่น"
+                  variant="filled"
+                  style={{ width: '35%',marginRight:'1%'}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={nickNameTh}
+                  onChange={(e) => setNickNameTH(e.target.value)}
+                />
+                <TextField
+                  className="form-field"
+                  label="ชื่อเล่น(ภาษาอังกฤษ)"
+                  variant="filled"
+                  style={{ width: '35%',marginRight:'1%'}}
+                  InputLabelProps={{ style: { color: '#000' } }}
+                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                  value={nickNameEn}
+                  onChange={(e) => setNickNameEN(e.target.value)}
+                />
+               
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
+                      <DatePicker
+                      label="วันเกิด"
+                      value={birthDay}
+                      onChange={(newValue) => setBirthDay(newValue)}
+                      //disabled={!editable}
+                      sx={{
+                        width: '28%', // Set the width
+                      }}
+                      />
+                </LocalizationProvider>
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px' }}>
                 <TextField
@@ -526,17 +576,17 @@ function ProfileAdd() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
-                <TextField
-                  className="form-field"
-                  label="วันเข้าทำงาน"
-                  variant="filled"
-                  style={{ width: '28%' }}
-                  InputLabelProps={{ style: { color: '#000' } }}
-                  InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                  value={firstDay}
-                  onChange={(e) => setFirstDay(e.target.value)}
-                />
-                
+                <LocalizationProvider className="form-field" dateAdapter={AdapterDayjs} adapterLocale="th">
+                        <DatePicker
+                        label="วันเข้าทำงาน"
+                        value={firstDay}
+                        onChange={(newValue) => setFirstDay(newValue)}
+                        //disabled={!editable}
+                        sx={{
+                          width: '28%', // Set the width
+                        }}
+                        />
+                  </LocalizationProvider>
               </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: '20px'}}>
               <TextField

@@ -1,44 +1,73 @@
 // Service.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Service.css';
 import logo from './icon/PAM_logo.png';
 
-const Navbar = () => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="navbar">
-      <div className="navbar-logo">
-        <img src={logo} alt="PAM Logo" className="navbar-logo-image" />
-      </div>
-      {/* <div className="navbar-buttons">
-      <button className="navbar-button sign-up" onClick={() => navigate('/register')}>Sign Up</button>
-      <button className="navbar-button sign-in" onClick={() => navigate('/login_company')}>Sign In</button>
-      </div> */}
-    </div>
-  );
-};
-
 const Service = () => {
-  return (
-    <div className="container">
-      <Navbar />
-      {/* <div className="background-overlay"> */}
-      {/* <div className="key-features">
-        <h2>Key Feature</h2>
-        <ul>
-          <li>Dashboard สรุปข้อมูล</li>
-          <li>รูปสัญลักษณ์ใช้งานง่าย</li>
-          <li>จัดการเรื่องเงินเดือน</li>
-          <li>จัดการสิทธิพนักงาน</li>
-        </ul>
-      </div> */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
-        <p style={{fontSize:56}}>Coming Soon...</p>
+  const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0); // State to track the current slide
+
+  const slides = [
+    <div className="custom-slide first-slide" >
+      <div className="content-center">
+        <img src={logo} alt="PAM Logo" className="circle-logo" />
+        <p className="quote">Unlock HR with PAM</p>
       </div>
+    </div>,
+    <div className="custom-slide">
       
-      {/* </div> */}
+      <p>This is the second slide.</p>
+    </div>,
+    <div className="custom-slide">
+      
+      <p>This is the third slide.</p>
+    </div>,
+  ];
+
+  // Function to handle next slide
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  // Function to handle previous slide
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  // Keyboard event listener for left and right arrow keys
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className="service-container">
+      <nav className="navbar">
+        <div className="logo-container">
+          <img src={logo} alt="PAM Logo" className="logo" />
+        </div>
+        <div className="button-container">
+          <button className="nav-button" style={{backgroundColor:'#D9D9D9'}} onClick={()=> navigate('/login_company')}>Login</button>
+          <button className="nav-button" style={{backgroundColor:'#343434',color:'#FFF'}}>Register</button>
+        </div>
+      </nav>
+      <div className="slideshow-container">
+        <div className="arrow left-arrow" onClick={prevSlide}>
+          &#8249;
+        </div>
+        <div className="slide-item">{slides[currentSlide]}</div>
+        <div className="arrow right-arrow" onClick={nextSlide}>
+          &#8250;
+        </div>
+      </div>
     </div>
   );
 };

@@ -171,12 +171,14 @@ color: #FFF;
 .center-text {
   text-align: center;
 }
+
 @media (min-width: 1024px){
   .search-field {
     align-items: center;
     justify-content: center;
     width: 100%;
-} 
+  } 
+  
 }
 
 @media (max-width: 1025px) {
@@ -260,4 +262,5 @@ color: #FFF;
     .table tbody tr:hover {
       background-color: #e0e0e0; /* Change to your desired hover color */
     }
+
   }

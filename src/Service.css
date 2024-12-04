@@ -1,169 +1,190 @@
-/* Fullscreen background color */
+/* Fonts and Body Setup */
 @font-face {
   font-family: 'THSarabunNew';
   src: url('./fonts/THSarabunNew.ttf') format('truetype');
 }
 
 body {
-  /* font-family: 'Arial', sans-serif;
-  background-color: #f0f2f5; */
   font-family: 'THSarabunNew', sans-serif;
 }
 
-body, html {
+html, body, #root {
+  height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #e2f7f7;
-  height: 100%;
-  width: 100%;
-  /* font-family: Arial, sans-serif; */
 }
 
-/* Navbar styling */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 10;
-}
-
-.navbar-logo {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-logo-image {
-  height: 50px;
-  width: auto;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Drop shadow for logo */
-  border-radius: 50%; /* Adjust if needed */
-}
-
-.navbar-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.navbar-button.sign-up {
-  background-color: #D3D3D3;
-  font-size: 20px;
-  color: #000000;
-  border-radius: 5px;
-}
-
-.navbar-button.sign-in {
-  background-color: #343434;
-  font-size: 20px;
-  color: #f0f0f0;
-  border-radius: 5px;
-}
-
-
-.navbar-button:hover {
-  background-color: #0056b3;
-}
-
-/* Container styling */
-.container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  box-sizing: border-box;
-  
-}
-
-.background-overlay {
-  position: absolute;
-  top: 60px; /* Directly below the navbar */
-  left: -60;
-  width: 100vw; /* Full viewport width */
-  height: 40%; /* Adjust height as needed */
-  background-color: rgba(190, 190, 190, 0.3); /* Using rgba for 80% opacity */
-  z-index: 1;
-  display: flex;
-  align-items: center; /* Center content vertically */
-  justify-content: flex-start; /* Align content to the left */
-  padding-left: 50px; /* Add padding to bring the content slightly away from the edge */
-  overflow: hidden; /* Prevent any overflow that might cause horizontal scroll */
-  border-radius: 0; /* Remove rounded corners */
-}
-
-/* Key features section styling */
-.key-features {
-  width: 30%;
-  padding: 20px;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  position: relative;
-  z-index: 2;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 0; /* Remove auto margin to keep it left-aligned */
-}
-
-/* Heading and list styling */
-.key-features h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.key-features ul {
-  list-style: none;
-  padding: 0;
-}
-
-.key-features li {
-  font-size: 18px;
-  margin-bottom: 5px;
-}
-
-/* Logo center styling with drop shadow */
-.center-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 120px;
-  height: 120px;
-  background-color: white;
-  border-radius: 50%;
-  position: relative;
-  z-index: 3;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-}
-
-.center-logo img {
-  width: 80%;
-}
-
-/* Button styling */
-.buttons {
+/* Service Container */
+.service-container {
   display: flex;
   flex-direction: column;
+  background-color: #E2F7F7;
+  width: 100%;
+  height: 100%;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 5px 20px;
+  height: 60px;
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+}
+
+/* Logo Container */
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 20px; /* Optional: Slight rounding for aesthetics */
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
   gap: 10px;
+}
+
+.nav-button {
+  background-color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'THSarabunNew', sans-serif;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #eaefef;
+}
+
+/* Slideshow Container */
+.slideshow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+  width: 100%;
+  background-color: rgba(184, 185, 186, 0.5); /* Added opacity */
+  overflow: hidden;
   position: relative;
-  z-index: 2;
+  box-shadow: none; /* Ensure no shadow */
+  border: none; /* Remove any borders */
 }
 
-.button {
-  width: 180px;
-  padding: 10px;
+/* Slide Items */
+.slide-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 18px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  width: 100%;
 }
 
-.button:hover {
-  background-color: #f0f0f0;
+/* Custom Slide Content */
+.custom-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.first-slide {
+  background: url('./icon/DALL·E 2024-12-04 16.22.44 - A highly realistic and professional HR-themed wallpaper, featuring people in a corporate office environment collaborating in a meeting room. The focus.webp') no-repeat center center;
+  background-size: cover; /* Ensures the image covers the full container */
+  background-attachment: scroll; /* Ensures the image scrolls naturally */
+  position: absolute; /* Absolute to fit within the parent container */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.first-slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent overlay */
+  z-index: 1; /* Overlay stays above background but below content */
+}
+
+.first-slide > * {
+  position: relative;
+  z-index: 2; /* Content stays above the overlay */
+}
+
+
+/* Arrows */
+.arrow {
+  cursor: pointer;
+  font-size: 96px; /* Increased arrow size */
+  color: #333;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  user-select: none;
+  transition: transform 0.3s, color 0.3s;
+  z-index: 3;
+}
+
+.arrow:hover {
+  transform: translateY(-50%) scale(1.2);
+  color: #007BFF;
+}
+
+.left-arrow {
+  left: 10px;
+}
+
+.right-arrow {
+  right: 10px;
+}
+
+.content-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Ensure content is above overlay */
+  text-align: center;
+}
+
+/* Circle Logo */
+.circle-logo {
+  width: 150px; /* Adjust size as needed */
+  height: 150px;
+  border-radius: 50%; /* Makes the logo circular */
+  background-color: #ffffff; /* Optional: Add background to make it stand out */
+  padding: 20px; /* Optional: Add padding inside the circle */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow */
+}
+
+/* Quote Text */
+.quote {
+  margin-top: 20px; /* Space between logo and text */
+  font-size: 56px; /* Adjust size as needed */
+  color: #333; /* Text color */
+  font-weight: bold;
+  text-align: center;
 }
