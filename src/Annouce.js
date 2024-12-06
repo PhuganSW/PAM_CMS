@@ -380,7 +380,7 @@ function Annouce() {
                 </div>
               </div>
 
-              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
+              {/* <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>รณรงค์ลดโลกร้อน</p>
@@ -398,7 +398,6 @@ function Annouce() {
                   {filterCampaign.slice(startRule, endRule).map((item, index) => (
                       <tr key={item.id}> 
                         <th scope="row">{startIndex + index + 1}</th>
-                        {/* <th scope="row">{index + 1}</th> */}
                         <td>
                           {item.title}
                         </td>
@@ -415,7 +414,7 @@ function Annouce() {
                 <button className='Previous-button' onClick={PreviousCampaign}>Previous</button>
                 <button className='Next-button' onClick={NextCampaign}>Next</button>
                 </div>
-              </div>
+              </div> */}
 
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>

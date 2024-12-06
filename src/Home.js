@@ -344,12 +344,12 @@ function Home() {
           <div className="chart-container">
             <p className="data-title">Data Visualization</p>
 
-            <div className="slideshow-container">
+            <div className="slideDash-container">
               <button onClick={prevSlide} className="slide-nav-btn">◀</button>
 
               <div className="slide">
-                <p className="slide-title">{slides[currentSlide].title}</p>
-                <p className="slide-content">{slides[currentSlide].content}</p>
+                <p className="slideDash-title">{slides[currentSlide].title}</p>
+                <p className="slideDash-content">{slides[currentSlide].content}</p>
               </div>
 
               <button onClick={nextSlide} className="slide-nav-btn">▶</button>

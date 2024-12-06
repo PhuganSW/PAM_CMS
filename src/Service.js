@@ -17,10 +17,15 @@ const Service = () => {
       <div className="content-center left-content">
         <img src={logo} alt="PAM Logo" className="circle-logo" />
         <p className="quote">"Unlock HR with PAM"</p>
-        <p className="quote" style={{ textAlign: 'center', color: '#333', fontSize: 32, fontWeight: 'bold', lineHeight: '1.0',marginTop:-20 }}>
+        <p className="desc-quote">
           PAM (Personnel Assistance Management) is software to help HR  <br />manage
           human resources with web and mobile applications.
         </p>
+        {/* <p className="quote">"Streamline Your HR"</p>
+        <p style={{ textAlign: 'center', color: '#333', fontSize: 24, fontWeight: 'bold', lineHeight: '1.5' }}>
+          Boost efficiency and simplify HR management with our intuitive
+          solutions.
+        </p> */}
       </div>
       {/* Right Content */}
       <div className="content-center right-content">

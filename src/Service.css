@@ -160,7 +160,6 @@ html, body, #root {
   z-index: 2; /* Content stays above the overlay */
 }
 
-
 /* Arrows */
 .arrow {
   cursor: pointer;
@@ -240,6 +239,15 @@ html, body, #root {
   color: #333; /* Text color */
   font-weight: bold;
   text-align: center;
+}
+
+.desc-quote{
+  text-align: 'center';
+  color: '#333';
+  font-size: 32px;
+  font-weight: bold;
+  line-height: '1.0';
+  margin-top: -20px;
 }
 
 .message-box {
@@ -344,6 +352,10 @@ html, body, #root {
 /* Dots Container */
 .dots-container {
   display: flex;
+  position: absolute; /* Position the dots relative to the slideshow container */
+  bottom: 20px; /* Place dots at the bottom of the slideshow */
+  left: 50%; /* Center the dots horizontally */
+  transform: translateX(-50%);
   justify-content: center;
   align-items: center;
   margin-top: 20px;
@@ -376,36 +388,52 @@ body, html, .service-container {
 /* Adjust Navbar for Smaller Screens */
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
-    height: auto; /* Adjust height to fit the content */
-    padding: 10px;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    justify-content: space-between;
+    align-items: center;
   }
 
   .navbar-left {
-    justify-content: center;
-    margin-bottom: 10px;
+    flex: 1; /* Adjust spacing for logo and buttons */
+  }
+
+  .logo {
+    height: 30px; /* Reduce logo size */
+    width: auto;
+    margin-top: 5px;
   }
 
   .button-container {
-    justify-content: center;
-    gap: 5px; /* Reduce space between buttons */
+    flex: 1;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 5px;
   }
 
   .nav-button {
-    font-size: 16px; /* Smaller font size for buttons */
-    padding: 8px 15px; /* Adjust button padding */
+    font-size: 14px; /* Smaller font size for buttons */
+    padding: 6px 10px; /* Reduce padding */
   }
 }
 
 /* Adjust Slideshow for Smaller Screens */
 @media (max-width: 768px) {
   .slideshow-container {
-    height: 50vh; /* Adjust height for smaller screens */
-    min-height: 300px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    scroll-snap-type: x mandatory; /* Smooth snap to each slide */
+    display: flex;
+    flex-wrap: nowrap; /* Ensure slides stay in one row */
+  }
+
+  .slide-item {
+    flex: 0 0 100%; /* Each slide takes 100% of the container width */
+    scroll-snap-align: center; /* Snap alignment */
   }
 
   .arrow {
-    font-size: 48px; /* Reduce arrow size */
+    font-size: 48px; /* Smaller size for mobile */
+    top: 45%; /* Adjust position */
+    transform: translateY(-50%);
+    z-index: 5;
   }
 
   .dots-container {
@@ -472,6 +500,10 @@ body, html, .service-container {
     font-size: 20px; /* Reduce quote size */
   }
 
+  .desc-quote{
+    font-size: 18px;
+  }
+
   .message-box {
     width: 90%; /* Make the message box fit the screen */
   }
@@ -480,10 +512,20 @@ body, html, .service-container {
 /* Responsive Dots and Arrows */
 @media (max-width: 768px) {
   .arrow {
-    display: none; /* Hide arrows on smaller screens */
+    display: block;
   }
 
   .dots-container {
     margin-top: 10px; /* Adjust spacing for dots */
+  }
+}
+
+@media (max-width: 768px) {
+  .message-box {
+    width: 90%; /* Allow message box to fit the screen */
+    margin: 0 auto; /* Center it */
+    padding: 15px; /* Adjust padding */
+    font-size: 14px; /* Reduce font size */
+    padding-bottom: 20px;
   }
 }

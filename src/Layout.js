@@ -18,7 +18,6 @@ const Layout = ({ children }) => {
   });
   
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 1024);
-  const [showSubMenu, setShowSubMenu] = useState(false);
 
   useEffect(() => {
     const savedSidebarState = localStorage.getItem('sidebarOpen');
@@ -106,10 +105,6 @@ const Layout = ({ children }) => {
     localStorage.setItem('sidebarOpen', JSON.stringify(newSidebarState)); // Store sidebar state
   };
 
-  const toggleSubMenu = () => {
-    setShowSubMenu(!showSubMenu); // Toggle sub-menu visibility
-  };
-
   const logOutSuccess = () => {
     setCurrentUser(null);  // Clear user from context
     setCompanyId(null);    // Clear companyId from context
@@ -159,30 +154,6 @@ const Layout = ({ children }) => {
                   <span>การจัดการข้อมูลพนักงาน</span>
                 </Link>
               </li>
-              {/* <li>
-                <button className="menu-toggle" onClick={toggleSubMenu}>
-                  <i className="fas fa-users-cog"></i>
-                  <span>การจัดการข้อมูล</span>
-                  <i className={`fas ${showSubMenu ? "fa-chevron-up" : "fa-chevron-down"}`}></i>
-                </button>
-                {showSubMenu && (
-                  <ul className="sub-menu">
-                    <li className={isActive("/profile") ? "active" : ""}>
-                      <Link to="/profile">
-                        <i className="fas fa-user"></i>
-                        <span>การจัดการข้อมูลพนักงาน</span>
-                      </Link>
-                    </li>
-                    <li className={isActive("/welthfare") ? "active" : ""}>
-                      <Link to="/welthfare">
-                        <i className="fas fa-calendar-check"></i>
-                        <span>การจัดการสิทธิ์และวันหยุด</span>
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </li> */}
-
               <li className={isActive("/welthfare") ? "active" : ""}>
                 <Link to="/welthfare">
                   <i className="fas fa-calendar-check"></i> {/* Calendar Check Icon */}
@@ -256,7 +227,7 @@ const Layout = ({ children }) => {
           </nav>
           <div className='logout-button'> 
           <button style={{ fontSize: 22 }} onClick={logout}>
-              <i className="fas fa-sign-out-alt"></i> {/* Sign Out Icon */}
+              <i style={{marginRight:5}} className="fas fa-sign-out-alt"></i> {/* Sign Out Icon */}
               {sidebarOpen && "ออกจากระบบ"}
             </button>
           </div>

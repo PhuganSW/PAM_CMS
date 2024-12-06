@@ -8,7 +8,7 @@
     display: flex;
     align-self: center;
     background-color: rgba(247, 247, 247, 0.956);
-    width: 1800px;
+    width: 100%;
     height: auto;
     max-width: 95%;
     border-width: 20px;
@@ -18,6 +18,7 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     padding-bottom: 20px;
     margin-bottom: 40px;
+    overflow-x: auto;
 }
 
 .header-page{
@@ -144,10 +145,26 @@ color: #FFF;
   color: #FFF;
 }
 
+.table-container {
+  display: flex;
+  flex-direction: column; /* Stack tables vertically by default */
+  align-items: flex-start;
+  width: 100%;
+  gap: 20px; /* Add space between tables */
+  overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+
+.table-section {
+  width: 100%; /* Ensure the table takes full width */
+  margin-bottom: 20px;
+}
+
 .table {
   border-radius: 10px;
   overflow: hidden;
-  
+  width: 100%; /* Make the table fit within its container */
+  table-layout: auto; /* Adjust table layout for responsiveness */
+  word-wrap: break-word; /* Prevent content from overflowing cells */
 }
 
 .table thead th {
@@ -170,6 +187,53 @@ color: #FFF;
 
 .center-text {
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .table-container {
+      flex-direction: row; /* Display tables side by side on larger screens */
+      justify-content: space-between;
+  }
+
+  .table-section {
+      width: 48%; /* Each table takes half the width */
+  }
+}
+
+@media (max-width: 767px) {
+  .table-container {
+      flex-direction: column; /* Stack tables vertically on small screens */
+  }
+
+  .table-section {
+      width: 100%; /* Tables take full width on smaller devices */
+  }
+}
+
+.header-page {
+  align-self: center;
+  justify-self: center;
+  border-width: 50px;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 0px;
+  background: linear-gradient(135deg, #BEBEBE 0%, #f5f5f5 100%); 
+  text-align: center;
+  width: 100%;
+  max-width: 95%;
+  padding: 15px;
+  margin-top: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-field {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  width: 100%;
+  margin: 10px 0;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 @media (min-width: 1024px){
