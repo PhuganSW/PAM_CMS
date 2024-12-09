@@ -53,6 +53,7 @@ function ManagePeople() {
   const [checkPermission,setCheckpermission] = useState(0);
   const [defaultCheckInTime, setDefaultCheckInTime] = useState('08:00'); // Default check-in time
   const [defaultCheckOutTime, setDefaultCheckOutTime] = useState('17:00');
+  const [desc,setDesc] = useState('');
 
   const [selectedImage, setSelectedImage] = useState(null);  // Add state for selected image
   const [uploading, setUploading] = useState(false);  // State to handle uploading status
@@ -564,6 +565,10 @@ function ManagePeople() {
                 ))}
                 </Select>
               </FormControl>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1" style={{ marginTop: 15 }}>
+                <Form.Label style={{fontSize:24}}>คำอธิบาย</Form.Label>
+                <Form.Control value={desc} onChange={(e) => setDesc(e.target.value)} />
+              </Form.Group>
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <Form.Label style={{ fontSize: 22, marginTop: 15 }}>หัวหน้างานคนที่ 1</Form.Label>
                 <FormControl variant="filled" fullWidth>
