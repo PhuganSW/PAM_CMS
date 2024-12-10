@@ -237,8 +237,6 @@ function AnnouceExtendAdd() {
                         
                     />
                
-                    
-                    
                 </div>
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                 <TextField

@@ -98,7 +98,7 @@ function AnnouceExtend() {
   }
 
   const editAnnouce =(id)=>{
-    navigate('/annouce_edit',{state:{id:id}})
+    // navigate('/annouce_edit',{state:{id:id}})
   }
 
 
@@ -153,12 +153,11 @@ function AnnouceExtend() {
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
                 <button className='Add-button' onClick={()=> navigate('/annouce_extend/add')}>เพิ่มประกาศ</button>
               </div>
-              <div style={{width:'95%',alignSelf:'center',justifyContent:'center'}}>
-              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
-                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ประกาศฉุกเฉิน</p>
-                {/* <p style={{fontSize:28,textAlign:'center',width:'100%',alignSelf:'center',marginLeft:0,paddingLeft:0}}>ประกาศฉุกเฉิน</p> */}
-              </div>
+              <div style={{width:'95%',alignSelf:'center',justifyContent:'center',alignItems:'center'}}>
+              
+              <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                          alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>Health News</p>
+      
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
@@ -188,7 +187,41 @@ function AnnouceExtend() {
               <div style={{width:'100%'}}>
                   <button className='Previous-button' onClick={onPrevious}>Previous</button>
                   <button className='Next-button' onClick={onNext}>Next</button>
+              </div>
+
+              <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',marginTop:20}}>      
+                <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>Climate Content</p>
+                <TableBootstrap striped bordered hover className='table'>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{width:'10%'}}>ลำดับ</th>
+                      <th scope="col" style={{width:'40%'}}>หัวข้อ</th>
+                      <th scope="col" style={{width:'15%'}}>วันที่</th>
+                      <th scope="col" style={{width:'35%'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {/* {filterCampaign.slice(startRule, endRule).map((item, index) => (
+                      <tr key={item.id}> 
+                        <th scope="row">{startIndex + index + 1}</th>
+                        <td>
+                          {item.title}
+                        </td>
+                        <td>{item.date}</td>
+                        <td style={{width:'30%',textAlign:'center'}}>
+                          <button className='Edit-button' onClick={()=>editAnnouce(item.id)}>แก้ไข</button>
+                          <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
+                        </td>
+                      </tr>
+                    ))} */}
+                  </tbody>
+                </TableBootstrap>
+                <div style={{width:'100%'}}>
+                <button className='Previous-button' >Previous</button>
+                <button className='Next-button'>Next</button>
                 </div>
+              </div>
              
               </div>
 

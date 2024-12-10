@@ -235,11 +235,8 @@ function Annouce() {
                 <button className='Add-button' onClick={()=> navigate('/annouce_add')}>เพิ่มประกาศ</button>
               </div>
               <div style={{width:'95%',alignSelf:'center',justifyContent:'center'}}>
-              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ประกาศฉุกเฉิน</p>
-                {/* <p style={{fontSize:28,textAlign:'center',width:'100%',alignSelf:'center',marginLeft:0,paddingLeft:0}}>ประกาศฉุกเฉิน</p> */}
-              </div>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>ประกาศฉุกเฉิน</p>
               <TableBootstrap striped bordered hover className='table'>
                 <thead>
                   <tr>
@@ -271,10 +268,8 @@ function Annouce() {
                   <button className='Next-button' onClick={onNext}>Next</button>
                 </div>
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,marginTop:20,alignItems:'center',justifyContent:'center'}}>
-              <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ข่าวสารภายใน</p>
-              </div>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>ข่าวสารภายใน</p>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
                     <tr>
@@ -309,7 +304,7 @@ function Annouce() {
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>กฎระเบียบ</p>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>กฎระเบียบ</p>
               </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
@@ -346,7 +341,7 @@ function Annouce() {
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ข่าวสารทั่วไป</p>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>ข่าวสารทั่วไป</p>
               </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
@@ -419,7 +414,7 @@ function Annouce() {
               <div className="form-row" style={{ display: 'flex', marginBottom: 20,alignItems:'center',justifyContent:'center',}}>
               <div className="form-row" style={{ display: 'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
                 <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
-                            alignSelf:'center',marginLeft:5,borderLeft: '5px solid black',borderRadius:5}}>ปฏิทินวันหยุด</p>
+                            alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>ปฏิทินวันหยุด</p>
               </div>
                 <TableBootstrap striped bordered hover className='table'>
                   <thead>
