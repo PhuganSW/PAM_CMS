@@ -259,6 +259,28 @@ function Home() {
 
   Chart.register(customTooltipPlugin);
   
+  const valueLabelPlugin = {
+    id: 'valueLabelPlugin',
+    afterDatasetsDraw: (chart) => {
+      const { ctx } = chart;
+      chart.data.datasets.forEach((dataset, i) => {
+        const meta = chart.getDatasetMeta(i);
+        meta.data.forEach((bar, index) => {
+          const value = dataset.data[index];
+          ctx.save();
+          ctx.font = '12px Arial';
+          ctx.fillStyle = '#000'; // Text color
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(value, bar.x, bar.y - 5); // Position text above the bar
+          ctx.restore();
+        });
+      });
+    },
+  };
+  
+  Chart.register(valueLabelPlugin);
+  
 
   const pieData1 = {
     labels: pieData1Labels,
@@ -312,19 +334,36 @@ function Home() {
         <div className="chart-row">
           <div className="pie-chart-container">
             <p style={{marginBottom:-10}}>จำนวนพนักงาน</p>
-            <Pie
+            <Bar
               data={pieData1}
-              options={{ maintainAspectRatio: false }}
-              style={{ width: '300px', height: '300px' }} // Direct control of width and height
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false }, // Optional: Hide the legend if not needed
+                },
+              }}
+              plugins={[valueLabelPlugin]} // Use the value label plugin
+              style={{ width: '500px', height: '400px' }} // Adjust dimensions
             />
           </div>
           
           <div className="pie-chart-container">
             <p style={{marginBottom:-10}}>สรุปประจำวัน</p>
-            <Pie
+            {/* <Pie
               data={pieData2}
               options={{ maintainAspectRatio: false }}
               style={{ width: '300px', height: '300px' }} // Direct control of width and height
+            /> */}
+            <Bar
+              data={pieData2}
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false }, // Optional: Hide the legend if not needed
+                },
+              }}
+              plugins={[valueLabelPlugin]} // Use the value label plugin
+              style={{ width: '500px', height: '400px' }} // Adjust dimensions
             />
           </div>
         </div>
@@ -333,10 +372,21 @@ function Home() {
         <div className="chart-row">
           <div className="pie-chart-container">
             <p style={{marginBottom:-10}}>จัดการกำลังคน</p>
-            <Pie
+            {/* <Pie
               data={otherPieChartData}
               options={{ maintainAspectRatio: false }}
               style={{ width: '300px', height: '300px' }} // Direct control of width and height
+            /> */}
+            <Bar
+              data={otherPieChartData}
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false }, // Optional: Hide the legend if not needed
+                },
+              }}
+              plugins={[valueLabelPlugin]} // Use the value label plugin
+              style={{ width: '500px', height: '400px' }} // Adjust dimensions
             />
           </div>
           

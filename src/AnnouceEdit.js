@@ -171,7 +171,7 @@ function AnnouceEdit() {
                 {/* Add user profile and logout here */}
               </header>
             </div>
-            <div className="main-contain">
+            <div className="main-contain" style={{overflowX:'hidden'}}>
               <div className='block_img'>
                 {/* <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" /> */}
               </div>

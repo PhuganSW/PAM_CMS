@@ -115,7 +115,7 @@ body {
   }
   
   .chart-container.bar-chart-fullwidth {
-    width: calc(100% - 20px); /* Full width for the bar chart rows */
+    width: calc(95% + 10px); /* Full width for the bar chart rows */
     height: 400px;
 }
   
@@ -243,6 +243,11 @@ body {
       width: 95%; /* Make containers take full width on small screens */
       margin-bottom: 20px;
     }
+
+    .chart-container.bar-chart-fullwidth {
+      width: calc(100% - 20px); /* Full width for the bar chart rows */
+      height: 400px;
+  }
 
     .data-visualization-summary {
       font-size: 12px;

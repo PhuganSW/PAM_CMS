@@ -450,41 +450,47 @@ function CheckHistory() {
   };
 
   const handleExportToExcel = () => {
-    // Check if any filter is applied; if not, apply filters based on modal selections
-    let filteredCheckInData = filteredUsers;
-    let filteredCheckOutData = filteredOut;
+    // Utility function to parse dd/mm/yyyy into a Date object
+    const parseDate = (dateString) => {
+        const [day, month, year] = dateString.split('/');
+        return new Date(`${year}-${month}-${day}`);
+    };
 
-    if (!isFiltered) {
-        // Apply filters if not already applied
-        const userFilter = selectedFilterUser ? selectedFilterUser.name : null;
-        const monthFilter = selectedMonth ? parseInt(selectedMonth) : null;
+    // Sort function for descending order by date
+    const sortByRecentDate = (data) => {
+        return [...data].sort((a, b) => parseDate(b.date) - parseDate(a.date));
+    };
 
-        filteredCheckInData = allIN.filter(item => {
-            const isUserMatch = !userFilter || item.name === userFilter;
-            const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
-            const isMonthMatch = !monthFilter || itemMonth === monthFilter;
-            return isUserMatch && isMonthMatch;
-        });
+    // Apply filters based on the current modal selections
+    const userFilter = selectedFilterUser ? selectedFilterUser.name : null;
+    const monthFilter = selectedMonth ? parseInt(selectedMonth) : null;
 
-        filteredCheckOutData = allOut.filter(item => {
-            const isUserMatch = !userFilter || item.name === userFilter;
-            const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
-            const isMonthMatch = !monthFilter || itemMonth === monthFilter;
-            return isUserMatch && isMonthMatch;
-        });
-    }
+    let filteredCheckInData = allIN.filter(item => {
+        const isUserMatch = !userFilter || item.name === userFilter;
+        const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
+        const isMonthMatch = !monthFilter || itemMonth === monthFilter;
+        return isUserMatch && isMonthMatch;
+    });
 
-    // Get the selected user's name or default to 'AllUsers'
+    let filteredCheckOutData = allOut.filter(item => {
+        const isUserMatch = !userFilter || item.name === userFilter;
+        const itemMonth = new Date(item.date.split('/').reverse().join('-')).getMonth() + 1;
+        const isMonthMatch = !monthFilter || itemMonth === monthFilter;
+        return isUserMatch && isMonthMatch;
+    });
+
+    // Sort the filtered data by the most recent date
+    filteredCheckInData = sortByRecentDate(filteredCheckInData);
+    filteredCheckOutData = sortByRecentDate(filteredCheckOutData);
+
+    // Prepare Excel file data
     const userName = selectedFilterUser ? selectedFilterUser.name : 'AllUsers';
-    // Format the current date as dd-mm-yyyy
     const currentDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '_');
-    // Create the filename with the specified format
     const fileName = `CheckHistory_${userName}_${currentDate}.xlsx`;
 
-    // Prepare data for "Check-In" sheet with title row
     const checkInData = [
         { Date: "Check-In Data", Name: "", Workplace: "", Time: "" },
-        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time", Reason:"Reason" },
+        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time", Reason: "Reason" },
         ...filteredCheckInData.map(({ date, name, workplace, time, reason }) => ({
             Date: date,
             Name: name,
@@ -494,10 +500,9 @@ function CheckHistory() {
         }))
     ];
 
-    // Prepare data for "Check-Out" sheet with title row
     const checkOutData = [
         { Date: "Check-Out Data", Name: "", Workplace: "", Time: "" },
-        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time", Reason:"Reason" },
+        { Date: "Date", Name: "Name", Workplace: "Workplace", Time: "Time", Reason: "Reason" },
         ...filteredCheckOutData.map(({ date, name, workplace, time, reason }) => ({
             Date: date,
             Name: name,
@@ -507,68 +512,19 @@ function CheckHistory() {
         }))
     ];
 
-    // Create worksheets for each data set
     const checkInWorksheet = XLSX.utils.json_to_sheet(checkInData, { skipHeader: true });
     const checkOutWorksheet = XLSX.utils.json_to_sheet(checkOutData, { skipHeader: true });
 
-    // Set column widths for readability
-    const columnWidths = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 15 }, {wch:25}];
+    const columnWidths = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 25 }];
     checkInWorksheet['!cols'] = columnWidths;
     checkOutWorksheet['!cols'] = columnWidths;
 
-    // Merge cells for the title row in both sheets
-    checkInWorksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-    checkOutWorksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-
-    // Apply styling for the title row in both sheets
-    const titleCellStyle = {
-        font: { bold: true, sz: 14 },
-        alignment: { horizontal: "center", vertical: "center" },
-    };
-
-    // Apply the title cell style to each cell in the merged range of the title row
-    ["A1", "B1", "C1", "D1", "E1"].forEach((cell) => {
-        checkInWorksheet[cell] = checkInWorksheet[cell] || {};
-        checkInWorksheet[cell].s = titleCellStyle;
-
-        checkOutWorksheet[cell] = checkOutWorksheet[cell] || {};
-        checkOutWorksheet[cell].s = titleCellStyle;
-    });
-
-    // Apply center alignment for data cells
-    const dataCellStyle = {
-        alignment: { horizontal: "center", vertical: "center" },
-    };
-
-    // Get data range for Check-In worksheet (from A2 to D last row)
-    const checkInRange = XLSX.utils.decode_range(checkInWorksheet['!ref']);
-    for (let row = 1; row <= checkInRange.e.r; row++) {
-        for (let col = 0; col <= checkInRange.e.c; col++) {
-            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
-            if (!checkInWorksheet[cellAddress]) continue;
-            checkInWorksheet[cellAddress].s = dataCellStyle;
-        }
-    }
-
-    // Get data range for Check-Out worksheet (from A2 to D last row)
-    const checkOutRange = XLSX.utils.decode_range(checkOutWorksheet['!ref']);
-    for (let row = 1; row <= checkOutRange.e.r; row++) {
-        for (let col = 0; col <= checkOutRange.e.c; col++) {
-            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
-            if (!checkOutWorksheet[cellAddress]) continue;
-            checkOutWorksheet[cellAddress].s = dataCellStyle;
-        }
-    }
-
-    // Create a new workbook and append both sheets
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, checkInWorksheet, 'Check-In');
     XLSX.utils.book_append_sheet(workbook, checkOutWorksheet, 'Check-Out');
 
-    // Save the workbook as an Excel file with the custom filename
     XLSX.writeFile(workbook, fileName);
   };
-
 
   return (
     

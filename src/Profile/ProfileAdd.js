@@ -349,7 +349,7 @@ function ProfileAdd() {
                 {/* Add user profile and logout here */}
               </header>
             </div>
-            <div className="main-contain">
+            <div className="main-contain" style={{overflowX:'hidden'}}>
               <div className='block_img'>
                 <img src={imagePreview || image_off} width={150} height={150} alt="Profile" />
                 <input

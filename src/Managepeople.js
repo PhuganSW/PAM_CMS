@@ -154,6 +154,7 @@ function ManagePeople() {
             name1:leader1,
             defaultCheckInTime:defaultCheckInTime,
             defaultCheckOutTime:defaultCheckOutTime,
+            desc:desc
         }, () => {
             alert("Workplace update successfully!");
             handleCloseWP();

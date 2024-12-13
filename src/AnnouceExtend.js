@@ -18,9 +18,11 @@ function AnnouceExtend() {
   const [title,setTitle] = useState('');
   const [date,setDate] = useState('');
   const [selectID,setSelectID] = useState('');
-  const [allAnnouce,setAllAnnouce] = useState([]);
+  const [allHealth,setAllHealth] = useState([]);
+  const [allClimate,setAllClimate] = useState([]);
   const [show, setShow] = useState(false);
-  const [filteredAnnouces, setFilteredAnnouces] = useState([]);
+  const [filteredHealth, setFilteredHealth] = useState([]);
+  const [filteredClimate, setFilteredClimate] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [startIndex, setStartIndex] = useState(0);
@@ -37,48 +39,33 @@ function AnnouceExtend() {
   const getAllAnnouceSuc=(doc)=>{
     
     let annouces = []
-    let news = []
-    let rules = []
-    let generals = []
-    let campaigns = []
-    let holidays = []
-    if (allAnnouce.length === 0) {
+    let relaxs = []
+    let healths = []
+    let climates = []
+    
       
-      doc.forEach((item) => {
-        //console.log(item.title+":"+item.type)
-        if(item.type == 1){
-          annouces.push({id: item.id,title:item.title,date:item.date,type:item.type});
-        }
-        else if(item.type == 2){
-          news.push({id: item.id,title:item.title,date:item.date,type:item.type});
-        }
-        else if(item.type == 3){
-          rules.push({id: item.id,title:item.title,date:item.date,type:item.type});
-        }
-        else if(item.type==4){
-          generals.push({id: item.id,title:item.title,date:item.date,type:item.type});
-        }
-        else if(item.type==5){
-          campaigns.push({id: item.id,title:item.title,date:item.date,type:item.type});
-        }
-        else if(item.type==6){
-          holidays.push({id: item.id,title:item.title,date:item.date,type:item.type});
-        }
-        
-      });
-      annouces.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      news.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      rules.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      generals.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      campaigns.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      holidays.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      setAllAnnouce(annouces);
-      setNewsAnnouce(news)
+    doc.forEach((item) => {
+      //console.log(item.title+":"+item.type)
+      if(item.type == 1){
+        relaxs.push({id: item.id,title:item.title,date:item.date,type:item.type});
+      }
+      else if(item.type == 2){
+        healths.push({id: item.id,title:item.title,date:item.date,type:item.type});
+      }
+      else if(item.type == 3){
+        climates.push({id: item.id,title:item.title,date:item.date,type:item.type});
+      }
       
-      setFilteredAnnouces(annouces);
-      setFilterNews(news)
+    });
+    healths.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+    climates.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+    setAllHealth(healths);
+    setAllClimate(climates)
+    
+    setFilteredHealth(healths);
+    setFilteredClimate(climates)
       
-    }
+    
   }
 
   const getAllAnnouceUnsuc=(error)=>{
@@ -92,7 +79,7 @@ function AnnouceExtend() {
   }
 
   const deleteAnnouce =()=>{
-    firestore.deleteAnnouce(companyId,selectID)
+    firestore.deleteAnnouceHome2(companyId,selectID)
     //console.log('Del'+selectID)
     handleClose()
   }
@@ -103,7 +90,7 @@ function AnnouceExtend() {
 
 
   useEffect(() => {
-    // firestore.getAllAnnouce(companyId,getAllAnnouceSuc,getAllAnnouceUnsuc)
+    firestore.getAllAnnouceHome2(companyId,getAllAnnouceSuc,getAllAnnouceUnsuc)
   }, []);
 
   const onNext = () => {
@@ -120,10 +107,10 @@ function AnnouceExtend() {
     const query = event.target.value.toLowerCase();
     setSearch(event.target.value);
     setSearchQuery(query);
-    const filtered = allAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
-    const filteredNews = newsAnnouce.filter(annouce => annouce.title.toLowerCase().includes(query));
-    setFilteredAnnouces(filtered);
-    setFilterNews(filteredNews);
+    const filteredHealth = allHealth.filter(annouce => annouce.title.toLowerCase().includes(query));
+    const filteredClimate = allClimate.filter(annouce => annouce.title.toLowerCase().includes(query));
+    setFilteredHealth(filteredHealth);
+    setFilteredClimate(filteredClimate);
   };
 
 
@@ -168,7 +155,7 @@ function AnnouceExtend() {
                   </tr>
                 </thead>
                 <tbody>
-                {filteredAnnouces.slice(startIndex, endIndex).map((item, index) => (
+                {filteredHealth.slice(startIndex, endIndex).map((item, index) => (
                     <tr key={item.id}> 
                       <th scope="row">{startIndex + index + 1}</th>
                       {/* <th scope="row">{index + 1}</th> */}
@@ -202,7 +189,7 @@ function AnnouceExtend() {
                     </tr>
                   </thead>
                   <tbody>
-                  {/* {filterCampaign.slice(startRule, endRule).map((item, index) => (
+                  {filteredClimate.slice(startIndex, endIndex).map((item, index) => (
                       <tr key={item.id}> 
                         <th scope="row">{startIndex + index + 1}</th>
                         <td>
@@ -214,7 +201,7 @@ function AnnouceExtend() {
                           <button className='Delete-button' onClick={()=>handleShow(item.id)}>ลบ</button>
                         </td>
                       </tr>
-                    ))} */}
+                    ))}
                   </tbody>
                 </TableBootstrap>
                 <div style={{width:'100%'}}>

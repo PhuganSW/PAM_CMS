@@ -1399,115 +1399,189 @@ class FireStore{
             unsuccess(error);
         }
     }
-};
-
-
-autoDeleteOldLeave = async (companyId, success, unsuccess) => {
-  const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-  const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
-  const currentDate = new Date();
-  const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
-
-  // Helper function to parse dd/mm/yyyy to a Date object
-  const parseDate = (dateString) => {
-      const [day, month, year] = dateString.split('/');
-      return new Date(`${year}-${month}-${day}`);
   };
 
-  try {
-      const leaveCollection = collection(this.db, "companies", companyId, "leaveRequest");
-      const q = query(leaveCollection, where("state1", "==", true));
-      const querySnapshot = await getDocs(q);
+
+  autoDeleteOldLeave = async (companyId, success, unsuccess) => {
+    const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+    const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
+    const currentDate = new Date();
+    const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
+
+    // Helper function to parse dd/mm/yyyy to a Date object
+    const parseDate = (dateString) => {
+        const [day, month, year] = dateString.split('/');
+        return new Date(`${year}-${month}-${day}`);
+    };
+
+    try {
+        const leaveCollection = collection(this.db, "companies", companyId, "leaveRequest");
+        const q = query(leaveCollection, where("state1", "==", true));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(this.db); // Batch for efficient deletion
+        let deleteCount = 0;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.dateEnd) {
+                const leaveEndDate = parseDate(data.dateEnd);
+                // Compare parsed leaveEndDate with thresholdDate
+                if (leaveEndDate <= thresholdDate) {
+                    batch.delete(doc.ref);
+                    deleteCount++;
+                }
+            }
+        });
+
+        if (deleteCount > 0) {
+            await batch.commit(); // Commit batch deletion
+            console.log(`${deleteCount} leave records deleted successfully.`);
+        }
+
+        if (success) {
+            success(deleteCount);
+        }
+    } catch (error) {
+        console.error("Error deleting old leave records:", error);
+        if (unsuccess) {
+            unsuccess(error);
+        }
+    }
+  };
+
+  cleanupOldCheckInOut = async (companyId, success, unsuccess) => {
+    const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+    const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
+    const currentDate = new Date();
+    const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
+
+    // Helper function to parse dd/mm/yyyy to a Date object
+    const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/');
+      return new Date(`${year}-${month}-${day}`);
+    };
+
+    try {
+      // Cleanup Check-In records
+      const checkinCollection = collection(this.db, "companies", companyId, "checkin");
+      const checkinQuery = query(checkinCollection);
+      const checkinSnapshot = await getDocs(checkinQuery);
 
       const batch = writeBatch(this.db); // Batch for efficient deletion
       let deleteCount = 0;
 
-      querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.dateEnd) {
-              const leaveEndDate = parseDate(data.dateEnd);
-              // Compare parsed leaveEndDate with thresholdDate
-              if (leaveEndDate <= thresholdDate) {
-                  batch.delete(doc.ref);
-                  deleteCount++;
-              }
-          }
+      checkinSnapshot.forEach((doc) => {
+        const data = doc.data();
+        const recordDate = parseDate(data.date);
+        if (recordDate <= thresholdDate) {
+          batch.delete(doc.ref);
+          deleteCount++;
+        }
       });
 
+      // Cleanup Check-Out records
+      const checkoutCollection = collection(this.db, "companies", companyId, "checkout");
+      const checkoutQuery = query(checkoutCollection);
+      const checkoutSnapshot = await getDocs(checkoutQuery);
+
+      checkoutSnapshot.forEach((doc) => {
+        const data = doc.data();
+        const recordDate = parseDate(data.date);
+        if (recordDate <= thresholdDate) {
+          batch.delete(doc.ref);
+          deleteCount++;
+        }
+      });
+
+      // Commit the batch deletion
       if (deleteCount > 0) {
-          await batch.commit(); // Commit batch deletion
-          console.log(`${deleteCount} leave records deleted successfully.`);
+        await batch.commit();
+        console.log(`${deleteCount} old check-in/out records deleted successfully.`);
       }
 
-      if (success) {
-          success(deleteCount);
-      }
-  } catch (error) {
-      console.error("Error deleting old leave records:", error);
-      if (unsuccess) {
-          unsuccess(error);
-      }
-  }
-};
-
-cleanupOldCheckInOut = async (companyId, success, unsuccess) => {
-  const DAYS_TO_MILLISECONDS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-  const CLEANUP_PERIOD = 95; // Define period: 90 days + 5 days buffer
-  const currentDate = new Date();
-  const thresholdDate = new Date(currentDate - CLEANUP_PERIOD * DAYS_TO_MILLISECONDS);
-
-  // Helper function to parse dd/mm/yyyy to a Date object
-  const parseDate = (dateString) => {
-    const [day, month, year] = dateString.split('/');
-    return new Date(`${year}-${month}-${day}`);
+      if (success) success(deleteCount);
+    } catch (error) {
+      console.error("Error deleting old check-in/out records:", error);
+      if (unsuccess) unsuccess(error);
+    }
   };
 
-  try {
-    // Cleanup Check-In records
-    const checkinCollection = collection(this.db, "companies", companyId, "checkin");
-    const checkinQuery = query(checkinCollection);
-    const checkinSnapshot = await getDocs(checkinQuery);
-
-    const batch = writeBatch(this.db); // Batch for efficient deletion
-    let deleteCount = 0;
-
-    checkinSnapshot.forEach((doc) => {
-      const data = doc.data();
-      const recordDate = parseDate(data.date);
-      if (recordDate <= thresholdDate) {
-        batch.delete(doc.ref);
-        deleteCount++;
+  addAnnouceHome2 = async (companyId, type, item, success, unsuccess) => {
+    try {
+      if (type === 1) {
+        // For Relaxation, use a sub-collection under a parent document
+        const docRef = await setDoc(
+          doc(this.db, "companies", companyId, "annouceHome2", "relaxation"),
+          item
+        );
+      } else if (type === 2 || type === 3) {
+        // For Health News or Climate Content
+        const docRef = await addDoc(
+          collection(this.db, "companies", companyId, "annouceHome2"),
+          item
+        );
       }
-    });
-
-    // Cleanup Check-Out records
-    const checkoutCollection = collection(this.db, "companies", companyId, "checkout");
-    const checkoutQuery = query(checkoutCollection);
-    const checkoutSnapshot = await getDocs(checkoutQuery);
-
-    checkoutSnapshot.forEach((doc) => {
-      const data = doc.data();
-      const recordDate = parseDate(data.date);
-      if (recordDate <= thresholdDate) {
-        batch.delete(doc.ref);
-        deleteCount++;
-      }
-    });
-
-    // Commit the batch deletion
-    if (deleteCount > 0) {
-      await batch.commit();
-      console.log(`${deleteCount} old check-in/out records deleted successfully.`);
+      success();
+    } catch (e) {
+      unsuccess(e);
     }
+  };
 
-    if (success) success(deleteCount);
-  } catch (error) {
-    console.error("Error deleting old check-in/out records:", error);
-    if (unsuccess) unsuccess(error);
+  updateAnnouceHome2=async(companyId,id,data,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "annouce", id);
+      await updateDoc(docRef,data);
+      success();
+    }catch(e){
+      unsuccess(e);
+    }
   }
-};
+
+  getAnnouceHome2=async(companyId,id,success,unsuccess)=>{
+    try{
+      const docRef = doc(this.db, "companies", companyId, "annouce", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        //console.log("Document data:", docSnap.data());
+        success(docSnap.data())
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }catch(e){
+      unsuccess(e)
+    }
+  }
 
 
+  getAllAnnouceHome2 = (companyId,success, unsuccess) => {
+    const unsubscribe = onSnapshot(collection(this.db, "companies", companyId, "annouceHome2"), (querySnapshot) => {
+      const allAnnouce = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        allAnnouce.push({
+          id:doc.id,
+          title:data.title,
+          date: data.date,
+          type:data.type
+        });
+      });
+      success(allAnnouce);
+    }, (error) => {
+      console.error("Error getting documents: ", error);
+      unsuccess(error);
+    });
+    
+    // Return unsubscribe function to stop listening for updates
+    return unsubscribe;
+  };
+
+  deleteAnnouceHome2=async(companyId,id)=>{
+    //console.log("deleteAnnouce",companyId,id)
+    await deleteDoc(doc(this.db, "companies", companyId, "annouce", id));
+  }
 
 }
 
