@@ -1580,7 +1580,7 @@ class FireStore{
 
   deleteAnnouceHome2=async(companyId,id)=>{
     //console.log("deleteAnnouce",companyId,id)
-    await deleteDoc(doc(this.db, "companies", companyId, "annouce", id));
+    await deleteDoc(doc(this.db, "companies", companyId, "annouceHome2", id));
   }
 
 }

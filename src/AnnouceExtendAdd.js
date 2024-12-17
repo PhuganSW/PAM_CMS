@@ -389,10 +389,9 @@ function AnnouceExtendAdd() {
                           onChange={(e) => {
                             if (e.target.files[0]) {
                               const file = e.target.files[0];
-                              const fileURL = URL.createObjectURL(file);
                               setFiles((prevFiles) => {
                                 const updatedFiles = [...prevFiles];
-                                updatedFiles[index] = { name: file.name, url: fileURL };
+                                updatedFiles[index] = e.target.files[0]; // Store original File object
                                 return updatedFiles;
                               });
                             }
@@ -424,9 +423,9 @@ function AnnouceExtendAdd() {
                           >
                             {files[index]?.name || `Select Image ${index + 1}`}
                           </span>
-                          {files[index]?.url && (
+                          {files[index] && (
                             <a
-                              href={files[index].url}
+                              href={URL.createObjectURL(files[index])} // Generate preview dynamically
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{
@@ -438,14 +437,14 @@ function AnnouceExtendAdd() {
                               View
                             </a>
                           )}
-                          {files[index]?.url && (
+                          {files[index] && (
                             <button
                               onClick={(e) => {
-                                e.preventDefault(); // Prevent default button behavior
-                                e.stopPropagation(); // Prevent triggering the label click
+                                e.preventDefault();
+                                e.stopPropagation();
                                 setFiles((prevFiles) => {
                                   const updatedFiles = [...prevFiles];
-                                  updatedFiles[index] = null; // Clear the file for this index
+                                  updatedFiles[index] = null;
                                   return updatedFiles;
                                 });
                               }}
@@ -453,7 +452,6 @@ function AnnouceExtendAdd() {
                                 backgroundColor: 'transparent',
                                 border: 'none',
                                 cursor: 'pointer',
-                                position: 'relative',
                                 marginLeft: 10,
                               }}
                             >
@@ -522,7 +520,7 @@ function AnnouceExtendAdd() {
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce_extend')}>กลับ</button>
               </div>
 
             </div>

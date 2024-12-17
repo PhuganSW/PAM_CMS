@@ -5,26 +5,35 @@ class Storage{
     constructor(){
         this.storage = getStorage(app);
     }
-    uploadFile(companyId,file, onProgress, onComplete, onError) {
-        const storageRef = ref(this.storage, `${companyId}/annouces/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadFile(companyId, file, onProgress, onComplete, onError) {
+      // Extract the file extension
+      const fileExtension = file.name.split('.').pop();
+      const filename = `${file.name.split('.')[0]}_${Date.now()}.${fileExtension}`;
     
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            if (onProgress) onProgress(progress);
-          },
-          (error) => {
-            if (onError) onError(error);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      // Set the file path in storage with the correct extension
+      const storageRef = ref(this.storage, `${companyId}/annouces/${filename}`);
+      
+      const uploadTask = uploadBytesResumable(storageRef, file);
+    
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          if (onProgress) onProgress(progress);
+        },
+        (error) => {
+          if (onError) onError(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
               if (onComplete) onComplete(downloadURL);
-            }).catch(onError);
-          }
-        );
-      }
+            })
+            .catch(onError);
+        }
+      );
+    }
+    
 
       async uploadImage(companyId,file) {
         const storageRef = ref(this.storage, `${companyId}/image/${file.name}`);
