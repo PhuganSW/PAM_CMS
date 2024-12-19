@@ -85,7 +85,12 @@ function AnnouceExtend() {
   }
 
   const editAnnouce =(id)=>{
-    // navigate('/annouce_edit',{state:{id:id}})
+    console.log(id)
+    navigate('/annouce_extend/edit',{state:{id:id}})
+  }
+
+  const onRelax=()=>{
+    navigate('/annouce_extend/add', { state: { sender: 'relax' } })
   }
 
 
@@ -138,10 +143,12 @@ function AnnouceExtend() {
                 {/*<button className="search-button" ><IoSearchOutline size={24} /></button>*/}
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'flex-end',marginTop:10,width:'95%',alignSelf:'center'}}>
-                <button className='Add-button' onClick={()=> navigate('/annouce_extend/add')}>เพิ่มประกาศ</button>
+                <button className='Add-button' onClick={()=> navigate('/annouce_extend/add', { state: { sender: 'other' } })}>เพิ่มประกาศ</button>
               </div>
               <div style={{width:'95%',alignSelf:'center',justifyContent:'center',alignItems:'center'}}>
-              
+              <div style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
+                          alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>Relaxation</div>
+                          <button className='Previous-button' onClick={onRelax}>จัดการ</button>
               <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
                           alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>Health News</p>
       

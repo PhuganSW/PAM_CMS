@@ -41,6 +41,7 @@ import ResetPassword from './ResetPassword';
 import NotFound from './NotFound';
 import AnnouceExtend from './AnnouceExtend';
 import AnnouceExtendAdd from './AnnouceExtendAdd';
+import AnnouceExtendEdit from './AnnouceExtendEdit';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -82,6 +83,7 @@ function App() {
           <Route path="/annouce_edit" element={<ProtectedRoute><AnnouceEdit /></ProtectedRoute>} />
           <Route path="/annouce_extend" element={<ProtectedRoute><AnnouceExtend /></ProtectedRoute>} />
           <Route path="/annouce_extend/add" element={<ProtectedRoute><AnnouceExtendAdd /></ProtectedRoute>} />
+          <Route path="/annouce_extend/edit" element={<ProtectedRoute><AnnouceExtendEdit /></ProtectedRoute>} />
           <Route path="/profile_add" element={<ProtectedRoute><ProfileAdd /></ProtectedRoute>} />
           <Route path="/profile_edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
           <Route path="/profile_role" element={<ProtectedRoute><ProfileRole /></ProtectedRoute>} />

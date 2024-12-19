@@ -20,9 +20,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { UserContext } from './UserContext';
 
 
-function AnnouceEdit() {
+function AnnouceExtendEdit() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isRelaxSender, setIsRelaxSender] = useState(false);
   const [title,setTitle] = useState('');
   const [link,setLink] = useState('');
   const [date,setDate] = useState(dayjs());
@@ -39,22 +40,29 @@ function AnnouceEdit() {
 
   const types =[
    
-    {label:'ประกาศฉุกเฉิน',value:1},
-    {label:'ข่าวสาร',value:2},
-    {label:'กฎระเบียบ',value:3},
-    {label:'ข่าวสารทั่วไป',value:4},
+    {label:'Relaxation',value:1},
+    {label:'Health News',value:2},
+    {label:'Climate Content',value:3},
+    // {label:'ข่าวสารทั่วไป',value:4},
     // {label:'รณรงค์ลดโลกร้อน',value:5},
-    {label:'ปฏิทินวันหยุด',value:6}
+    // {label:'ปฏิทินวันหยุด',value:6}
   ]
 
   
   const onDrop = useCallback((acceptedFiles) => {
-    setFiles([...files, ...acceptedFiles]);
-  }, [files]);
+    setFiles(acceptedFiles);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: 'image/*', // Accept only image files
+    maxFiles: 1,      // Limit to one file
+  });
 
 
 
   const getAnnouceSuc=(data)=>{
+    console.log(data)
     setTitle(data.title)
     setLink(data.link)
     setDate(dayjs(data.date,'DD-MM-YYYY'))
@@ -70,8 +78,9 @@ function AnnouceEdit() {
   }
 
   const updateAnnouceSuc=()=>{
-    firestore.addAnnouceState(companyId,type)
-    navigate('/annouce')
+    //firestore.addAnnouceState(companyId,type)
+    alert('Update Successful.')
+    navigate('/annouce_extend')
   }
 
   const updateAnnouceUnsuc=(error)=>{
@@ -88,11 +97,9 @@ function AnnouceEdit() {
    let item = {
     title: title,
     link: link,
-    detail: detail,
     date: date_str,
     file: fileURL,
     file_name: fileName,
-    count:count,
     type:type,
   };
 
@@ -111,14 +118,14 @@ function AnnouceEdit() {
       async (downloadURL) => {
         item.file = downloadURL;
         item.file_name = file.name;
-        await firestore.updateAnnouce(companyId,selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+        await firestore.updateAnnouceHome2(companyId,selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
       },
       (error) => {
         console.error('Upload failed:', error);
       }
     );
   } else {
-    firestore.updateAnnouce(companyId,selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
+    firestore.updateAnnouceHome2(companyId,selectID, item, updateAnnouceSuc, updateAnnouceUnsuc);
   }
   }
 
@@ -132,8 +139,8 @@ function AnnouceEdit() {
   useEffect(() => {
     if (location.state && location.state.id) {
       setSelectID(location.state.id);
-      //console.log('from eff'+uid)
-      firestore.getAnnouce(companyId,location.state.id,getAnnouceSuc,getAnnouceUnsuc)
+      console.log('from eff '+location.state.id)
+      firestore.getAnnouceHome2(companyId,location.state.id,getAnnouceSuc,getAnnouceUnsuc)
     } else {
       console.warn('No ID found in location state');
     }
@@ -148,14 +155,11 @@ function AnnouceEdit() {
     });
   };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  //const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const isEmergencyType = type === 1;
-  const isInternalType = type === 2;
-  const isRuleType = type === 3;
-  const isGeneralType = type === 4;
-  const isCampaignType = type === 5;
-  const isHolidayType = type === 6;
+  const isRelaxType = type === 1;
+  const isHealthType = type === 2;
+  const isClimateType = type === 3;
 
   return (
     
@@ -176,7 +180,7 @@ function AnnouceEdit() {
                 {/* <img src='https://i.postimg.cc/YChjY7Pc/image-10.png' width={150} height={150} alt="Logo" /> */}
               </div>
               <div style={{display:'flex',flexDirection:'column',alignSelf:'center',width:'95%'}}>
-                <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                {/* <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                   <TextField
                     label="หัวข้อ"
                     className="form-field"
@@ -186,11 +190,9 @@ function AnnouceEdit() {
                     InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    
                   />
-                  
-                   
-                  
-                </div>
+                </div> */}
                 <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
                     <TextField
                         label="ประเภทประกาศ"
@@ -201,17 +203,44 @@ function AnnouceEdit() {
                         InputLabelProps={{ style: { color: '#000' } }}
                         
                         value={type}
-                        onChange={(e) => setType(e.target.value)}
-                    >{types.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
+                        onChange={(e) => {
+                          if (!isRelaxSender) {
+                            setType(e.target.value);
+                          }
+                          // Clear or reset dependent state when type changes
+                          setFiles([]);       // Reset the files array
+                          setLink('');        // Clear the link field
+                          setTitle('');       // Clear the title field
+                          setDetail('');      // Clear the detail field
+                          setCount(0);        // Reset the count field, if applicable
+                        }}
+                        disabled={isRelaxSender}
+                    >{types
+                      .filter((option) => isRelaxSender || option.value !== 1) // Exclude Relaxation for 'other' sender
+                      .map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
                       </TextField>
                     
-                  
+    
                 </div>
-                <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                {(type==2||type==3) &&
+                  <div className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
+                    
+                      <TextField
+                        label="หัวข้อ"
+                        className="form-field"
+                        variant="filled"
+                        style={{width:'100%',marginBottom:20}}
+                        InputLabelProps={{ style: { color: '#000' } }}
+                        InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        
+                      />
+                   
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
                         
                         <DatePicker
@@ -239,67 +268,84 @@ function AnnouceEdit() {
 
                     <TextField
                         label="ลิงค์แนบ"
-                        variant="filled"
                         className="form-field"
+                        variant="filled"
                         style={{width:'69%'}}
                         InputLabelProps={{ style: { color: '#000' } }}
                         InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
                         value={link}
                         onChange={(e) => setLink(e.target.value)}
-                        disabled={isEmergencyType||isRuleType||isHolidayType}
+                        
                     />
-               
-                    
-                    
-                </div>
-                <div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
-                <TextField
-                        label="รายละเอียด"
-                        className="form-field"
-                        variant="filled"
-                        multiline
-                        rows={4}
-                        InputLabelProps={{ style: { color: '#000' } }}
-                        InputProps={{ style: { color: '#000', backgroundColor: '#fff' } }}
-                        style={{width:'100%'}}
-                        value={detail}
-                        onChange={(e) => setDetail(e.target.value)}
-                        disabled={isInternalType||isRuleType||isGeneralType||isCampaignType||isHolidayType}
-                    >
-                    </TextField>
-                </div>
-                {(!isEmergencyType && !isInternalType && !isGeneralType && !isCampaignType)&&<div  className="form-row" style={{ display: 'flex', marginBottom: '20px', }}>
-                <div className="file-picker">
-                  <div {...getRootProps({ className: 'dropzone' })}>
-                    <input {...getInputProps()} />
-                    <p style={{fontSize:22}}>Drag and drop some files here, or click to select files</p>
-                  </div>
-                  <div className="file-list">
-                  {files.length > 0 ? (
-                      files.map((file, index) => (
-                        <div key={index} className="file-item">
-                          <span>{file.name}</span>
-                          <span>{Math.round(uploadProgress[file.name] || 0)}%</span>
-                          <button onClick={removeFile(file)}>Remove</button>
+                    {/* type==2||type==3 */}
+                    <div className="file-picker" style={{ marginTop: 20 }}>
+                    {fileURL && (
+                      <div 
+                        className="old-file" 
+                        style={{ 
+                          marginBottom: 10, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          border: '1px solid #BEBEBE', 
+                          padding: '10px', 
+                          borderRadius: '4px',
+                          backgroundColor: '#fff'
+                        }}
+                      >
+                        <span style={{flex:1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                          Current File: {fileName}
+                        </span>
+                        <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                          {fileURL && (
+                            <a
+                              href={fileURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ textDecoration: 'underline', color: '#007BFF' }}
+                            >
+                              View
+                            </a>
+                          )}
+                          <button
+                            onClick={() => {
+                              removeExistingFile();
+                            }}
+                            style={{
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                              cursor: 'pointer',
+                              color: '#FF0000',
+                              fontWeight: 'bold',
+                              fontSize: '16px'
+                            }}
+                          >
+                            X
+                          </button>
                         </div>
-                      ))
-                    ) : (
-                      fileName && (
-                        <div className="file-item">
-                          <a href={fileURL} target="_blank" rel="noopener noreferrer">
-                            {fileName}
-                          </a>
-                          <button onClick={removeExistingFile}>Remove</button>
-                        </div>
-                      )
+                      </div>
                     )}
+
+                      <div {...getRootProps({ className: 'dropzone' })}>
+                        <input {...getInputProps()} />
+                        <p style={{ fontSize: 22 }}>Drag and drop an preview image file here, or click to select one.</p>
+                      </div>
+                      <div className="file-list">
+                        {files.map((file, index) => (
+                          <div key={index} className="file-item">
+                            <span>{file.name}</span>
+                            <span>{Math.round(uploadProgress[file.name] || 0)}%</span>
+                            <button onClick={removeFile(file)}>Remove</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-                </div>}
+                  }
               </div>
               <div style={{display:'flex',flexDirection:'row',justifyContent:'center',width:'100%'}}>
               <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#D3D3D3',marginRight:10}} onClick={onSave}>บันทึกข้อมูล</button>
-                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce')}>ยกเลิก</button>
+                <button style={{width:100,height:50,borderRadius:5,backgroundColor:'#343434',color:'#FFFFFF'}} onClick={()=>navigate('/annouce_extend')}>กลับ</button>
               </div>
 
             </div>
@@ -311,6 +357,6 @@ function AnnouceEdit() {
   );
 }
 
-export default AnnouceEdit;
+export default AnnouceExtendEdit;
 
   

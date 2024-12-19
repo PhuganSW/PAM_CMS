@@ -1511,10 +1511,16 @@ class FireStore{
     try {
       if (type === 1) {
         // For Relaxation, use a sub-collection under a parent document
-        const docRef = await setDoc(
-          doc(this.db, "companies", companyId, "annouceHome2", "relaxation"),
-          item
-        );
+        try{
+          const docRef = doc(this.db, "companies", companyId, "annouceHome2", "relaxation");
+          await updateDoc(docRef,item);
+        }catch{
+          const docRef = await setDoc(
+            doc(this.db, "companies", companyId, "annouceHome2", "relaxation"),
+            item
+          );
+        }
+        
       } else if (type === 2 || type === 3) {
         // For Health News or Climate Content
         const docRef = await addDoc(
@@ -1530,7 +1536,7 @@ class FireStore{
 
   updateAnnouceHome2=async(companyId,id,data,success,unsuccess)=>{
     try{
-      const docRef = doc(this.db, "companies", companyId, "annouce", id);
+      const docRef = doc(this.db, "companies", companyId, "annouceHome2", id);
       await updateDoc(docRef,data);
       success();
     }catch(e){
@@ -1540,7 +1546,7 @@ class FireStore{
 
   getAnnouceHome2=async(companyId,id,success,unsuccess)=>{
     try{
-      const docRef = doc(this.db, "companies", companyId, "annouce", id);
+      const docRef = doc(this.db, "companies", companyId,"annouceHome2", id);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {

@@ -1,11 +1,11 @@
 //AnnouceExtendAdd.js
-import React, { useState, useCallback,useContext } from 'react';
+import React, { useState, useCallback,useContext,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, Navigate } from 'react-router-dom';
 import Sidebar from './sidebar';
 import './Home.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './addProfile.css'
-import { TextField } from '@mui/material';
+import { Alert, TextField } from '@mui/material';
 import firestore from './Firebase/Firestore';
 //import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -25,12 +25,14 @@ import { UserContext } from './UserContext';
 
 function AnnouceExtendAdd() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [type, setType] = useState(2); // Default to 'Other'
+  const [isRelaxSender, setIsRelaxSender] = useState(false);
   const [title,setTitle] = useState('');
   const [link,setLink] = useState('');
   const [date,setDate] = useState(dayjs());
   const [detail,setDetail] = useState('');
   const [count,setCount] = useState(0);
-  const [type,setType] = useState(1);
   const [relaxQuote1,setRelaxQuote1] = useState('')
   const [relaxQuote2,setRelaxQuote2] = useState('')
   const [relaxQuote3,setRelaxQuote3] = useState('')
@@ -39,9 +41,14 @@ function AnnouceExtendAdd() {
   const [relaxPic2,setRelaxPic2] = useState('')
   const [relaxPic3,setRelaxPic3] = useState('')
   const [relaxPic4,setRelaxPic4] = useState('')
+  const [pic1Url,setPic1Url] = useState('');
+  const [pic2Url,setPic2Url] = useState('');
+  const [pic3Url,setPic3Url] = useState('');
+  const [pic4Url,setPic4Url] = useState('');
+  const [files, setFiles] = useState([null, null, null, null]);
   const [isUploading, setIsUploading] = useState(false);
 
-  const [files, setFiles] = useState([]);
+  const [files1, setFiles1] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
   const { setCurrentUser, companyId } = useContext(UserContext);
 
@@ -67,7 +74,7 @@ function AnnouceExtendAdd() {
       return;
     }
   
-    setFiles(acceptedFiles);
+    setFiles1(acceptedFiles);
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -79,6 +86,7 @@ function AnnouceExtendAdd() {
 
   const addAnnouceSuc=()=>{
     //firestore.addAnnouceState(companyId,type)
+    alert('Save Successful')
     navigate('/annouce_extend')
   }
 
@@ -93,68 +101,94 @@ function AnnouceExtendAdd() {
   const onSave = async () => {
     let date_str = date.format('DD/MM/YYYY');
     
-    const uploadFiles = async (files) => {
-      const uploadPromises = files.map((file) => {
-        return new Promise((resolve, reject) => {
-          console.log("File to upload:", file);
-          console.log("File size:", file.size);
-            if (file.size === 0) {
-              throw new Error("File size is 0. Cannot upload empty file.");
-            }
-          storage.uploadFile(
-            companyId,
-            file,
-            (progress) => {
-              setUploadProgress((prevProgress) => ({
-                ...prevProgress,
-                [file.name]: progress,
-              }));
-            },
-            async (downloadURL) => {
-              resolve({ name: file.name, url: downloadURL });
-            },
-            (error) => {
-              console.error("Upload failed:", error);
-              reject(error);
-            }
-          );
-          console.log("Files array:", files);
-        });
-      });
-  
-      try {
-        const uploadedFiles = await Promise.all(uploadPromises);
-        return uploadedFiles;
-      } catch (error) {
-        console.error("Error uploading files: ", error);
-        alert("Error uploading files");
-        throw error;
-      }
-    };
+    
     
     try {
       let item = {};
       if (type === 1) {
+        const uploadImageIfChanged = async (file, oldName, oldUrl) => {
+          if (!file) {
+            // ไม่มีการเปลี่ยนแปลง ใช้ข้อมูลเดิม
+            return { name: oldName, url: oldUrl };
+          } else {
+            // อัปโหลดไฟล์ใหม่
+            const uploaded = await new Promise((resolve, reject) => {
+              storage.uploadFile(
+                companyId,
+                file,
+                (progress) => {
+                  // handle progress
+                },
+                (downloadURL) => {
+                  resolve({ name: file.name, url: downloadURL });
+                },
+                (error) => reject(error)
+              );
+            });
+            return uploaded;
+          }
+        };
         // Upload images for Relaxation
-        const uploadedImages = await uploadFiles(files.filter((file) => file));
+        const uploaded1 = await uploadImageIfChanged(files[0], relaxPic1, pic1Url);
+        const uploaded2 = await uploadImageIfChanged(files[1], relaxPic2, pic2Url);
+        const uploaded3 = await uploadImageIfChanged(files[2], relaxPic3, pic3Url);
+        const uploaded4 = await uploadImageIfChanged(files[3], relaxPic4, pic4Url);
         item = {
           relaxQuote1,
           relaxQuote2,
           relaxQuote3,
           relaxQuote4,
-          relaxPic1: uploadedImages[0]?.name || "",
-          relaxPic2: uploadedImages[1]?.name || "",
-          relaxPic3: uploadedImages[2]?.name || "",
-          relaxPic4: uploadedImages[3]?.name || "",
-          Pic1url: uploadedImages[0]?.url || "",
-          Pic2url: uploadedImages[1]?.url || "",
-          Pic3url: uploadedImages[2]?.url || "",
-          Pic4url: uploadedImages[3]?.url || "",
+          relaxPic1: uploaded1.name || "",
+          relaxPic2: uploaded2.name || "",
+          relaxPic3: uploaded3.name || "",
+          relaxPic4: uploaded4.name || "",
+          Pic1url: uploaded1.url || "",
+          Pic2url: uploaded2.url || "",
+          Pic3url: uploaded3.url || "",
+          Pic4url: uploaded4.url || "",
           type,
         };
       } else if (type === 2 || type === 3) {
         // Upload single file for Health News or Climate Content
-        const uploadedFiles = await uploadFiles(files);
+        const uploadFiles = async (files) => {
+          const uploadPromises = files.map((file) => {
+            return new Promise((resolve, reject) => {
+              console.log("File to upload:", file);
+              console.log("File size:", file.size);
+                if (file.size === 0) {
+                  throw new Error("File size is 0. Cannot upload empty file.");
+                }
+              storage.uploadFile(
+                companyId,
+                file,
+                (progress) => {
+                  setUploadProgress((prevProgress) => ({
+                    ...prevProgress,
+                    [file.name]: progress,
+                  }));
+                },
+                async (downloadURL) => {
+                  resolve({ name: file.name, url: downloadURL });
+                },
+                (error) => {
+                  console.error("Upload failed:", error);
+                  reject(error);
+                }
+              );
+              console.log("Files array:", files);
+            });
+          });
+      
+          try {
+            const uploadedFiles = await Promise.all(uploadPromises);
+            return uploadedFiles;
+          } catch (error) {
+            console.error("Error uploading files: ", error);
+            alert("Error uploading files");
+            throw error;
+          }
+        };
+        const uploadedFiles = await uploadFiles(files1);
         item = {
           title,
           link,
@@ -180,6 +214,49 @@ function AnnouceExtendAdd() {
       return newProgress;
     });
   };
+
+  const RelaxSuc=(data)=>{
+    setRelaxQuote1(data.relaxQuote1 || '');
+    setRelaxQuote2(data.relaxQuote2 || '');
+    setRelaxQuote3(data.relaxQuote3 || '');
+    setRelaxQuote4(data.relaxQuote4 || '');
+
+    setRelaxPic1(data.relaxPic1 || '');
+    setRelaxPic2(data.relaxPic2 || '');
+    setRelaxPic3(data.relaxPic3 || '');
+    setRelaxPic4(data.relaxPic4 || '');
+
+    setPic1Url(data.Pic1url || '');
+    setPic2Url(data.Pic2url || '');
+    setPic3Url(data.Pic3url || '');
+    setPic4Url(data.Pic4url || '');
+  }
+
+  const handleFileChange = (index, file) => {
+    const updatedFiles = [...files];
+    updatedFiles[index] = file;
+    setFiles(updatedFiles);
+  };
+  
+  // การ render แต่ละช่อง
+  const imageSlots = [
+    { index: 0, name: relaxPic1, url: pic1Url, setName: setRelaxPic1, setUrl: setPic1Url },
+    { index: 1, name: relaxPic2, url: pic2Url, setName: setRelaxPic2, setUrl: setPic2Url },
+    { index: 2, name: relaxPic3, url: pic3Url, setName: setRelaxPic3, setUrl: setPic3Url },
+    { index: 3, name: relaxPic4, url: pic4Url, setName: setRelaxPic4, setUrl: setPic4Url },
+  ];
+  
+
+  useEffect(() => {
+    if (location.state?.sender === 'relax') {
+      setType(1);
+      setIsRelaxSender(true);
+      firestore.getAnnouceHome2(companyId,"relaxation",RelaxSuc,(e)=>console.log(e))
+    } else {
+      setType(2); // Default to Health News
+      setIsRelaxSender(false);
+    }
+  }, [location.state]);
 
   //const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -233,8 +310,9 @@ function AnnouceExtendAdd() {
                         
                         value={type}
                         onChange={(e) => {
-                          setType(e.target.value);
-                      
+                          if (!isRelaxSender) {
+                            setType(e.target.value);
+                          }
                           // Clear or reset dependent state when type changes
                           setFiles([]);       // Reset the files array
                           setLink('');        // Clear the link field
@@ -242,11 +320,14 @@ function AnnouceExtendAdd() {
                           setDetail('');      // Clear the detail field
                           setCount(0);        // Reset the count field, if applicable
                         }}
-                    >{types.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
+                        disabled={isRelaxSender}
+                    >{types
+                      .filter((option) => isRelaxSender || option.value !== 1) // Exclude Relaxation for 'other' sender
+                      .map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
                       </TextField>
                     
     
@@ -309,7 +390,7 @@ function AnnouceExtendAdd() {
                         <p style={{ fontSize: 22 }}>Drag and drop an preview image file here, or click to select one.</p>
                       </div>
                       <div className="file-list">
-                        {files.map((file, index) => (
+                        {files1.map((file, index) => (
                           <div key={index} className="file-item">
                             <span>{file.name}</span>
                             <span>{Math.round(uploadProgress[file.name] || 0)}%</span>
@@ -370,113 +451,106 @@ function AnnouceExtendAdd() {
                     />
                     <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>Relax-Pic</p>
-                    {[...Array(4)].map((_, index) => (
-                      <div
-                        key={`relax-pic-${index}`}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          width: '100%',
-                          marginBottom: 10,
-                          position: 'relative',
-                        }}
-                      >
-                        <input
-                          type="file"
-                          accept="image/*"
-                          style={{ display: 'none' }}
-                          id={`relax-pic-input-${index}`}
-                          onChange={(e) => {
-                            if (e.target.files[0]) {
-                              const file = e.target.files[0];
-                              setFiles((prevFiles) => {
-                                const updatedFiles = [...prevFiles];
-                                updatedFiles[index] = e.target.files[0]; // Store original File object
-                                return updatedFiles;
-                              });
-                            }
-                          }}
-                        />
-                        <label
-                          htmlFor={`relax-pic-input-${index}`}
-                          style={{
-                            width: '100%',
-                            height: '56px',
-                            backgroundColor: '#fff',
-                            borderRadius: '4px',
-                            padding: '12px',
-                            cursor: 'pointer',
-                            border: '1px solid rgba(0, 0, 0, 0.23)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <span
+                    {imageSlots.map((slot, i) => {
+                      const placeholder = `Select Image ${i+1}`;
+                      const displayName = files[i]?.name || slot.name || placeholder;
+                      
+                      return (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 10, position: 'relative' }}>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            id={`relax-pic-input-${i}`}
+                            onChange={(e) => {
+                              if (e.target.files[0]) {
+                                slot.setUrl(''); 
+                                slot.setName(e.target.files[0].name); 
+                                handleFileChange(i, e.target.files[0]);
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`relax-pic-input-${i}`}
                             style={{
-                              color: '#000',
-                              flex: 1,
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
+                              width: '100%',
+                              height: '56px',
+                              backgroundColor: '#fff',
+                              borderRadius: '4px',
+                              padding: '12px',
+                              cursor: 'pointer',
+                              border: '1px solid rgba(0, 0, 0, 0.23)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
                             }}
                           >
-                            {files[index]?.name || `Select Image ${index + 1}`}
-                          </span>
-                          {files[index] && (
-                            <a
-                              href={URL.createObjectURL(files[index])} // Generate preview dynamically
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <span
                               style={{
-                                color: '#007BFF',
-                                textDecoration: 'underline',
-                                marginRight: 10,
+                                color: '#000',
+                                flex: 1,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
                               }}
                             >
-                              View
-                            </a>
-                          )}
-                          {files[index] && (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setFiles((prevFiles) => {
-                                  const updatedFiles = [...prevFiles];
-                                  updatedFiles[index] = null;
-                                  return updatedFiles;
-                                });
-                              }}
-                              style={{
-                                backgroundColor: 'transparent',
-                                border: 'none',
-                                cursor: 'pointer',
-                                marginLeft: 10,
-                              }}
-                            >
-                              <span
+                              {displayName}
+                            </span>
+
+                            {(files[i] || slot.url) && (
+                              <a
+                                href={files[i] ? URL.createObjectURL(files[i]) : slot.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 style={{
-                                  border: '1px solid #FF0000',
-                                  borderRadius: '50%',
-                                  padding: '4px',
-                                  color: '#FF0000',
-                                  fontWeight: 'bold',
-                                  fontSize: '16px',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  width: '20px',
-                                  height: '20px',
+                                  color: '#007BFF',
+                                  textDecoration: 'underline',
+                                  marginRight: 10,
                                 }}
                               >
-                                X
-                              </span>
-                            </button>
-                          )}
-                        </label>
-                      </div>
-                    ))}
+                                View
+                              </a>
+                            )}
+
+                            {(files[i] || slot.url) && (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleFileChange(i, null);
+                                  slot.setUrl('');
+                                  slot.setName('');
+                                }}
+                                style={{
+                                  backgroundColor: 'transparent',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  marginLeft: 10,
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    border: '1px solid #FF0000',
+                                    borderRadius: '50%',
+                                    padding: '4px',
+                                    color: '#FF0000',
+                                    fontWeight: 'bold',
+                                    fontSize: '16px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '20px',
+                                    height: '20px',
+                                  }}
+                                >
+                                  X
+                                </span>
+                              </button>
+                            )}
+                          </label>
+                        </div>
+                      );
+                    })}
                     <p style={{fontSize:28,textAlign:'center',backgroundColor:'#D3D3D3',width:'100%',
                             alignSelf:'center',borderLeft: '5px solid black',borderRadius:5}}>Relax-Clip</p>
                 </div>
